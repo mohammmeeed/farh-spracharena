@@ -14,6 +14,8 @@ import {
   Swords,
   Sliders,
   Filter,
+  Plus,
+  Minus,
 } from 'lucide-react';
 
 import { GameLevel, GameType, GameRoom } from '../../types/game.types';
@@ -426,40 +428,78 @@ export const NewGameConfigurator: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* Right: Question Count Slider & Buttons */}
-                  <div className="flex items-center gap-2 flex-wrap">
+                  {/* Right: Question Count Slider & Stepper Buttons */}
+                  <div className="flex items-center gap-3 flex-wrap">
                     {(() => {
                       const maxAvail = AVAILABLE_QUESTIONS_MAP[selectedLevel]?.[item.gameType] || 5;
-                      const presets = [2, 3, 4, 5, 6, 8, 10].filter((c) => c <= maxAvail);
+                      const rawPresets = [3, 5, 10, 15];
+                      const presets = Array.from(
+                        new Set([...rawPresets.filter((c) => c <= maxAvail), maxAvail])
+                      ).sort((a, b) => a - b);
+
                       return (
                         <>
-                          <span className="text-xs text-slate-400 font-medium">Fragen:</span>
-                          {presets.map((countVal) => (
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <span className="text-xs text-slate-400 font-medium mr-1">Fragen:</span>
+                            {presets.map((countVal) => (
+                              <button
+                                key={countVal}
+                                type="button"
+                                onClick={() => handleQuestionCountChange(item.gameType, countVal)}
+                                className={`px-2.5 py-1 rounded-xl text-xs font-bold font-mono transition-all ${
+                                  item.questionCount === countVal
+                                    ? 'bg-amber-500 text-slate-950 shadow-glow-gold'
+                                    : 'bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800'
+                                }`}
+                              >
+                                {countVal}
+                              </button>
+                            ))}
+                          </div>
+
+                          <div className="flex items-center gap-1.5 pl-3 border-l border-slate-800">
+                            {/* Decrease Button (-) */}
                             <button
-                              key={countVal}
                               type="button"
-                              onClick={() => handleQuestionCountChange(item.gameType, countVal)}
-                              className={`px-2.5 py-1 rounded-lg text-xs font-bold font-mono transition-all ${
-                                item.questionCount === countVal
-                                  ? 'bg-amber-500 text-slate-950 shadow-sm'
-                                  : 'bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800'
-                              }`}
+                              onClick={() =>
+                                handleQuestionCountChange(item.gameType, item.questionCount - 1)
+                              }
+                              disabled={item.questionCount <= MIN_QUESTION_COUNT}
+                              className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors shadow-sm"
+                              title="Weniger Fragen (-1)"
                             >
-                              {countVal}
+                              <Minus className="w-3.5 h-3.5" />
                             </button>
-                          ))}
-                          <div className="flex items-center gap-1.5 pl-2 border-l border-slate-800">
+
+                            {/* Question Number Input */}
                             <input
                               type="number"
                               min={MIN_QUESTION_COUNT}
                               max={maxAvail}
                               value={item.questionCount}
                               onChange={(e) =>
-                                handleQuestionCountChange(item.gameType, parseInt(e.target.value) || 1)
+                                handleQuestionCountChange(
+                                  item.gameType,
+                                  parseInt(e.target.value) || 1
+                                )
                               }
-                              className="w-14 px-2 py-1 rounded-lg bg-slate-950 border border-slate-700 text-center font-mono font-bold text-xs text-white"
+                              className="w-12 h-8 rounded-lg bg-slate-950 border border-slate-700 text-center font-mono font-bold text-sm text-white focus:outline-none focus:border-amber-400"
                             />
-                            <span className="text-[10px] text-amber-400 font-mono font-bold">
+
+                            {/* Increase Button (+) */}
+                            <button
+                              type="button"
+                              onClick={() =>
+                                handleQuestionCountChange(item.gameType, item.questionCount + 1)
+                              }
+                              disabled={item.questionCount >= maxAvail}
+                              className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-700 text-slate-300 hover:text-white hover:bg-slate-800 disabled:opacity-30 disabled:cursor-not-allowed flex items-center justify-center transition-colors shadow-sm"
+                              title="Mehr Fragen (+1)"
+                            >
+                              <Plus className="w-3.5 h-3.5" />
+                            </button>
+
+                            <span className="text-xs text-amber-400 font-mono font-bold ml-1">
                               / {maxAvail} max
                             </span>
                           </div>
