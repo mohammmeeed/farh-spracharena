@@ -24,10 +24,12 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Brand Logo & Name */}
         <div className="flex items-center gap-3.5">
           <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-rose-600 p-0.5 shadow-glow-gold transition-transform group-hover:scale-105">
-              <div className="w-full h-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-                <span className="text-xl font-black gradient-text-gold">F</span>
-              </div>
+            <div className="w-11 h-11 rounded-full p-0.5 bg-gradient-to-br from-amber-500 via-yellow-400 to-rose-500 shadow-glow-gold transition-transform group-hover:scale-105 overflow-hidden shrink-0">
+              <img
+                src="/teacher-farh.png"
+                alt="Farh SprachArena"
+                className="w-full h-full object-cover rounded-full"
+              />
             </div>
             <div>
               <div className="flex items-center gap-2">
