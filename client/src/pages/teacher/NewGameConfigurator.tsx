@@ -23,6 +23,7 @@ import {
   GAME_LEVELS,
   MIN_QUESTION_COUNT,
   MAX_QUESTION_COUNT,
+  QUESTION_COUNT_PRESETS,
   AVAILABLE_QUESTIONS_MAP,
 } from '../../utils/constants';
 import { socketService } from '../../socket/socket.service';
@@ -120,7 +121,10 @@ export const NewGameConfigurator: React.FC = () => {
     setSelectedLevel(lvl);
     setSelectedGames((prev) =>
       prev.map((g) => {
-        const maxAvail = AVAILABLE_QUESTIONS_MAP[lvl]?.[g.gameType] || 5;
+        const maxAvail = Math.min(
+          MAX_QUESTION_COUNT,
+          AVAILABLE_QUESTIONS_MAP[lvl]?.[g.gameType] || MAX_QUESTION_COUNT
+        );
         return {
           ...g,
           questionCount: Math.min(g.questionCount, maxAvail),
@@ -165,7 +169,10 @@ export const NewGameConfigurator: React.FC = () => {
       setSelectedGames(selectedGames.filter((g) => g.gameType !== gameType));
     } else {
       const gameDef = GAME_DEFINITIONS.find((g) => g.type === gameType);
-      const maxAvail = AVAILABLE_QUESTIONS_MAP[selectedLevel]?.[gameType] || 5;
+      const maxAvail = Math.min(
+        MAX_QUESTION_COUNT,
+        AVAILABLE_QUESTIONS_MAP[selectedLevel]?.[gameType] || MAX_QUESTION_COUNT
+      );
       const defaultCount = gameDef ? Math.min(gameDef.defaultQuestionCount, maxAvail) : Math.min(5, maxAvail);
       setSelectedGames([...selectedGames, { gameType, questionCount: defaultCount }]);
     }
@@ -194,7 +201,10 @@ export const NewGameConfigurator: React.FC = () => {
   // Update question count for a specific game
   const handleQuestionCountChange = (gameType: GameType, count: number) => {
     setErrorMessage(null);
-    const maxAvail = AVAILABLE_QUESTIONS_MAP[selectedLevel]?.[gameType] || MAX_QUESTION_COUNT;
+    const maxAvail = Math.min(
+      MAX_QUESTION_COUNT,
+      AVAILABLE_QUESTIONS_MAP[selectedLevel]?.[gameType] || MAX_QUESTION_COUNT
+    );
     const clampedCount = Math.max(MIN_QUESTION_COUNT, Math.min(maxAvail, count));
     setSelectedGames(
       selectedGames.map((g) =>
@@ -380,7 +390,7 @@ export const NewGameConfigurator: React.FC = () => {
             <div>
               <h2 className="text-lg font-bold text-white">Reihenfolge & Fragenanzahl</h2>
               <p className="text-xs text-slate-400">
-                Verschiebe Spiele mit den Pfeilen und lege 5–30 Fragen pro Spiel fest.
+                Verschiebe Spiele mit den Pfeilen und wähle zwischen 1 und 20 Fragen pro Spiel.
               </p>
             </div>
           </div>
@@ -431,11 +441,11 @@ export const NewGameConfigurator: React.FC = () => {
                   {/* Right: Question Count Slider & Stepper Buttons */}
                   <div className="flex items-center gap-3 flex-wrap">
                     {(() => {
-                      const maxAvail = AVAILABLE_QUESTIONS_MAP[selectedLevel]?.[item.gameType] || 5;
-                      const rawPresets = [3, 5, 10, 15];
-                      const presets = Array.from(
-                        new Set([...rawPresets.filter((c) => c <= maxAvail), maxAvail])
-                      ).sort((a, b) => a - b);
+                      const maxAvail = Math.min(
+                        MAX_QUESTION_COUNT,
+                        AVAILABLE_QUESTIONS_MAP[selectedLevel]?.[item.gameType] || MAX_QUESTION_COUNT
+                      );
+                      const presets = QUESTION_COUNT_PRESETS.filter((c) => c <= maxAvail);
 
                       return (
                         <>
