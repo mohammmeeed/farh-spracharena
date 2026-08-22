@@ -668,9 +668,9 @@ export class GameEngine {
   }
 
   /**
-   * Pause game (e.g. Teacher Disconnect during live question)
+   * Pause game (e.g. Teacher explanation or manual pause)
    */
-  public pauseGame(roomId: string, io: TypedServer): void {
+  public pauseGame(roomId: string, io: TypedServer, customReason?: string): void {
     const room = roomManager.getRoomById(roomId);
     if (!room || !room.gameState) return;
 
@@ -678,15 +678,21 @@ export class GameEngine {
       const remainingMs = timerService.pauseTimer(`question_${roomId}`);
       room.gameState.isPaused = true;
       room.gameState.pauseRemainingMs = remainingMs;
+
+      const reason = customReason || 'Lehrer Farh erklärt die Frage';
+      const question = room.gameState.currentQuestion;
+
       io.to(roomId).emit('game:gamePaused', {
-        reason: 'Der Lehrer ist kurz getrennt. Das Spiel ist pausiert.',
+        reason,
+        explanation: question?.explanation,
+        questionText: question?.text,
       });
-      logger.info(`[GameEngine] Game in Room ${roomId} paused with ${remainingMs}ms left.`);
+      logger.info(`[GameEngine] Game in Room ${roomId} paused for explanation. Remaining: ${remainingMs}ms`);
     }
   }
 
   /**
-   * Resume game (e.g. Teacher Reconnects)
+   * Resume game (e.g. Teacher finishes explanation)
    */
   public resumeGame(roomId: string, io: TypedServer): void {
     const room = roomManager.getRoomById(roomId);
@@ -695,11 +701,14 @@ export class GameEngine {
     room.gameState.isPaused = false;
     const resumed = timerService.resumeTimer(`question_${roomId}`);
     if (resumed) {
-      const remainingSec = Math.ceil((room.gameState.pauseRemainingMs || 10000) / 1000);
+      const remainingMs = room.gameState.pauseRemainingMs || 10000;
+      const remainingSec = Math.max(1, Math.ceil(remainingMs / 1000));
+      room.gameState.currentQuestionEndsAt = Date.now() + remainingMs;
+
       io.to(roomId).emit('game:gameResumed', {
         remainingSeconds: remainingSec,
       });
-      logger.info(`[GameEngine] Game in Room ${roomId} resumed.`);
+      logger.info(`[GameEngine] Game in Room ${roomId} resumed. Remaining: ${remainingSec}s`);
     }
   }
 

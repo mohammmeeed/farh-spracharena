@@ -278,8 +278,9 @@ export interface ServerToClientEvents {
     teams?: Record<string, Team>;
     winner?: LeaderboardEntry | Team;
   }) => void;
-  'game:gamePaused': (data: { reason: string }) => void;
+  'game:gamePaused': (data: { reason: string; explanation?: string; questionText?: string }) => void;
   'game:gameResumed': (data: { remainingSeconds: number }) => void;
+  'student:kicked': (data: { reason?: string }) => void;
   'game:error': (data: { message: string }) => void;
 
   // Backward compatibility
@@ -297,6 +298,9 @@ export interface ClientToServerEvents {
   'teacher:reconnect': (data: { roomId: string }) => void;
   'teacher:startGame': (data: { roomId: string }) => void;
   'teacher:endGame': (data: { roomId: string }) => void;
+  'teacher:pauseGame': (data: { roomId: string; reason?: string }) => void;
+  'teacher:resumeGame': (data: { roomId: string }) => void;
+  'teacher:kickStudent': (data: { roomId: string; playerId: string }) => void;
   'student:joinRoom': (data: { pin: string; name: string }) => void;
   'student:leaveRoom': (data: { roomId: string; playerId?: string }) => void;
   'student:syncLobby': (data: { roomId: string; playerId?: string }) => void;

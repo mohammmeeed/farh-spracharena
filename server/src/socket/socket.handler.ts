@@ -275,6 +275,78 @@ export function setupSocketHandlers(io: TypedServer): void {
     });
 
     /**
+     * Teacher pauses the active game for classroom explanation
+     */
+    socket.on('teacher:pauseGame', ({ roomId, reason }) => {
+      const room = roomManager.getRoomById(roomId);
+      if (!room) return;
+
+      if (room.teacherSocketId !== socket.id) {
+        socket.emit('server:roomError', { message: 'Nur der Lehrer kann das Spiel pausieren.' });
+        return;
+      }
+
+      gameEngine.pauseGame(roomId, io, reason);
+    });
+
+    /**
+     * Teacher resumes the active game
+     */
+    socket.on('teacher:resumeGame', ({ roomId }) => {
+      const room = roomManager.getRoomById(roomId);
+      if (!room) return;
+
+      if (room.teacherSocketId !== socket.id) {
+        socket.emit('server:roomError', { message: 'Nur der Lehrer kann das Spiel fortsetzen.' });
+        return;
+      }
+
+      gameEngine.resumeGame(roomId, io);
+    });
+
+    /**
+     * Teacher kicks a student from the lobby or active game
+     */
+    socket.on('teacher:kickStudent', ({ roomId, playerId }) => {
+      const room = roomManager.getRoomById(roomId);
+      if (!room) {
+        socket.emit('server:roomError', { message: 'Raum nicht gefunden.' });
+        return;
+      }
+
+      if (room.teacherSocketId !== socket.id) {
+        socket.emit('server:roomError', { message: 'Nur der Lehrer kann Teilnehmer entfernen.' });
+        return;
+      }
+
+      const result = roomManager.kickPlayer(roomId, playerId);
+      if (result.success && result.remainingPlayers) {
+        // Send direct kick event to the student's socket
+        if (result.kickedSocketId) {
+          const kickedSocket = io.sockets.sockets.get(result.kickedSocketId);
+          if (kickedSocket) {
+            kickedSocket.emit('student:kicked', {
+              reason: 'Du wurdest vom Lehrer aus dem Raum entfernt.',
+            });
+            kickedSocket.leave(roomId);
+            kickedSocket.leave(room.pin);
+          }
+        }
+
+        // Broadcast updated players list to everyone in room
+        io.to(roomId).emit('room:playersUpdated', {
+          players: result.remainingPlayers,
+          totalPlayers: result.remainingPlayers.length,
+        });
+        io.to(roomId).emit('player:list_updated', {
+          players: result.remainingPlayers,
+        });
+      } else {
+        socket.emit('server:roomError', { message: result.error || 'Spieler konnte nicht entfernt werden.' });
+      }
+    });
+
+    /**
      * Student toggles ready state in lobby
      */
     socket.on('student:toggleReady', ({ roomId }) => {

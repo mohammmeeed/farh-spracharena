@@ -328,6 +328,38 @@ export class RoomManager {
   }
 
   /**
+   * Teacher explicitly kicks a student from the room
+   */
+  public kickPlayer(
+    roomId: string,
+    playerId: string
+  ): { success: boolean; error?: string; remainingPlayers?: Player[]; kickedSocketId?: string } {
+    const room = this.getRoomById(roomId);
+    if (!room || !room.players[playerId]) {
+      return { success: false, error: 'Spieler nicht gefunden.' };
+    }
+
+    const player = room.players[playerId];
+    const kickedSocketId = player.socketId;
+    this.socketIdToPlayer.delete(kickedSocketId);
+    delete room.players[playerId];
+
+    // Remove from team in Team Battle mode
+    if (room.teams && player.teamId && room.teams[player.teamId]) {
+      room.teams[player.teamId].playerIds = room.teams[player.teamId].playerIds.filter(
+        (id) => id !== playerId
+      );
+    }
+
+    const remainingPlayers = Object.values(room.players);
+    logger.info(
+      `[RoomManager] Player "${player.name}" (${playerId}) was kicked from Room ${roomId}. Remaining: ${remainingPlayers.length}`
+    );
+
+    return { success: true, remainingPlayers, kickedSocketId };
+  }
+
+  /**
    * Close and delete a room completely
    */
   public closeRoom(roomId: string, teacherSocketId?: string): boolean {

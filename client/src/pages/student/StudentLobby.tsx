@@ -94,12 +94,19 @@ export const StudentLobby: React.FC = () => {
       setErrorMessage(message || 'Fehler beim Laden des Spielraums.');
     };
 
+    // 7. Kicked by teacher
+    const handleStudentKicked = ({ reason }: { reason?: string }) => {
+      alert(reason || 'Du wurdest vom Lehrer aus dem Spielraum entfernt.');
+      navigate('/join');
+    };
+
     socket.on('student:joinedRoom', handleJoinedRoom);
     socket.on('room:playersUpdated', handlePlayersUpdated);
     socket.on('game:countdown', handleCountdown);
     socket.on('teacher:statusChanged', handleTeacherStatusChanged);
     socket.on('server:roomClosed', handleRoomClosed);
     socket.on('student:joinError', handleJoinError);
+    socket.on('student:kicked', handleStudentKicked);
 
     // Initial sync
     if (socket.connected) {
@@ -123,6 +130,7 @@ export const StudentLobby: React.FC = () => {
       socket.off('teacher:statusChanged', handleTeacherStatusChanged);
       socket.off('server:roomClosed', handleRoomClosed);
       socket.off('student:joinError', handleJoinError);
+      socket.off('student:kicked', handleStudentKicked);
     };
   }, [roomId, initialPlayer, navigate]);
 

@@ -13,6 +13,8 @@ import {
   LogOut,
   Music,
   VolumeX,
+  Pause,
+  Play,
 } from 'lucide-react';
 import { GameLevel, GameType } from '../../types/game.types';
 import { ScoreDisplay } from './ScoreDisplay';
@@ -29,6 +31,8 @@ interface GameHeaderProps {
   lastPointsEarned?: number;
   streak?: number;
   isTeacher?: boolean;
+  isPaused?: boolean;
+  onTogglePause?: () => void;
   isProjectorMode?: boolean;
   onToggleProjectorMode?: () => void;
   onExit?: () => void;
@@ -43,6 +47,8 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
   lastPointsEarned = 0,
   streak = 0,
   isTeacher = false,
+  isPaused = false,
+  onTogglePause,
   isProjectorMode = false,
   onToggleProjectorMode,
   onExit,
@@ -122,6 +128,32 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
           <div className="flex items-center gap-1.5 md:gap-3 shrink-0">
             {!isTeacher && (
               <ScoreDisplay score={score} lastPointsEarned={lastPointsEarned} size="md" />
+            )}
+
+            {/* Teacher Pause/Resume for Classroom Explanation */}
+            {isTeacher && onTogglePause && (
+              <button
+                onClick={onTogglePause}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer ${
+                  isPaused
+                    ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-950 shadow-lg shadow-emerald-500/25 animate-pulse'
+                    : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/35'
+                }`}
+                title={isPaused ? 'Spiel fortsetzen' : 'Pause für Erklärung (Timer pausiert)'}
+              >
+                {isPaused ? (
+                  <>
+                    <Play className="w-3.5 h-3.5 fill-slate-950" />
+                    <span>▶️ Fortsetzen</span>
+                  </>
+                ) : (
+                  <>
+                    <Pause className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">Pause (Erklärung)</span>
+                    <span className="sm:hidden">Pause</span>
+                  </>
+                )}
+              </button>
             )}
 
             {/* Unblock Audio Button if browser blocked autoplay */}

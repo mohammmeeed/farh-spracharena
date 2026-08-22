@@ -19,6 +19,8 @@ import {
   Flame,
   Volume2,
   Tv,
+  UserX,
+  Trash2,
 } from 'lucide-react';
 
 import { GameRoom, Player, LeaderboardEntry, Team } from '../../types/game.types';
@@ -46,6 +48,7 @@ export const TeacherLobby: React.FC = () => {
   const [showQrCode, setShowQrCode] = useState<boolean>(false);
   const [showExitModal, setShowExitModal] = useState<boolean>(false);
   const [showAudioModal, setShowAudioModal] = useState<boolean>(false);
+  const [playerToKick, setPlayerToKick] = useState<{ playerId: string; name: string } | null>(null);
   const [loading, setLoading] = useState<boolean>(!initialRoom);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<ActiveTab>('GAME');
@@ -201,6 +204,13 @@ export const TeacherLobby: React.FC = () => {
     navigate('/teacher');
   };
 
+  const handleConfirmKick = () => {
+    if (!roomId || !playerToKick) return;
+    socketService.kickStudent(roomId, playerToKick.playerId);
+    playSound('click');
+    setPlayerToKick(null);
+  };
+
   const handleStartGame = async () => {
     if (!roomId) return;
     if (players.length === 0) {
@@ -263,12 +273,12 @@ export const TeacherLobby: React.FC = () => {
             <span>Teilnehmerliste ({players.length})</span>
           </h3>
           <p className="text-xs text-slate-400 mt-0.5">
-            Live-Verbindungsstatus aller angemeldeten Schüler
+            Live-Verbindungsstatus & Verwaltung aller angemeldeten Schüler
           </p>
         </div>
         <button
           onClick={handleCopyPin}
-          className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-amber-400 text-xs font-mono font-bold flex items-center gap-1.5"
+          className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-amber-400 text-xs font-mono font-bold flex items-center gap-1.5 cursor-pointer"
         >
           <span>PIN: #{room.pin}</span>
           {copiedPin ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
@@ -279,17 +289,17 @@ export const TeacherLobby: React.FC = () => {
         {players.map((p, idx) => (
           <div
             key={p.playerId}
-            className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between"
+            className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between hover:border-slate-700 transition-colors group"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 font-bold flex items-center justify-center text-sm">
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 font-bold flex items-center justify-center text-sm shrink-0">
                 {idx + 1}
               </div>
-              <div>
-                <p className="font-bold text-white text-sm flex items-center gap-1.5">
-                  <span>{p.name}</span>
+              <div className="min-w-0">
+                <p className="font-bold text-white text-sm flex items-center gap-1.5 truncate">
+                  <span className="truncate">{p.name}</span>
                   {p.isReady && (
-                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">
+                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold shrink-0">
                       Bereit
                     </span>
                   )}
@@ -300,7 +310,7 @@ export const TeacherLobby: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
               <span
                 className={`inline-flex items-center gap-1 text-[11px] font-semibold ${
                   p.connected ? 'text-emerald-400' : 'text-rose-400'
@@ -311,8 +321,17 @@ export const TeacherLobby: React.FC = () => {
                     p.connected ? 'bg-emerald-400' : 'bg-rose-400'
                   }`}
                 />
-                <span>{p.connected ? 'Verbunden' : 'Getrennt'}</span>
               </span>
+
+              {/* Kick Student Action Button */}
+              <button
+                onClick={() => setPlayerToKick({ playerId: p.playerId, name: p.name })}
+                className="p-1.5 rounded-lg text-slate-500 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/30 transition-all cursor-pointer"
+                title={`${p.name} aus dem Spiel entfernen`}
+                aria-label={`${p.name} kicken`}
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
             </div>
           </div>
         ))}
@@ -663,6 +682,41 @@ export const TeacherLobby: React.FC = () => {
             onClose={() => setShowAudioModal(false)}
           />
 
+          {/* Kick Student Confirmation Modal during active cockpit */}
+          {playerToKick && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in">
+              <div className="glass-card w-full max-w-md rounded-3xl p-6 border border-rose-500/40 text-center space-y-5 shadow-2xl">
+                <div className="w-14 h-14 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center mx-auto text-2xl">
+                  <UserX className="w-7 h-7" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-white">Schüler entfernen?</h3>
+                  <p className="text-sm text-slate-300 mt-2">
+                    Möchtest du <span className="font-bold text-amber-400">"{playerToKick.name}"</span> wirklich aus dem laufenden Spiel entfernen?
+                  </p>
+                  <p className="text-xs text-slate-400 mt-1">
+                    Der Schüler wird sofort aus der Sitzung getrennt und das Spiel läuft für die restlichen Schüler nahtlos weiter.
+                  </p>
+                </div>
+                <div className="grid grid-cols-2 gap-3 pt-2">
+                  <button
+                    onClick={() => setPlayerToKick(null)}
+                    className="py-3 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs hover:bg-slate-700 transition-colors cursor-pointer"
+                  >
+                    Abbrechen
+                  </button>
+                  <button
+                    onClick={handleConfirmKick}
+                    className="py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition-colors cursor-pointer shadow-lg shadow-rose-600/30 flex items-center justify-center gap-1.5"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    <span>Ja, entfernen</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Confirmation Exit Modal */}
           {showExitModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in">
@@ -880,7 +934,7 @@ export const TeacherLobby: React.FC = () => {
                 {players.map((p) => (
                   <div
                     key={p.playerId}
-                    className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-2"
+                    className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 flex items-center justify-between gap-2 hover:border-slate-700 transition-colors group"
                   >
                     <div className="flex items-center gap-2 min-w-0">
                       <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span>
@@ -888,11 +942,25 @@ export const TeacherLobby: React.FC = () => {
                         {p.name}
                       </span>
                     </div>
-                    {p.isReady && (
-                      <span className="text-[10px] text-emerald-400 font-bold shrink-0">
-                        ✓
-                      </span>
-                    )}
+
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      {p.isReady && (
+                        <span className="text-[10px] text-emerald-400 font-bold shrink-0">
+                          ✓
+                        </span>
+                      )}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setPlayerToKick({ playerId: p.playerId, name: p.name });
+                        }}
+                        className="p-1 rounded text-slate-600 group-hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                        title={`${p.name} entfernen`}
+                        aria-label={`${p.name} entfernen`}
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -909,6 +977,41 @@ export const TeacherLobby: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Kick Student Confirmation Modal */}
+        {playerToKick && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in">
+            <div className="glass-card w-full max-w-md rounded-3xl p-6 border border-rose-500/40 text-center space-y-5 shadow-2xl">
+              <div className="w-14 h-14 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center mx-auto text-2xl">
+                <UserX className="w-7 h-7" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-white">Schüler entfernen?</h3>
+                <p className="text-sm text-slate-300 mt-2">
+                  Möchtest du <span className="font-bold text-amber-400">"{playerToKick.name}"</span> wirklich aus dem Spielraum entfernen?
+                </p>
+                <p className="text-xs text-slate-400 mt-1">
+                  Der Schüler wird sofort abgemeldet und kann bei Bedarf erneut mit dem PIN beitreten.
+                </p>
+              </div>
+              <div className="grid grid-cols-2 gap-3 pt-2">
+                <button
+                  onClick={() => setPlayerToKick(null)}
+                  className="py-3 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs hover:bg-slate-700 transition-colors cursor-pointer"
+                >
+                  Abbrechen
+                </button>
+                <button
+                  onClick={handleConfirmKick}
+                  className="py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs transition-colors cursor-pointer shadow-lg shadow-rose-600/30 flex items-center justify-center gap-1.5"
+                >
+                  <Trash2 className="w-4 h-4" />
+                  <span>Ja, entfernen</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Confirmation Exit Modal */}
         {showExitModal && (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AlertTriangle } from 'lucide-react';
+import { Play, Lightbulb } from 'lucide-react';
 import {
   GameRoom,
   Player,
@@ -41,6 +41,7 @@ interface QuestionStartedPayload {
   clues?: string[];
   focusWord?: string;
   translation?: string;
+  explanation?: string;
   timeLimit: number;
   startedAt: number;
   endsAt: number;
@@ -138,6 +139,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
   const [sessionFinishedData, setSessionFinishedData] = useState<SessionFinishedPayload | null>(null);
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [pauseReason, setPauseReason] = useState<string>('');
+  const [pauseExplanation, setPauseExplanation] = useState<string | null>(null);
 
   // Active answer submission state for student
   const [selectedAnswer, setSelectedAnswer] = useState<string | string[] | null>(null);
@@ -349,15 +351,24 @@ export const GameArena: React.FC<GameArenaProps> = ({
     };
 
     // 10. Pause & Resume Events
-    const handleGamePaused = ({ reason }: { reason: string }) => {
+    const handleGamePaused = ({
+      reason,
+      explanation,
+    }: {
+      reason: string;
+      explanation?: string;
+    }) => {
       setIsPaused(true);
       setPauseReason(reason);
+      if (explanation) setPauseExplanation(explanation);
       if (isTeacherRef.current) pauseMusicRef.current();
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     };
 
     const handleGameResumed = ({ remainingSeconds }: { remainingSeconds: number }) => {
       setIsPaused(false);
+      setPauseReason('');
+      setPauseExplanation(null);
       setTimeRemaining(remainingSeconds);
       if (isTeacherRef.current) resumeMusicRef.current();
     };
@@ -516,6 +527,15 @@ export const GameArena: React.FC<GameArenaProps> = ({
     }
   };
 
+  const handleTogglePause = () => {
+    if (!isTeacher) return;
+    if (isPaused) {
+      socketService.resumeGame(room.roomId);
+    } else {
+      socketService.pauseGame(room.roomId, 'Lehrer Farh erklärt die Frage und Sprachregel');
+    }
+  };
+
   return (
     <div
       className={`min-h-screen flex flex-col bg-[#0B0F19] text-slate-100 selection:bg-indigo-500/30 ${isProjectorMode ? 'p-2 md:p-6' : ''
@@ -531,6 +551,8 @@ export const GameArena: React.FC<GameArenaProps> = ({
         lastPointsEarned={lastPointsEarned}
         streak={myStreak}
         isTeacher={isTeacher}
+        isPaused={isPaused}
+        onTogglePause={handleTogglePause}
         isProjectorMode={isProjectorMode}
         onToggleProjectorMode={() => setIsProjectorMode((prev) => !prev)}
         onExit={handleExit}
@@ -538,11 +560,63 @@ export const GameArena: React.FC<GameArenaProps> = ({
 
       {/* Main Arena Body */}
       <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 flex flex-col gap-4 md:gap-6 justify-between">
-        {/* Pause Banner */}
+        {/* Rich Classroom Pause & Pedagogical Explanation Card */}
         {isPaused && (
-          <div className="p-3.5 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-center font-bold text-sm flex items-center justify-center gap-2 animate-pulse">
-            <AlertTriangle className="w-5 h-5" />
-            <span>{pauseReason || 'Spiel pausiert (Lehrer getrennt)...'}</span>
+          <div className="p-6 rounded-3xl bg-gradient-to-br from-amber-500/15 via-slate-900/95 to-slate-950/95 border-2 border-amber-500/40 text-amber-200 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-amber-500/20">
+              <div className="flex items-center gap-3">
+                <span className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 text-xl font-bold">
+                  ⏸️
+                </span>
+                <div>
+                  <h3 className="text-lg font-black text-white flex items-center gap-2">
+                    <span>Erklärungs-Pause</span>
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 font-semibold font-mono">
+                      {timeRemaining}s Restzeit angehalten
+                    </span>
+                  </h3>
+                  <p className="text-xs text-amber-200/80 mt-0.5">
+                    {pauseReason || 'Lehrer Farh erklärt die Grammatik- und Sprachregeln für die Klasse.'}
+                  </p>
+                </div>
+              </div>
+
+              {isTeacher && (
+                <button
+                  onClick={handleTogglePause}
+                  className="px-5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer shrink-0"
+                >
+                  <Play className="w-4 h-4 fill-slate-950" />
+                  <span>▶️ Spiel fortsetzen ({timeRemaining}s)</span>
+                </button>
+              )}
+            </div>
+
+            {/* Question Breakdown & Pedagogical Grammar Tip */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {currentQuestion && (
+                <div className="p-4 rounded-2xl bg-slate-950/70 border border-slate-800 space-y-1.5">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                    Aktuelle Frage #{currentQuestion.questionNumber}:
+                  </span>
+                  <p className="text-base font-extrabold text-white leading-snug">
+                    {currentQuestion.text}
+                  </p>
+                </div>
+              )}
+
+              {(pauseExplanation || currentQuestion?.explanation) && (
+                <div className="p-4 rounded-2xl bg-indigo-950/40 border border-indigo-500/30 space-y-1.5">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-400 flex items-center gap-1.5">
+                    <Lightbulb className="w-3.5 h-3.5" />
+                    <span>Didaktische Erklärung & Grammatikregel:</span>
+                  </span>
+                  <p className="text-sm font-medium text-indigo-200 leading-relaxed">
+                    {pauseExplanation || currentQuestion?.explanation}
+                  </p>
+                </div>
+              )}
+            </div>
           </div>
         )}
 

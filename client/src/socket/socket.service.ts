@@ -59,9 +59,19 @@ class SocketService {
     s.emit('teacher:startGame', { roomId });
   }
 
-  public endGame(roomId: string): void {
+  public pauseGame(roomId: string, reason?: string): void {
     const s = this.getSocket();
-    s.emit('teacher:endGame', { roomId });
+    s.emit('teacher:pauseGame', { roomId, reason });
+  }
+
+  public resumeGame(roomId: string): void {
+    const s = this.getSocket();
+    s.emit('teacher:resumeGame', { roomId });
+  }
+
+  public kickStudent(roomId: string, playerId: string): void {
+    const s = this.getSocket();
+    s.emit('teacher:kickStudent', { roomId, playerId });
   }
 
   public getServerUrl(): string {
