@@ -21,6 +21,7 @@ import {
   GAME_LEVELS,
   MIN_QUESTION_COUNT,
   MAX_QUESTION_COUNT,
+  AVAILABLE_QUESTIONS_MAP,
 } from '../../utils/constants';
 import { socketService } from '../../socket/socket.service';
 import { useSocket } from '../../hooks/useSocket';
@@ -45,7 +46,7 @@ const GAME_DEFINITIONS: {
     icon: '⚡',
     badgeIcon: <Zap className="w-4 h-4 text-amber-400" />,
     description: 'Rasantes Multiple-Choice Quiz mit Zeitbonus & Streak-Multiplikator.',
-    defaultQuestionCount: 10,
+    defaultQuestionCount: 5,
     color: 'from-amber-500/20 to-yellow-500/10 border-amber-500/40 text-amber-300',
   },
   {
@@ -54,7 +55,7 @@ const GAME_DEFINITIONS: {
     icon: '🧩',
     badgeIcon: <Puzzle className="w-4 h-4 text-cyan-400" />,
     description: 'Wortbausteine in die grammatikalisch korrekte Satzstellung bringen.',
-    defaultQuestionCount: 8,
+    defaultQuestionCount: 4,
     color: 'from-cyan-500/20 to-blue-500/10 border-cyan-500/40 text-cyan-300',
   },
   {
@@ -63,7 +64,7 @@ const GAME_DEFINITIONS: {
     icon: '🧠',
     badgeIcon: <Brain className="w-4 h-4 text-purple-400" />,
     description: 'Vokabeln, Synonyme, Gegenteile und Redewendungen zuordnen.',
-    defaultQuestionCount: 10,
+    defaultQuestionCount: 4,
     color: 'from-purple-500/20 to-indigo-500/10 border-purple-500/40 text-purple-300',
   },
   {
@@ -72,7 +73,7 @@ const GAME_DEFINITIONS: {
     icon: '🕵️',
     badgeIcon: <Search className="w-4 h-4 text-emerald-400" />,
     description: 'Begriffe anhand schrittweiser Hinweise erraten. Je schneller, desto mehr Punkte!',
-    defaultQuestionCount: 8,
+    defaultQuestionCount: 4,
     color: 'from-emerald-500/20 to-teal-500/10 border-emerald-500/40 text-emerald-300',
   },
   {
@@ -81,7 +82,7 @@ const GAME_DEFINITIONS: {
     icon: '⚔️',
     badgeIcon: <Swords className="w-4 h-4 text-rose-400" />,
     description: 'Klasse wird automatisch in Team Blau vs. Team Rot aufgeteilt.',
-    defaultQuestionCount: 12,
+    defaultQuestionCount: 5,
     color: 'from-rose-500/20 to-pink-500/10 border-rose-500/40 text-rose-300',
   },
 ];
@@ -103,15 +104,28 @@ export const NewGameConfigurator: React.FC = () => {
   // Configuration States
   const [selectedLevel, setSelectedLevel] = useState<GameLevel>('A2');
   const [selectedGames, setSelectedGames] = useState<SelectedGameItem[]>([
-    { gameType: 'SCHNELLANTWORT', questionCount: 10 },
-    { gameType: 'SATZ_RENNEN', questionCount: 8 },
-    { gameType: 'WORTSCHATZ_DUELL', questionCount: 10 },
+    { gameType: 'SCHNELLANTWORT', questionCount: 5 },
+    { gameType: 'SATZ_RENNEN', questionCount: 4 },
+    { gameType: 'WORTSCHATZ_DUELL', questionCount: 4 },
   ]);
   const [difficultyMode, setDifficultyMode] = useState<'AUTO' | 'EASY' | 'MEDIUM' | 'HARD'>('AUTO');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleLevelSelect = (lvl: GameLevel) => {
+    setSelectedLevel(lvl);
+    setSelectedGames((prev) =>
+      prev.map((g) => {
+        const maxAvail = AVAILABLE_QUESTIONS_MAP[lvl]?.[g.gameType] || 5;
+        return {
+          ...g,
+          questionCount: Math.min(g.questionCount, maxAvail),
+        };
+      })
+    );
+  };
 
   // Setup Socket listeners for room creation response
   useEffect(() => {
@@ -149,7 +163,8 @@ export const NewGameConfigurator: React.FC = () => {
       setSelectedGames(selectedGames.filter((g) => g.gameType !== gameType));
     } else {
       const gameDef = GAME_DEFINITIONS.find((g) => g.type === gameType);
-      const defaultCount = gameDef ? gameDef.defaultQuestionCount : 10;
+      const maxAvail = AVAILABLE_QUESTIONS_MAP[selectedLevel]?.[gameType] || 5;
+      const defaultCount = gameDef ? Math.min(gameDef.defaultQuestionCount, maxAvail) : Math.min(5, maxAvail);
       setSelectedGames([...selectedGames, { gameType, questionCount: defaultCount }]);
     }
   };
@@ -177,7 +192,8 @@ export const NewGameConfigurator: React.FC = () => {
   // Update question count for a specific game
   const handleQuestionCountChange = (gameType: GameType, count: number) => {
     setErrorMessage(null);
-    const clampedCount = Math.max(MIN_QUESTION_COUNT, Math.min(MAX_QUESTION_COUNT, count));
+    const maxAvail = AVAILABLE_QUESTIONS_MAP[selectedLevel]?.[gameType] || MAX_QUESTION_COUNT;
+    const clampedCount = Math.max(MIN_QUESTION_COUNT, Math.min(maxAvail, count));
     setSelectedGames(
       selectedGames.map((g) =>
         g.gameType === gameType ? { ...g, questionCount: clampedCount } : g
@@ -262,7 +278,7 @@ export const NewGameConfigurator: React.FC = () => {
                 <button
                   key={lvl.level}
                   type="button"
-                  onClick={() => setSelectedLevel(lvl.level)}
+                  onClick={() => handleLevelSelect(lvl.level)}
                   className={`p-4 rounded-2xl border text-left transition-all relative overflow-hidden group ${
                     isSelected
                       ? 'bg-amber-500/15 border-amber-500/60 shadow-glow-gold'
@@ -412,33 +428,44 @@ export const NewGameConfigurator: React.FC = () => {
 
                   {/* Right: Question Count Slider & Buttons */}
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-xs text-slate-400 font-medium">Fragen:</span>
-                    {[5, 8, 10, 12, 15, 20].map((countVal) => (
-                      <button
-                        key={countVal}
-                        type="button"
-                        onClick={() => handleQuestionCountChange(item.gameType, countVal)}
-                        className={`px-2.5 py-1 rounded-lg text-xs font-bold font-mono transition-all ${
-                          item.questionCount === countVal
-                            ? 'bg-amber-500 text-slate-950 shadow-sm'
-                            : 'bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800'
-                        }`}
-                      >
-                        {countVal}
-                      </button>
-                    ))}
-                    <div className="flex items-center gap-1 pl-2 border-l border-slate-800">
-                      <input
-                        type="number"
-                        min={MIN_QUESTION_COUNT}
-                        max={MAX_QUESTION_COUNT}
-                        value={item.questionCount}
-                        onChange={(e) =>
-                          handleQuestionCountChange(item.gameType, parseInt(e.target.value) || 5)
-                        }
-                        className="w-14 px-2 py-1 rounded-lg bg-slate-950 border border-slate-700 text-center font-mono font-bold text-xs text-white"
-                      />
-                    </div>
+                    {(() => {
+                      const maxAvail = AVAILABLE_QUESTIONS_MAP[selectedLevel]?.[item.gameType] || 5;
+                      const presets = [2, 3, 4, 5, 6, 8, 10].filter((c) => c <= maxAvail);
+                      return (
+                        <>
+                          <span className="text-xs text-slate-400 font-medium">Fragen:</span>
+                          {presets.map((countVal) => (
+                            <button
+                              key={countVal}
+                              type="button"
+                              onClick={() => handleQuestionCountChange(item.gameType, countVal)}
+                              className={`px-2.5 py-1 rounded-lg text-xs font-bold font-mono transition-all ${
+                                item.questionCount === countVal
+                                  ? 'bg-amber-500 text-slate-950 shadow-sm'
+                                  : 'bg-slate-900 border border-slate-800 text-slate-300 hover:bg-slate-800'
+                              }`}
+                            >
+                              {countVal}
+                            </button>
+                          ))}
+                          <div className="flex items-center gap-1.5 pl-2 border-l border-slate-800">
+                            <input
+                              type="number"
+                              min={MIN_QUESTION_COUNT}
+                              max={maxAvail}
+                              value={item.questionCount}
+                              onChange={(e) =>
+                                handleQuestionCountChange(item.gameType, parseInt(e.target.value) || 1)
+                              }
+                              className="w-14 px-2 py-1 rounded-lg bg-slate-950 border border-slate-700 text-center font-mono font-bold text-xs text-white"
+                            />
+                            <span className="text-[10px] text-amber-400 font-mono font-bold">
+                              / {maxAvail} max
+                            </span>
+                          </div>
+                        </>
+                      );
+                    })()}
                   </div>
                 </div>
               );

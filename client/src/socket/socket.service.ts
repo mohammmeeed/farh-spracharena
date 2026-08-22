@@ -1,10 +1,16 @@
 import { io, Socket } from 'socket.io-client';
 import { ClientToServerEvents, ServerToClientEvents } from '../types/game.types';
 
+const getCleanUrl = (val?: string): string | null => {
+  if (!val || typeof val !== 'string') return null;
+  const trimmed = val.trim();
+  return trimmed.length > 0 ? trimmed : null;
+};
+
 const SERVER_URL =
-  import.meta.env.VITE_SOCKET_URL ||
-  import.meta.env.VITE_SERVER_URL ||
-  import.meta.env.VITE_API_URL ||
+  getCleanUrl(import.meta.env.VITE_SOCKET_URL) ||
+  getCleanUrl(import.meta.env.VITE_SERVER_URL) ||
+  getCleanUrl(import.meta.env.VITE_API_URL) ||
   (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
     ? window.location.origin
     : 'http://localhost:3001');
