@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
-import { CheckCircle2, Zap } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { CheckCircle2 } from 'lucide-react';
+import { QuestionCard } from '../common/QuestionCard';
 
 interface SchnellantwortGameProps {
   text: string;
@@ -50,42 +52,17 @@ export const SchnellantwortGame: React.FC<SchnellantwortGameProps> = ({
   }, [isTeacher, isAnswerSubmitted, options, onSelectAnswer]);
 
   return (
-    <div className="space-y-4 md:space-y-6 animate-in fade-in duration-300">
-      {/* Question Prompt Card */}
-      <div
-        className={`glass-card rounded-3xl border border-amber-500/30 text-center space-y-4 shadow-2xl bg-gradient-to-b from-[#161B2E] via-[#0E1526] to-[#0B0F19] transition-all ${
-          isProjectorMode ? 'p-8 md:p-14' : 'p-5 sm:p-8'
-        }`}
-      >
-        <div className="flex items-center justify-center gap-2 flex-wrap">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-500/15 border border-amber-500/30 text-amber-300">
-            <Zap className="w-3.5 h-3.5 fill-current" />
-            <span>⚡ SCHNELLANTWORT</span>
-          </span>
-          {category && (
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-400">
-              {category}
-            </span>
-          )}
-          {difficulty && (
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/5 border border-white/10 text-slate-400">
-              {difficulty}
-            </span>
-          )}
-        </div>
+    <div className="space-y-4 md:space-y-6">
+      {/* Question Card */}
+      <QuestionCard
+        text={text}
+        gameType="SCHNELLANTWORT"
+        category={category}
+        difficulty={difficulty}
+        isProjectorMode={isProjectorMode}
+      />
 
-        <h2
-          className={`font-extrabold text-white leading-relaxed max-w-3xl mx-auto ${
-            isProjectorMode
-              ? 'text-3xl md:text-5xl lg:text-6xl tracking-tight'
-              : 'text-xl sm:text-3xl md:text-4xl'
-          }`}
-        >
-          {text}
-        </h2>
-      </div>
-
-      {/* Multiple Choice Options for Students / Projector Screen */}
+      {/* Interactive Options Grid */}
       <div
         className={`grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 ${
           isProjectorMode ? 'md:gap-6' : ''
@@ -95,32 +72,48 @@ export const SchnellantwortGame: React.FC<SchnellantwortGameProps> = ({
           const isSelected = selectedAnswer === option;
 
           return (
-            <button
+            <motion.button
               key={idx}
               type="button"
+              whileHover={!isTeacher && !isAnswerSubmitted ? { scale: 1.015, y: -2 } : {}}
+              whileTap={!isTeacher && !isAnswerSubmitted ? { scale: 0.985 } : {}}
               onClick={() => !isTeacher && onSelectAnswer(option)}
               disabled={isTeacher || isAnswerSubmitted}
-              className={`rounded-2xl border text-left transition-all flex items-center justify-between gap-3 font-bold select-none min-h-[56px] md:min-h-[64px] ${
+              className={`rounded-2xl border text-left transition-all flex items-center justify-between gap-3 font-bold select-none min-h-[60px] md:min-h-[68px] ${
                 isProjectorMode ? 'p-5 md:p-8 text-xl md:text-2xl' : 'p-4 sm:p-5 text-base sm:text-lg'
               } ${
                 isSelected
-                  ? 'bg-amber-500/25 border-amber-400 text-white shadow-lg shadow-amber-500/20 scale-[1.01]'
+                  ? 'bg-amber-500/25 border-amber-400 text-white shadow-xl shadow-amber-500/25 ring-2 ring-amber-400/50'
                   : isAnswerSubmitted
                   ? 'bg-slate-900/40 border-slate-800/60 text-slate-500 cursor-not-allowed opacity-60'
                   : isTeacher
                   ? 'bg-slate-900/90 border-slate-800 text-slate-200 cursor-default'
-                  : 'bg-slate-900/90 border-slate-800 hover:border-amber-500/50 hover:bg-slate-900 text-slate-200 hover:scale-[1.01] active:scale-[0.99] cursor-pointer'
+                  : 'bg-slate-900/90 border-slate-800 hover:border-amber-400/60 hover:bg-slate-800/90 text-slate-100 cursor-pointer shadow-md'
               }`}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <span className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-slate-950 border border-slate-700 text-amber-400 font-mono text-sm md:text-base font-black flex items-center justify-center shrink-0">
+                <span
+                  className={`w-9 h-9 md:w-11 md:h-11 rounded-xl font-mono text-sm md:text-base font-black flex items-center justify-center shrink-0 transition-colors ${
+                    isSelected
+                      ? 'bg-amber-400 text-slate-950 shadow-md'
+                      : 'bg-slate-950 border border-slate-700 text-amber-400'
+                  }`}
+                >
                   {optionLetters[idx] || idx + 1}
                 </span>
                 <span className="truncate">{option}</span>
               </div>
 
-              {isSelected && <CheckCircle2 className="w-6 h-6 text-amber-400 shrink-0" />}
-            </button>
+              {isSelected && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                >
+                  <CheckCircle2 className="w-6 h-6 text-amber-400 shrink-0" />
+                </motion.div>
+              )}
+            </motion.button>
           );
         })}
       </div>

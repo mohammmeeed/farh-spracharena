@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Lightbulb } from 'lucide-react';
+import { Play, Lightbulb, CheckCircle2 } from 'lucide-react';
 import {
   GameRoom,
   Player,
@@ -17,11 +17,10 @@ import {
   GameHeader,
   Timer,
   CountdownOverlay,
-  AnswerFeedback,
-  Leaderboard,
   GameTransition,
   VictoryOverlay,
   LoadingScreen,
+  QuestionResultOverlay,
 } from '../common';
 
 
@@ -632,33 +631,36 @@ export const GameArena: React.FC<GameArenaProps> = ({
           </div>
         )}
 
-        {/* Dynamic Game Content */}
+        {/* Dynamic Game Content or Question Result Overlay */}
         <div className="flex-1 flex flex-col justify-center">
-          {renderGameContent()}
+          {questionResult ? (
+            <QuestionResultOverlay
+              status={
+                myAnswerResult.status === 'PENDING'
+                  ? 'TIMEOUT'
+                  : myAnswerResult.status
+              }
+              pointsEarned={myAnswerResult.pointsEarned}
+              currentStreak={myAnswerResult.currentStreak}
+              correctAnswer={questionResult.correctAnswer}
+              explanation={currentQuestion?.explanation}
+              leaderboard={leaderboard}
+              currentPlayerId={player?.playerId}
+              teams={teams}
+              isTeacher={isTeacher}
+              questionNumber={currentQuestion?.questionNumber || 1}
+              totalQuestions={currentQuestion?.totalQuestions || room.totalQuestions}
+            />
+          ) : (
+            renderGameContent()
+          )}
         </div>
 
-        {/* Student Answer Feedback HUD */}
-        {!isTeacher && (
-          <AnswerFeedback
-            status={myAnswerResult.status}
-            pointsEarned={myAnswerResult.pointsEarned}
-            currentStreak={myAnswerResult.currentStreak}
-            correctAnswerText={questionResult?.correctAnswer}
-          />
-        )}
-
-        {/* Live Leaderboard / Team Bar Bottom Drawer (When question evaluated or on projector) */}
-        {(questionResult || isProjectorMode) && leaderboard.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
-            <div className="md:col-span-3">
-              <Leaderboard
-                leaderboard={leaderboard}
-                currentPlayerId={player?.playerId}
-                teams={teams}
-                limit={isProjectorMode ? 10 : 5}
-                compact
-              />
-            </div>
+        {/* Student Answer Submitted Pending Status HUD */}
+        {!isTeacher && isAnswerSubmitted && !questionResult && (
+          <div className="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-indigo-950/80 border border-indigo-500/40 text-indigo-200 text-xs sm:text-sm font-bold animate-pulse shadow-lg backdrop-blur-md">
+            <CheckCircle2 className="w-4 h-4 text-indigo-400" />
+            <span>Antwort gespeichert ✓ — Warte auf die Auswertung...</span>
           </div>
         )}
       </main>

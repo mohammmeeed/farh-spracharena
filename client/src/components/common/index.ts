@@ -11,4 +11,7 @@ export * from './VictoryOverlay';
 export * from './Confetti';
 export * from './AudioSettingsModal';
 export * from './GameHeader';
+export * from './QuestionCard';
+export * from './QuestionResultOverlay';
+export * from './ProgressBar';
 export * from './LoadingScreen';

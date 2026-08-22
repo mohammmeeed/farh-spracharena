@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Search, CheckCircle2, HelpCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle2, HelpCircle } from 'lucide-react';
 import { socketService } from '../../socket/socket.service';
+import { QuestionCard } from '../common/QuestionCard';
 
 interface WasBinIchGameProps {
   text: string;
@@ -68,38 +70,15 @@ export const WasBinIchGame: React.FC<WasBinIchGameProps> = ({
   }, [isTeacher, isAnswerSubmitted, options, onSelectAnswer]);
 
   return (
-    <div className="space-y-4 md:space-y-6 animate-in fade-in duration-300">
-      {/* Deduction Card */}
-      <div
-        className={`glass-card rounded-3xl border border-purple-500/30 text-center space-y-3 shadow-2xl bg-gradient-to-b from-[#1C142E] via-[#0E1526] to-[#0B0F19] transition-all ${
-          isProjectorMode ? 'p-8 md:p-12' : 'p-5 sm:p-7'
-        }`}
-      >
-        <div className="flex items-center justify-center gap-2 flex-wrap">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/15 border border-purple-500/30 text-purple-300">
-            <Search className="w-3.5 h-3.5" />
-            <span>🕵️ WAS BIN ICH?</span>
-          </span>
-          {category && (
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-400">
-              {category}
-            </span>
-          )}
-          {difficulty && (
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/5 border border-white/10 text-slate-400">
-              {difficulty}
-            </span>
-          )}
-        </div>
-
-        <h2
-          className={`font-extrabold text-white max-w-2xl mx-auto ${
-            isProjectorMode ? 'text-2xl md:text-4xl' : 'text-lg sm:text-2xl'
-          }`}
-        >
-          {text}
-        </h2>
-      </div>
+    <div className="space-y-4 md:space-y-6">
+      {/* Question Card */}
+      <QuestionCard
+        text={text}
+        gameType="WAS_BIN_ICH"
+        category={category}
+        difficulty={difficulty}
+        isProjectorMode={isProjectorMode}
+      />
 
       {/* Progressive Clue Cards */}
       <div className="space-y-2.5">
@@ -107,21 +86,24 @@ export const WasBinIchGame: React.FC<WasBinIchGameProps> = ({
           const isRevealed = idx < revealedClueCount;
 
           return (
-            <div
+            <motion.div
               key={idx}
-              className={`rounded-2xl border transition-all duration-500 ${
-                isProjectorMode ? 'p-5 md:p-6' : 'p-4 sm:p-5'
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: isRevealed ? 1 : 0.4, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className={`rounded-2xl border transition-all ${
+                isProjectorMode ? 'p-5 md:p-6' : 'p-3.5 sm:p-4'
               } ${
                 isRevealed
-                  ? 'bg-slate-900/90 border-purple-500/40 text-white shadow-md animate-in fade-in'
-                  : 'bg-slate-950/40 border-slate-800/40 text-slate-600 opacity-40'
+                  ? 'bg-slate-900/95 border-emerald-500/40 text-white shadow-md'
+                  : 'bg-slate-950/40 border-slate-800/40 text-slate-600'
               }`}
             >
               <div className="flex items-start gap-3">
                 <span
-                  className={`px-2.5 py-1 rounded-lg text-xs font-mono font-bold shrink-0 ${
+                  className={`px-2.5 py-1 rounded-xl text-xs font-mono font-bold shrink-0 ${
                     isRevealed
-                      ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                      ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30'
                       : 'bg-slate-800 text-slate-600'
                   }`}
                 >
@@ -129,28 +111,36 @@ export const WasBinIchGame: React.FC<WasBinIchGameProps> = ({
                 </span>
 
                 <div className="flex-1">
-                  {isRevealed ? (
-                    <p
-                      className={`font-semibold text-slate-100 ${
-                        isProjectorMode ? 'text-lg md:text-2xl' : 'text-sm sm:text-base'
-                      }`}
-                    >
-                      {clue}
-                    </p>
-                  ) : (
-                    <div className="flex items-center gap-2 text-xs italic text-slate-500 py-1">
-                      <HelpCircle className="w-4 h-4 text-slate-600" />
-                      <span>Wird in wenigen Sekunden aufgedeckt...</span>
-                    </div>
-                  )}
+                  <AnimatePresence mode="wait">
+                    {isRevealed ? (
+                      <motion.p
+                        key="revealed"
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className={`font-semibold text-slate-100 ${
+                          isProjectorMode ? 'text-lg md:text-2xl' : 'text-sm sm:text-base'
+                        }`}
+                      >
+                        {clue}
+                      </motion.p>
+                    ) : (
+                      <div
+                        key="hidden"
+                        className="flex items-center gap-2 text-xs italic text-slate-500 py-0.5"
+                      >
+                        <HelpCircle className="w-4 h-4 text-slate-600" />
+                        <span>Wird in wenigen Sekunden aufgedeckt...</span>
+                      </div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
-            </div>
+            </motion.div>
           );
         })}
       </div>
 
-      {/* Deduction Options */}
+      {/* Deduction Options Grid */}
       <div
         className={`grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 pt-1 ${
           isProjectorMode ? 'md:gap-6' : ''
@@ -160,32 +150,48 @@ export const WasBinIchGame: React.FC<WasBinIchGameProps> = ({
           const isSelected = selectedAnswer === option;
 
           return (
-            <button
+            <motion.button
               key={idx}
               type="button"
+              whileHover={!isTeacher && !isAnswerSubmitted ? { scale: 1.015, y: -2 } : {}}
+              whileTap={!isTeacher && !isAnswerSubmitted ? { scale: 0.985 } : {}}
               onClick={() => !isTeacher && onSelectAnswer(option)}
               disabled={isTeacher || isAnswerSubmitted}
-              className={`rounded-2xl border text-left transition-all flex items-center justify-between gap-3 font-bold select-none min-h-[56px] md:min-h-[64px] ${
+              className={`rounded-2xl border text-left transition-all flex items-center justify-between gap-3 font-bold select-none min-h-[60px] md:min-h-[68px] ${
                 isProjectorMode ? 'p-5 md:p-8 text-xl md:text-2xl' : 'p-4 sm:p-5 text-base sm:text-lg'
               } ${
                 isSelected
-                  ? 'bg-purple-500/25 border-purple-400 text-white shadow-lg shadow-purple-500/20 scale-[1.01]'
+                  ? 'bg-emerald-500/25 border-emerald-400 text-white shadow-xl shadow-emerald-500/25 ring-2 ring-emerald-400/50'
                   : isAnswerSubmitted
                   ? 'bg-slate-900/40 border-slate-800/60 text-slate-500 cursor-not-allowed opacity-60'
                   : isTeacher
                   ? 'bg-slate-900/90 border-slate-800 text-slate-200 cursor-default'
-                  : 'bg-slate-900/90 border-slate-800 hover:border-purple-500/50 hover:bg-slate-900 text-slate-200 hover:scale-[1.01] active:scale-[0.99] cursor-pointer'
+                  : 'bg-slate-900/90 border-slate-800 hover:border-emerald-400/60 hover:bg-slate-800/90 text-slate-100 cursor-pointer shadow-md'
               }`}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <span className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-slate-950 border border-slate-700 text-purple-400 font-mono text-sm md:text-base font-black flex items-center justify-center shrink-0">
+                <span
+                  className={`w-9 h-9 md:w-11 md:h-11 rounded-xl font-mono text-sm md:text-base font-black flex items-center justify-center shrink-0 transition-colors ${
+                    isSelected
+                      ? 'bg-emerald-400 text-slate-950 shadow-md'
+                      : 'bg-slate-950 border border-slate-700 text-emerald-400'
+                  }`}
+                >
                   {optionLetters[idx] || idx + 1}
                 </span>
                 <span className="truncate">{option}</span>
               </div>
 
-              {isSelected && <CheckCircle2 className="w-6 h-6 text-purple-400 shrink-0" />}
-            </button>
+              {isSelected && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                >
+                  <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />
+                </motion.div>
+              )}
+            </motion.button>
           );
         })}
       </div>

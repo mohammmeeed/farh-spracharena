@@ -112,15 +112,15 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
 
           {/* Center: Question Progress & Streak */}
           <div className="flex items-center gap-2 md:gap-3">
-            <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white/5 border border-white/10 text-xs md:text-sm font-semibold">
-              <span className="text-slate-400 hidden sm:inline">Frage</span>
-              <span className="font-mono text-indigo-300 font-bold">{currentQuestion}</span>
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/5 border border-white/10 text-xs md:text-sm font-semibold shadow-inner">
+              <span className="text-slate-400 hidden sm:inline font-medium">Frage</span>
+              <span className="font-mono text-amber-300 font-bold">{currentQuestion}</span>
               <span className="text-slate-500">/</span>
               <span className="font-mono text-slate-400">{totalQuestions}</span>
             </div>
 
             {!isTeacher && streak > 0 && (
-              <StreakBadge streak={streak} size="sm" className="hidden sm:inline-flex" />
+              <StreakBadge streak={streak} size="sm" className="inline-flex" />
             )}
           </div>
 
@@ -232,6 +232,19 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
               </button>
             )}
           </div>
+        </div>
+
+        {/* Dynamic Question Progress Bar Line */}
+        <div className="absolute bottom-0 left-0 right-0 h-1 bg-slate-800/80 overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-amber-400 via-emerald-400 to-cyan-400 transition-all duration-500 shadow-sm"
+            style={{
+              width: `${Math.min(
+                100,
+                Math.max(0, (currentQuestion / Math.max(1, totalQuestions)) * 100)
+              )}%`,
+            }}
+          />
         </div>
       </header>
 

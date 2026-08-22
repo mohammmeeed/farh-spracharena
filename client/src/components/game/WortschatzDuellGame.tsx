@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
-import { BookOpen, CheckCircle2, Languages } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { CheckCircle2 } from 'lucide-react';
 import { QuestionFormat } from '../../types/game.types';
+import { QuestionCard } from '../common/QuestionCard';
 
 interface WortschatzDuellGameProps {
   text: string;
@@ -19,7 +21,6 @@ interface WortschatzDuellGameProps {
 export const WortschatzDuellGame: React.FC<WortschatzDuellGameProps> = ({
   text,
   focusWord,
-  format,
   category,
   difficulty,
   options = [],
@@ -53,65 +54,17 @@ export const WortschatzDuellGame: React.FC<WortschatzDuellGameProps> = ({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isTeacher, isAnswerSubmitted, options, onSelectAnswer]);
 
-  const getFormatLabel = () => {
-    if (format === 'VOCABULARY_REVERSE') {
-      return 'Übersetzung ➔ Deutsch';
-    }
-    return 'Deutsch ➔ Bedeutung';
-  };
-
   return (
-    <div className="space-y-4 md:space-y-6 animate-in fade-in duration-300">
-      {/* Vocabulary Focus Card */}
-      <div
-        className={`glass-card rounded-3xl border border-purple-500/30 text-center space-y-4 shadow-2xl bg-gradient-to-b from-[#1C122C] via-[#0E1526] to-[#0B0F19] transition-all ${
-          isProjectorMode ? 'p-8 md:p-14' : 'p-5 sm:p-8'
-        }`}
-      >
-        <div className="flex items-center justify-center gap-2 flex-wrap">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-500/15 border border-purple-500/30 text-purple-300">
-            <BookOpen className="w-3.5 h-3.5" />
-            <span>🧠 WORTSCHATZ-DUELL</span>
-          </span>
-          {category && (
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-400">
-              {category}
-            </span>
-          )}
-          {difficulty && (
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/5 border border-white/10 text-slate-400">
-              {difficulty}
-            </span>
-          )}
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-400">
-            <Languages className="w-3 h-3" />
-            <span>{getFormatLabel()}</span>
-          </span>
-        </div>
-
-        {/* Large Prominent Target Word */}
-        {focusWord && (
-          <div className="py-2">
-            <span
-              className={`inline-block rounded-2xl bg-purple-950/80 border-2 border-purple-400 text-purple-200 font-mono font-black shadow-lg shadow-purple-500/20 tracking-wide ${
-                isProjectorMode
-                  ? 'px-8 py-4 text-3xl md:text-5xl'
-                  : 'px-6 py-3 text-2xl sm:text-3xl md:text-4xl'
-              }`}
-            >
-              {focusWord}
-            </span>
-          </div>
-        )}
-
-        <h2
-          className={`font-bold text-slate-100 max-w-xl mx-auto ${
-            isProjectorMode ? 'text-xl md:text-3xl' : 'text-base sm:text-xl'
-          }`}
-        >
-          {text}
-        </h2>
-      </div>
+    <div className="space-y-4 md:space-y-6">
+      {/* Question Card with Focus Word */}
+      <QuestionCard
+        text={text}
+        gameType="WORTSCHATZ_DUELL"
+        category={category}
+        difficulty={difficulty}
+        focusWord={focusWord}
+        isProjectorMode={isProjectorMode}
+      />
 
       {/* Vocabulary Choice Options */}
       <div
@@ -123,32 +76,48 @@ export const WortschatzDuellGame: React.FC<WortschatzDuellGameProps> = ({
           const isSelected = selectedAnswer === option;
 
           return (
-            <button
+            <motion.button
               key={idx}
               type="button"
+              whileHover={!isTeacher && !isAnswerSubmitted ? { scale: 1.015, y: -2 } : {}}
+              whileTap={!isTeacher && !isAnswerSubmitted ? { scale: 0.985 } : {}}
               onClick={() => !isTeacher && onSelectAnswer(option)}
               disabled={isTeacher || isAnswerSubmitted}
-              className={`rounded-2xl border text-left transition-all flex items-center justify-between gap-3 font-bold select-none min-h-[56px] md:min-h-[64px] ${
+              className={`rounded-2xl border text-left transition-all flex items-center justify-between gap-3 font-bold select-none min-h-[60px] md:min-h-[68px] ${
                 isProjectorMode ? 'p-5 md:p-8 text-xl md:text-2xl' : 'p-4 sm:p-5 text-base sm:text-lg'
               } ${
                 isSelected
-                  ? 'bg-purple-500/25 border-purple-400 text-white shadow-lg shadow-purple-500/20 scale-[1.01]'
+                  ? 'bg-purple-500/25 border-purple-400 text-white shadow-xl shadow-purple-500/25 ring-2 ring-purple-400/50'
                   : isAnswerSubmitted
                   ? 'bg-slate-900/40 border-slate-800/60 text-slate-500 cursor-not-allowed opacity-60'
                   : isTeacher
                   ? 'bg-slate-900/90 border-slate-800 text-slate-200 cursor-default'
-                  : 'bg-slate-900/90 border-slate-800 hover:border-purple-500/50 hover:bg-slate-900 text-slate-200 hover:scale-[1.01] active:scale-[0.99] cursor-pointer'
+                  : 'bg-slate-900/90 border-slate-800 hover:border-purple-400/60 hover:bg-slate-800/90 text-slate-100 cursor-pointer shadow-md'
               }`}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <span className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-slate-950 border border-slate-700 text-purple-400 font-mono text-sm md:text-base font-black flex items-center justify-center shrink-0">
+                <span
+                  className={`w-9 h-9 md:w-11 md:h-11 rounded-xl font-mono text-sm md:text-base font-black flex items-center justify-center shrink-0 transition-colors ${
+                    isSelected
+                      ? 'bg-purple-400 text-slate-950 shadow-md'
+                      : 'bg-slate-950 border border-slate-700 text-purple-400'
+                  }`}
+                >
                   {optionLetters[idx] || idx + 1}
                 </span>
                 <span className="truncate">{option}</span>
               </div>
 
-              {isSelected && <CheckCircle2 className="w-6 h-6 text-purple-400 shrink-0" />}
-            </button>
+              {isSelected && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                >
+                  <CheckCircle2 className="w-6 h-6 text-purple-400 shrink-0" />
+                </motion.div>
+              )}
+            </motion.button>
           );
         })}
       </div>

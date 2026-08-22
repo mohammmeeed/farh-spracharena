@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
-import { Swords, CheckCircle2, Shield } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { CheckCircle2, Shield } from 'lucide-react';
 import { Team, Player } from '../../types/game.types';
+import { QuestionCard } from '../common/QuestionCard';
 
 interface TeamBattleGameProps {
   text: string;
@@ -63,14 +65,14 @@ export const TeamBattleGame: React.FC<TeamBattleGameProps> = ({
   }, [isTeacher, isAnswerSubmitted, options, onSelectAnswer]);
 
   return (
-    <div className="space-y-4 md:space-y-6 animate-in fade-in duration-300">
+    <div className="space-y-4 md:space-y-6">
       {/* Team Battle Live Scoreboard HUD */}
       {teams && (
-        <div className="glass-card rounded-2xl p-4 md:p-5 border border-slate-800 bg-slate-950/80 shadow-2xl space-y-3">
+        <div className="glass-card rounded-3xl p-4 md:p-5 border border-slate-800 bg-slate-950/80 shadow-2xl space-y-3">
           <div className="flex items-center justify-between gap-3">
             {/* Team Blau */}
             <div className="flex items-center gap-2.5 text-left">
-              <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-blue-500/20 border border-blue-500/40 text-blue-400 flex items-center justify-center font-black text-base md:text-lg">
+              <div className="w-9 h-9 md:w-11 md:h-11 rounded-2xl bg-blue-500/20 border border-blue-500/40 text-blue-400 flex items-center justify-center font-black text-base md:text-lg shrink-0 shadow-md shadow-blue-500/20">
                 🔵
               </div>
               <div>
@@ -85,13 +87,13 @@ export const TeamBattleGame: React.FC<TeamBattleGameProps> = ({
             </div>
 
             {/* VS Badge */}
-            <div className="px-3 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-black text-amber-400 font-mono">
+            <div className="px-3.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-black text-amber-400 font-mono shadow-sm">
               ⚔️ VS
             </div>
 
             {/* Team Rot */}
             <div className="flex items-center gap-2.5 text-right flex-row-reverse">
-              <div className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center font-black text-base md:text-lg">
+              <div className="w-9 h-9 md:w-11 md:h-11 rounded-2xl bg-rose-500/20 border border-rose-500/40 text-rose-400 flex items-center justify-center font-black text-base md:text-lg shrink-0 shadow-md shadow-rose-500/20">
                 🔴
               </div>
               <div>
@@ -107,13 +109,13 @@ export const TeamBattleGame: React.FC<TeamBattleGameProps> = ({
           </div>
 
           {/* Dynamic Tug-of-war Bar */}
-          <div className="w-full h-2.5 md:h-3 bg-slate-900 rounded-full overflow-hidden flex border border-slate-800 shadow-inner">
+          <div className="w-full h-3 bg-slate-900 rounded-full overflow-hidden flex border border-slate-800 shadow-inner">
             <div
-              className="h-full bg-gradient-to-r from-blue-600 to-blue-400 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-blue-600 to-blue-400 transition-all duration-500 shadow-md"
               style={{ width: `${blueFraction * 100}%` }}
             />
             <div
-              className="h-full bg-gradient-to-r from-rose-400 to-rose-600 transition-all duration-500"
+              className="h-full bg-gradient-to-r from-rose-400 to-rose-600 transition-all duration-500 shadow-md"
               style={{ width: `${(1 - blueFraction) * 100}%` }}
             />
           </div>
@@ -122,10 +124,10 @@ export const TeamBattleGame: React.FC<TeamBattleGameProps> = ({
           {!isTeacher && myTeam && (
             <div className="text-center pt-0.5">
               <span
-                className={`inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full text-xs font-bold ${
+                className={`inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black border ${
                   myTeam.teamId === 'TEAM_BLAU'
-                    ? 'bg-blue-500/15 border border-blue-500/40 text-blue-300'
-                    : 'bg-rose-500/15 border border-rose-500/40 text-rose-300'
+                    ? 'bg-blue-500/20 border-blue-500/40 text-blue-300'
+                    : 'bg-rose-500/20 border-rose-500/40 text-rose-300'
                 }`}
               >
                 <Shield className="w-3.5 h-3.5" />
@@ -136,39 +138,16 @@ export const TeamBattleGame: React.FC<TeamBattleGameProps> = ({
         </div>
       )}
 
-      {/* Question Prompt Card */}
-      <div
-        className={`glass-card rounded-3xl border border-rose-500/30 text-center space-y-3 shadow-2xl bg-gradient-to-b from-[#1E1222] via-[#0E1526] to-[#0B0F19] transition-all ${
-          isProjectorMode ? 'p-8 md:p-14' : 'p-5 sm:p-7'
-        }`}
-      >
-        <div className="flex items-center justify-center gap-2 flex-wrap">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-rose-500/15 border border-rose-500/30 text-rose-300">
-            <Swords className="w-3.5 h-3.5" />
-            <span>⚔️ TEAM BATTLE</span>
-          </span>
-          {category && (
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-400">
-              {category}
-            </span>
-          )}
-          {difficulty && (
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/5 border border-white/10 text-slate-400">
-              {difficulty}
-            </span>
-          )}
-        </div>
+      {/* Question Card */}
+      <QuestionCard
+        text={text}
+        gameType="TEAM_BATTLE"
+        category={category}
+        difficulty={difficulty}
+        isProjectorMode={isProjectorMode}
+      />
 
-        <h2
-          className={`font-extrabold text-white max-w-3xl mx-auto ${
-            isProjectorMode ? 'text-2xl md:text-5xl' : 'text-xl sm:text-3xl'
-          }`}
-        >
-          {text}
-        </h2>
-      </div>
-
-      {/* Multiple Choice Options */}
+      {/* Multiple Choice Options Grid */}
       <div
         className={`grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 ${
           isProjectorMode ? 'md:gap-6' : ''
@@ -178,34 +157,56 @@ export const TeamBattleGame: React.FC<TeamBattleGameProps> = ({
           const isSelected = selectedAnswer === option;
 
           return (
-            <button
+            <motion.button
               key={idx}
               type="button"
+              whileHover={!isTeacher && !isAnswerSubmitted ? { scale: 1.015, y: -2 } : {}}
+              whileTap={!isTeacher && !isAnswerSubmitted ? { scale: 0.985 } : {}}
               onClick={() => !isTeacher && onSelectAnswer(option)}
               disabled={isTeacher || isAnswerSubmitted}
-              className={`rounded-2xl border text-left transition-all flex items-center justify-between gap-3 font-bold select-none min-h-[56px] md:min-h-[64px] ${
+              className={`rounded-2xl border text-left transition-all flex items-center justify-between gap-3 font-bold select-none min-h-[60px] md:min-h-[68px] ${
                 isProjectorMode ? 'p-5 md:p-8 text-xl md:text-2xl' : 'p-4 sm:p-5 text-base sm:text-lg'
               } ${
                 isSelected
                   ? myTeam?.teamId === 'TEAM_BLAU'
-                    ? 'bg-blue-500/25 border-blue-400 text-white shadow-lg shadow-blue-500/20 scale-[1.01]'
-                    : 'bg-rose-500/25 border-rose-400 text-white shadow-lg shadow-rose-500/20 scale-[1.01]'
+                    ? 'bg-blue-500/25 border-blue-400 text-white shadow-xl shadow-blue-500/25 ring-2 ring-blue-400/50'
+                    : 'bg-rose-500/25 border-rose-400 text-white shadow-xl shadow-rose-500/25 ring-2 ring-rose-400/50'
                   : isAnswerSubmitted
                   ? 'bg-slate-900/40 border-slate-800/60 text-slate-500 cursor-not-allowed opacity-60'
                   : isTeacher
                   ? 'bg-slate-900/90 border-slate-800 text-slate-200 cursor-default'
-                  : 'bg-slate-900/90 border-slate-800 hover:border-amber-500/50 hover:bg-slate-900 text-slate-200 hover:scale-[1.01] active:scale-[0.99] cursor-pointer'
+                  : 'bg-slate-900/90 border-slate-800 hover:border-amber-400/60 hover:bg-slate-800/90 text-slate-100 cursor-pointer shadow-md'
               }`}
             >
               <div className="flex items-center gap-3 min-w-0">
-                <span className="w-8 h-8 md:w-10 md:h-10 rounded-xl bg-slate-950 border border-slate-700 text-amber-400 font-mono text-sm md:text-base font-black flex items-center justify-center shrink-0">
+                <span
+                  className={`w-9 h-9 md:w-11 md:h-11 rounded-xl font-mono text-sm md:text-base font-black flex items-center justify-center shrink-0 transition-colors ${
+                    isSelected
+                      ? myTeam?.teamId === 'TEAM_BLAU'
+                        ? 'bg-blue-400 text-slate-950'
+                        : 'bg-rose-400 text-slate-950'
+                      : 'bg-slate-950 border border-slate-700 text-amber-400'
+                  }`}
+                >
                   {optionLetters[idx] || idx + 1}
                 </span>
                 <span className="truncate">{option}</span>
               </div>
 
-              {isSelected && <CheckCircle2 className="w-6 h-6 text-amber-400 shrink-0" />}
-            </button>
+              {isSelected && (
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', stiffness: 500, damping: 25 }}
+                >
+                  <CheckCircle2
+                    className={`w-6 h-6 shrink-0 ${
+                      myTeam?.teamId === 'TEAM_BLAU' ? 'text-blue-400' : 'text-rose-400'
+                    }`}
+                  />
+                </motion.div>
+              )}
+            </motion.button>
           );
         })}
       </div>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Puzzle, RotateCcw, Send } from 'lucide-react';
-
+import { motion, AnimatePresence } from 'framer-motion';
+import { RotateCcw, Send } from 'lucide-react';
+import { QuestionCard } from '../common/QuestionCard';
 
 interface SatzRennenGameProps {
   text: string;
@@ -64,53 +65,27 @@ export const SatzRennenGame: React.FC<SatzRennenGameProps> = ({
   };
 
   return (
-    <div className="space-y-4 md:space-y-6 animate-in fade-in duration-300">
-      {/* Game Instruction Card */}
-      <div
-        className={`glass-card rounded-3xl border border-cyan-500/30 text-center space-y-3 shadow-2xl bg-gradient-to-b from-[#0F1E32] via-[#0E1526] to-[#0B0F19] transition-all ${
-          isProjectorMode ? 'p-8 md:p-12' : 'p-5 sm:p-7'
-        }`}
-      >
-        <div className="flex items-center justify-center gap-2 flex-wrap">
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/15 border border-cyan-500/30 text-cyan-300">
-            <Puzzle className="w-3.5 h-3.5" />
-            <span>🧩 SATZ-RENNEN</span>
-          </span>
-          {category && (
-            <span className="px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 border border-slate-800 text-slate-400">
-              {category}
-            </span>
-          )}
-          {difficulty && (
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-white/5 border border-white/10 text-slate-400">
-              {difficulty}
-            </span>
-          )}
-        </div>
-
-        <h2
-          className={`font-extrabold text-white max-w-2xl mx-auto ${
-            isProjectorMode ? 'text-2xl md:text-4xl' : 'text-lg sm:text-2xl'
-          }`}
-        >
-          {text}
-        </h2>
-        <p className="text-xs md:text-sm text-slate-400">
-          Klicke auf die Wörter, um den Satz in der richtigen Reihenfolge zu bauen:
-        </p>
-      </div>
+    <div className="space-y-4 md:space-y-6">
+      {/* Question / Instruction Card */}
+      <QuestionCard
+        text={text}
+        gameType="SATZ_RENNEN"
+        category={category}
+        difficulty={difficulty}
+        isProjectorMode={isProjectorMode}
+      />
 
       {/* Teacher View / Projector display of the words */}
       {isTeacher && (
-        <div className="glass-card rounded-2xl p-6 border border-cyan-500/30 text-center space-y-3">
+        <div className="glass-card rounded-3xl p-6 border border-cyan-500/30 text-center space-y-3">
           <span className="text-xs text-cyan-400 font-bold uppercase tracking-wider">
-            Verfügbare Wort-Bausteine:
+            Verfügbare Wort-Bausteine für die Schüler:
           </span>
           <div className="flex flex-wrap justify-center gap-3">
             {words.map((w, idx) => (
               <span
                 key={idx}
-                className="px-4 py-3 rounded-xl bg-slate-900 border border-slate-700 text-white font-bold text-lg shadow-md"
+                className="px-4 py-3 rounded-2xl bg-slate-900 border border-slate-700 text-white font-black text-lg shadow-md"
               >
                 {w}
               </span>
@@ -123,62 +98,84 @@ export const SatzRennenGame: React.FC<SatzRennenGameProps> = ({
       {!isTeacher && (
         <div className="space-y-4 md:space-y-5">
           {/* Constructed Sentence Dropzone */}
-          <div className="glass-card rounded-2xl p-4 sm:p-6 border-2 border-dashed border-cyan-500/40 bg-slate-950/70 min-h-[100px] flex flex-col justify-center">
-            <div className="text-[11px] font-mono text-cyan-400 font-bold uppercase tracking-wider mb-2.5">
-              Dein Satz:
+          <div className="glass-card rounded-3xl p-5 sm:p-6 border-2 border-dashed border-cyan-500/40 bg-slate-950/80 min-h-[120px] flex flex-col justify-center shadow-inner">
+            <div className="text-xs font-mono text-cyan-400 font-bold uppercase tracking-wider mb-3">
+              📝 Dein Satz:
             </div>
 
             {constructedSentence.length === 0 ? (
-              <p className="text-xs md:text-sm text-slate-500 italic text-center py-2">
-                Noch keine Wörter ausgewählt. Tippe unten auf die Wortkarten!
+              <p className="text-xs sm:text-sm text-slate-500 italic text-center py-3">
+                Noch keine Wörter platziert. Tippe unten auf die Wortkarten!
               </p>
             ) : (
-              <div className="flex flex-wrap gap-2 items-center">
-                {constructedSentence.map((word, idx) => (
-                  <button
-                    key={word.id}
-                    type="button"
-                    onClick={() => handleRemoveWord(word)}
-                    disabled={isAnswerSubmitted}
-                    className="group px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-400 text-white font-bold text-sm sm:text-base flex items-center gap-2 shadow-md hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer min-h-[44px]"
-                    title="Klicken zum Entfernen"
-                  >
-                    <span className="w-5 h-5 rounded-md bg-slate-900 text-cyan-300 text-[10px] font-mono flex items-center justify-center">
-                      {idx + 1}
-                    </span>
-                    <span>{word.text}</span>
-                    {!isAnswerSubmitted && (
-                      <span className="text-xs text-rose-400 group-hover:inline">×</span>
-                    )}
-                  </button>
-                ))}
+              <div className="flex flex-wrap gap-2.5 items-center">
+                <AnimatePresence>
+                  {constructedSentence.map((word, idx) => (
+                    <motion.button
+                      layout
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                      whileHover={!isAnswerSubmitted ? { scale: 1.05 } : {}}
+                      whileTap={!isAnswerSubmitted ? { scale: 0.95 } : {}}
+                      key={word.id}
+                      type="button"
+                      onClick={() => handleRemoveWord(word)}
+                      disabled={isAnswerSubmitted}
+                      className="group px-4 py-2.5 rounded-2xl bg-gradient-to-r from-cyan-500/25 to-blue-500/25 border-2 border-cyan-400 text-white font-black text-sm sm:text-base flex items-center gap-2 shadow-lg shadow-cyan-500/20 cursor-pointer min-h-[48px]"
+                      title="Klicken zum Entfernen"
+                    >
+                      <span className="w-5 h-5 rounded-lg bg-slate-950 text-cyan-300 text-[11px] font-mono font-bold flex items-center justify-center">
+                        {idx + 1}
+                      </span>
+                      <span>{word.text}</span>
+                      {!isAnswerSubmitted && (
+                        <span className="text-xs text-rose-400 group-hover:scale-125 transition-transform">
+                          ✕
+                        </span>
+                      )}
+                    </motion.button>
+                  ))}
+                </AnimatePresence>
               </div>
             )}
           </div>
 
           {/* Available Words Pool */}
-          <div className="glass-card rounded-2xl p-4 sm:p-5 border border-slate-800 space-y-2.5">
-            <div className="text-[11px] font-mono text-slate-400 font-bold uppercase tracking-wider">
+          <div className="glass-card rounded-3xl p-5 sm:p-6 border border-slate-800 space-y-3 bg-slate-900/80">
+            <div className="text-xs font-mono text-slate-400 font-bold uppercase tracking-wider">
               Verfügbare Wort-Karten:
             </div>
 
             {availableWords.length === 0 ? (
-              <p className="text-xs text-emerald-400 font-semibold py-1">
+              <motion.p
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-xs sm:text-sm text-emerald-400 font-bold py-1"
+              >
                 ✓ Alle Wörter platziert! Klicke auf "Antwort prüfen".
-              </p>
+              </motion.p>
             ) : (
-              <div className="flex flex-wrap gap-2">
-                {availableWords.map((word) => (
-                  <button
-                    key={word.id}
-                    type="button"
-                    onClick={() => handleAddWord(word)}
-                    disabled={isAnswerSubmitted}
-                    className="px-3.5 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 hover:border-cyan-500/50 text-slate-100 font-bold text-sm sm:text-base shadow-sm hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer min-h-[48px]"
-                  >
-                    {word.text}
-                  </button>
-                ))}
+              <div className="flex flex-wrap gap-2.5">
+                <AnimatePresence>
+                  {availableWords.map((word) => (
+                    <motion.button
+                      layout
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                      whileHover={!isAnswerSubmitted ? { scale: 1.05, y: -2 } : {}}
+                      whileTap={!isAnswerSubmitted ? { scale: 0.95 } : {}}
+                      key={word.id}
+                      type="button"
+                      onClick={() => handleAddWord(word)}
+                      disabled={isAnswerSubmitted}
+                      className="px-4 py-3 rounded-2xl bg-slate-950 hover:bg-slate-800 border border-slate-700 hover:border-cyan-400 text-slate-100 font-black text-sm sm:text-base shadow-md transition-colors cursor-pointer min-h-[48px]"
+                    >
+                      {word.text}
+                    </motion.button>
+                  ))}
+                </AnimatePresence>
               </div>
             )}
           </div>
@@ -186,25 +183,29 @@ export const SatzRennenGame: React.FC<SatzRennenGameProps> = ({
           {/* Action Buttons: Reset & Submit */}
           {!isAnswerSubmitted && (
             <div className="flex items-center gap-3 pt-1">
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 type="button"
                 onClick={handleReset}
                 disabled={constructedSentence.length === 0}
-                className="px-4 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-slate-300 font-bold text-xs flex items-center gap-2 transition-all cursor-pointer min-h-[48px]"
+                className="px-5 py-3.5 rounded-2xl bg-slate-800 hover:bg-slate-700 disabled:opacity-40 disabled:cursor-not-allowed text-slate-300 font-bold text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer min-h-[50px]"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>Zurücksetzen</span>
-              </button>
+              </motion.button>
 
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
                 type="button"
                 onClick={handleSubmit}
                 disabled={constructedSentence.length === 0}
-                className="flex-1 py-3 px-6 rounded-xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-lg shadow-cyan-500/30 transition-all cursor-pointer min-h-[48px]"
+                className="flex-1 py-3.5 px-6 rounded-2xl bg-gradient-to-r from-cyan-400 to-blue-500 hover:from-cyan-300 hover:to-blue-400 disabled:opacity-40 disabled:cursor-not-allowed text-slate-950 font-black text-sm sm:text-base flex items-center justify-center gap-2 shadow-xl shadow-cyan-500/30 transition-all cursor-pointer min-h-[50px]"
               >
                 <Send className="w-4 h-4 fill-current" />
-                <span>🚀 Antwort prüfen</span>
-              </button>
+                <span>🚀 Antwort prüfen ({constructedSentence.length} Wörter)</span>
+              </motion.button>
             </div>
           )}
         </div>
