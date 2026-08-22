@@ -83,6 +83,16 @@ export const TeacherLobby: React.FC = () => {
   const joinUrl = `${appBaseUrl}/join?pin=${room?.pin || ''}`;
 
 
+  // Stable refs for audio and navigation in socket listener
+  const fadeInRef = React.useRef(fadeIn);
+  fadeInRef.current = fadeIn;
+
+  const stopMusicRef = React.useRef(stopMusic);
+  stopMusicRef.current = stopMusic;
+
+  const navigateRef = React.useRef(navigate);
+  navigateRef.current = navigate;
+
   // Sync room state and listen to live player & game events
   useEffect(() => {
     if (!roomId) return;
@@ -112,7 +122,7 @@ export const TeacherLobby: React.FC = () => {
 
     const handleCountdown = () => {
       setIsGameActive(true);
-      fadeIn(1200, 'GAME');
+      fadeInRef.current(1200, 'GAME');
     };
 
     const handleLeaderboardUpdated = ({
@@ -144,8 +154,8 @@ export const TeacherLobby: React.FC = () => {
     };
 
     const handleRoomClosed = () => {
-      stopMusic();
-      navigate('/teacher');
+      stopMusicRef.current();
+      navigateRef.current('/teacher');
     };
 
     socket.on('server:roomJoined', handleRoomJoined);
@@ -173,7 +183,7 @@ export const TeacherLobby: React.FC = () => {
       socket.off('server:roomError', handleRoomError);
       socket.off('server:roomClosed', handleRoomClosed);
     };
-  }, [roomId, navigate, fadeIn, stopMusic]);
+  }, [roomId]);
 
   const handleCopyPin = () => {
     if (!room?.pin) return;
@@ -243,315 +253,299 @@ export const TeacherLobby: React.FC = () => {
 
   if (!room) return null;
 
-  // Render Active Session Cockpit Tabs
-  const renderActiveSessionContent = () => {
-    switch (activeTab) {
-      case 'GAME':
-        return (
-          <GameArena
-            room={room}
-            isTeacher={true}
-            onExit={() => navigate('/teacher')}
-          />
-        );
+  // Render Active Session Cockpit Tabs (Pure Read-Only UI overlays)
+  const renderStudentsTab = () => (
+    <div className="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-6 animate-in fade-in">
+      <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div>
+          <h3 className="text-xl font-bold text-white flex items-center gap-2">
+            <Users className="w-5 h-5 text-amber-400" />
+            <span>Teilnehmerliste ({players.length})</span>
+          </h3>
+          <p className="text-xs text-slate-400 mt-0.5">
+            Live-Verbindungsstatus aller angemeldeten Schüler
+          </p>
+        </div>
+        <button
+          onClick={handleCopyPin}
+          className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-amber-400 text-xs font-mono font-bold flex items-center gap-1.5"
+        >
+          <span>PIN: #{room.pin}</span>
+          {copiedPin ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+        </button>
+      </div>
 
-      case 'STUDENTS':
-        return (
-          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-6 animate-in fade-in">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        {players.map((p, idx) => (
+          <div
+            key={p.playerId}
+            className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 font-bold flex items-center justify-center text-sm">
+                {idx + 1}
+              </div>
               <div>
-                <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                  <Users className="w-5 h-5 text-amber-400" />
-                  <span>Teilnehmerliste ({players.length})</span>
-                </h3>
-                <p className="text-xs text-slate-400 mt-0.5">
-                  Live-Verbindungsstatus aller angemeldeten Schüler
+                <p className="font-bold text-white text-sm flex items-center gap-1.5">
+                  <span>{p.name}</span>
+                  {p.isReady && (
+                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">
+                      Bereit
+                    </span>
+                  )}
+                </p>
+                <p className="text-[11px] text-slate-400 font-mono">
+                  {p.score.toLocaleString('de-DE')} Punkte
                 </p>
               </div>
-              <button
-                onClick={handleCopyPin}
-                className="px-3 py-1.5 rounded-xl bg-slate-900 border border-slate-700 text-amber-400 text-xs font-mono font-bold flex items-center gap-1.5"
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span
+                className={`inline-flex items-center gap-1 text-[11px] font-semibold ${
+                  p.connected ? 'text-emerald-400' : 'text-rose-400'
+                }`}
               >
-                <span>PIN: #{room.pin}</span>
-                {copiedPin ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
-              </button>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-              {players.map((p, idx) => (
-                <div
-                  key={p.playerId}
-                  className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-400 font-bold flex items-center justify-center text-sm">
-                      {idx + 1}
-                    </div>
-                    <div>
-                      <p className="font-bold text-white text-sm flex items-center gap-1.5">
-                        <span>{p.name}</span>
-                        {p.isReady && (
-                          <span className="text-[10px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 font-bold">
-                            Bereit
-                          </span>
-                        )}
-                      </p>
-                      <p className="text-[11px] text-slate-400 font-mono">
-                        {p.score.toLocaleString('de-DE')} Punkte
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`inline-flex items-center gap-1 text-[11px] font-semibold ${
-                        p.connected ? 'text-emerald-400' : 'text-rose-400'
-                      }`}
-                    >
-                      <span
-                        className={`w-2 h-2 rounded-full ${
-                          p.connected ? 'bg-emerald-400' : 'bg-rose-400'
-                        }`}
-                      />
-                      <span>{p.connected ? 'Verbunden' : 'Getrennt'}</span>
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-
-      case 'STATS':
-        return (
-          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-6 animate-in fade-in">
-            <div className="border-b border-slate-800 pb-4">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <BarChart3 className="w-5 h-5 text-cyan-400" />
-                <span>Live-Klassenstatistik</span>
-              </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Echtzeit-Verständnis und Antwortverteilung der aktuellen Frage
-              </p>
-            </div>
-
-            {/* Performance Overview Cards */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-                <span className="text-xs text-slate-400 block">Klassen-Genauigkeit</span>
-                <span className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono">
-                  {latestStats.accuracyPercentage || 0}%
-                </span>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-                <span className="text-xs text-slate-400 block">Richtig beantwortet</span>
-                <span className="text-2xl sm:text-3xl font-black text-white font-mono">
-                  {latestStats.correctCount} / {latestStats.totalPlayers}
-                </span>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-                <span className="text-xs text-slate-400 block">Ø Antwortzeit</span>
-                <span className="text-2xl sm:text-3xl font-black text-cyan-400 font-mono">
-                  {latestStats.averageResponseTimeMs
-                    ? `${(latestStats.averageResponseTimeMs / 1000).toFixed(1)}s`
-                    : '–'}
-                </span>
-              </div>
-              <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
-                <span className="text-xs text-slate-400 block">Schnellste Antwort</span>
-                <span className="text-xl sm:text-2xl font-black text-amber-400 font-mono truncate block">
-                  {latestStats.fastestPlayerName
-                    ? `${latestStats.fastestPlayerName} (${(
-                        (latestStats.fastestResponseTimeMs || 0) / 1000
-                      ).toFixed(1)}s)`
-                    : '–'}
-                </span>
-              </div>
-            </div>
-
-            {/* Option Distribution */}
-            {latestStats.optionDistribution &&
-              Object.keys(latestStats.optionDistribution).length > 0 && (
-                <div className="space-y-3 pt-4 border-t border-slate-800">
-                  <h4 className="text-sm font-bold text-white">Antwortverteilung der Klasse:</h4>
-                  <div className="space-y-2">
-                    {Object.entries(latestStats.optionDistribution).map(([option, count]) => {
-                      const percent =
-                        latestStats.totalPlayers > 0
-                          ? Math.round((count / latestStats.totalPlayers) * 100)
-                          : 0;
-                      return (
-                        <div key={option} className="space-y-1">
-                          <div className="flex justify-between text-xs font-semibold">
-                            <span className="text-slate-200">{option}</span>
-                            <span className="text-amber-400 font-mono">
-                              {count} Schüler ({percent}%)
-                            </span>
-                          </div>
-                          <div className="h-2 rounded-full bg-slate-900 overflow-hidden border border-slate-800">
-                            <div
-                              className="h-full bg-amber-500 transition-all duration-500"
-                              style={{ width: `${percent}%` }}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-            {/* Team Battle Live Comparison */}
-            {liveTeams && (
-              <div className="pt-4 border-t border-slate-800 space-y-3">
-                <h4 className="text-sm font-bold text-white flex items-center gap-2">
-                  <span>⚔️</span>
-                  <span>Team Battle Live-Auswertung</span>
-                </h4>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div className="p-4 rounded-2xl bg-blue-950/40 border border-blue-500/40 space-y-1">
-                    <span className="text-xs font-bold text-blue-400">🔵 Team Blau</span>
-                    <p className="text-xl font-black text-white font-mono">
-                      {liveTeams.TEAM_BLAU?.score.toLocaleString('de-DE') || 0} Punkte
-                    </p>
-                    <span className="text-xs text-slate-400">
-                      {liveTeams.TEAM_BLAU?.playerIds.length || 0} Spieler
-                    </span>
-                  </div>
-                  <div className="p-4 rounded-2xl bg-rose-950/40 border border-rose-500/40 space-y-1">
-                    <span className="text-xs font-bold text-rose-400">🔴 Team Rot</span>
-                    <p className="text-xl font-black text-white font-mono">
-                      {liveTeams.TEAM_ROT?.score.toLocaleString('de-DE') || 0} Punkte
-                    </p>
-                    <span className="text-xs text-slate-400">
-                      {liveTeams.TEAM_ROT?.playerIds.length || 0} Spieler
-                    </span>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        );
-
-
-      case 'LEADERBOARD':
-        return (
-          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-6 animate-in fade-in">
-            <div className="border-b border-slate-800 pb-4">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <Trophy className="w-5 h-5 text-amber-400" />
-                <span>Vollständige Klassen-Rangliste</span>
-              </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Punkte und Serien aller {players.length} Schüler
-              </p>
-            </div>
-
-            <div className="space-y-2.5 max-h-[500px] overflow-y-auto pr-1">
-              {(liveLeaderboard.length > 0
-                ? liveLeaderboard
-                : players.sort((a, b) => b.score - a.score)
-              ).map((entry, idx) => (
-                <div
-                  key={entry.playerId}
-                  className={`p-4 rounded-2xl border flex items-center justify-between ${
-                    idx === 0
-                      ? 'bg-amber-500/15 border-amber-500/40 shadow-glow-gold'
-                      : idx === 1
-                      ? 'bg-slate-300/10 border-slate-400/30'
-                      : idx === 2
-                      ? 'bg-amber-700/15 border-amber-700/30'
-                      : 'bg-slate-900/80 border-slate-800'
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    p.connected ? 'bg-emerald-400' : 'bg-rose-400'
                   }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="w-8 h-8 rounded-xl bg-slate-950 text-amber-400 font-mono font-black text-sm flex items-center justify-center">
-                      {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
-                    </span>
-                    <div>
-                      <p className="font-bold text-white text-sm">{entry.name}</p>
-                      {entry.streak >= 2 && (
-                        <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-400">
-                          <Flame className="w-3 h-3" />
-                          <span>{entry.streak}er Serie</span>
-                        </span>
-                      )}
+                />
+                <span>{p.connected ? 'Verbunden' : 'Getrennt'}</span>
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderStatsTab = () => (
+    <div className="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-6 animate-in fade-in">
+      <div className="border-b border-slate-800 pb-4">
+        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+          <BarChart3 className="w-5 h-5 text-cyan-400" />
+          <span>Live-Klassenstatistik</span>
+        </h3>
+        <p className="text-xs text-slate-400 mt-0.5">
+          Echtzeit-Verständnis und Antwortverteilung der aktuellen Frage
+        </p>
+      </div>
+
+      {/* Performance Overview Cards */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+          <span className="text-xs text-slate-400 block">Klassen-Genauigkeit</span>
+          <span className="text-2xl sm:text-3xl font-black text-emerald-400 font-mono">
+            {latestStats.accuracyPercentage || 0}%
+          </span>
+        </div>
+        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+          <span className="text-xs text-slate-400 block">Richtig beantwortet</span>
+          <span className="text-2xl sm:text-3xl font-black text-white font-mono">
+            {latestStats.correctCount} / {latestStats.totalPlayers}
+          </span>
+        </div>
+        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+          <span className="text-xs text-slate-400 block">Ø Antwortzeit</span>
+          <span className="text-2xl sm:text-3xl font-black text-cyan-400 font-mono">
+            {latestStats.averageResponseTimeMs
+              ? `${(latestStats.averageResponseTimeMs / 1000).toFixed(1)}s`
+              : '–'}
+          </span>
+        </div>
+        <div className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800">
+          <span className="text-xs text-slate-400 block">Schnellste Antwort</span>
+          <span className="text-xl sm:text-2xl font-black text-amber-400 font-mono truncate block">
+            {latestStats.fastestPlayerName
+              ? `${latestStats.fastestPlayerName} (${(
+                  (latestStats.fastestResponseTimeMs || 0) / 1000
+                ).toFixed(1)}s)`
+              : '–'}
+          </span>
+        </div>
+      </div>
+
+      {/* Option Distribution */}
+      {latestStats.optionDistribution &&
+        Object.keys(latestStats.optionDistribution).length > 0 && (
+          <div className="space-y-3 pt-4 border-t border-slate-800">
+            <h4 className="text-sm font-bold text-white">Antwortverteilung der Klasse:</h4>
+            <div className="space-y-2">
+              {Object.entries(latestStats.optionDistribution).map(([option, count]) => {
+                const percent =
+                  latestStats.totalPlayers > 0
+                    ? Math.round((count / latestStats.totalPlayers) * 100)
+                    : 0;
+                return (
+                  <div key={option} className="space-y-1">
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="text-slate-200">{option}</span>
+                      <span className="text-amber-400 font-mono">
+                        {count} Schüler ({percent}%)
+                      </span>
+                    </div>
+                    <div className="h-2 rounded-full bg-slate-900 overflow-hidden border border-slate-800">
+                      <div
+                        className="h-full bg-amber-500 transition-all duration-500"
+                        style={{ width: `${percent}%` }}
+                      />
                     </div>
                   </div>
-
-                  <span className="text-lg font-black font-mono text-white">
-                    {entry.score.toLocaleString('de-DE')}{' '}
-                    <span className="text-xs text-slate-400 font-normal">Pkt</span>
-                  </span>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
-        );
+        )}
 
-      case 'SETTINGS':
-        return (
-          <div className="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-6 animate-in fade-in max-w-xl mx-auto">
-            <div className="border-b border-slate-800 pb-4">
-              <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <Sliders className="w-5 h-5 text-amber-400" />
-                <span>Lehrer-Einstellungen</span>
-              </h3>
-              <p className="text-xs text-slate-400 mt-0.5">
-                Präsentation, Audio und Raumsteuerung
+      {/* Team Battle Live Comparison */}
+      {liveTeams && (
+        <div className="pt-4 border-t border-slate-800 space-y-3">
+          <h4 className="text-sm font-bold text-white flex items-center gap-2">
+            <span>⚔️</span>
+            <span>Team Battle Live-Auswertung</span>
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="p-4 rounded-2xl bg-blue-950/40 border border-blue-500/40 space-y-1">
+              <span className="text-xs font-bold text-blue-400">🔵 Team Blau</span>
+              <p className="text-xl font-black text-white font-mono">
+                {liveTeams.TEAM_BLAU?.score.toLocaleString('de-DE') || 0} Punkte
               </p>
+              <span className="text-xs text-slate-400">
+                {liveTeams.TEAM_BLAU?.playerIds.length || 0} Spieler
+              </span>
             </div>
-
-            <div className="space-y-4">
-              <button
-                onClick={() => setShowAudioModal(true)}
-                className="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 hover:border-amber-500/40 text-left flex items-center justify-between transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <Volume2 className="w-5 h-5 text-amber-400" />
-                  <div>
-                    <span className="font-bold text-white text-sm block">
-                      Audio & Lautstärke
-                    </span>
-                    <span className="text-xs text-slate-400">
-                      Hintergrundmusik & Soundeffekte anpassen
-                    </span>
-                  </div>
-                </div>
-                <span className="text-xs text-amber-400 font-bold">Öffnen →</span>
-              </button>
-
-              <button
-                onClick={() => {
-                  if (!document.fullscreenElement) {
-                    document.documentElement.requestFullscreen().catch(() => {});
-                  } else {
-                    document.exitFullscreen().catch(() => {});
-                  }
-                }}
-                className="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-left flex items-center justify-between transition-colors"
-              >
-                <div className="flex items-center gap-3">
-                  <Tv className="w-5 h-5 text-cyan-400" />
-                  <div>
-                    <span className="font-bold text-white text-sm block">
-                      Vollbildmodus (⛶)
-                    </span>
-                    <span className="text-xs text-slate-400">
-                      Für Smartboards und Klassen-Beamer umschalten
-                    </span>
-                  </div>
-                </div>
-                <span className="text-xs text-cyan-400 font-bold">Umschalten</span>
-              </button>
+            <div className="p-4 rounded-2xl bg-rose-950/40 border border-rose-500/40 space-y-1">
+              <span className="text-xs font-bold text-rose-400">🔴 Team Rot</span>
+              <p className="text-xl font-black text-white font-mono">
+                {liveTeams.TEAM_ROT?.score.toLocaleString('de-DE') || 0} Punkte
+              </p>
+              <span className="text-xs text-slate-400">
+                {liveTeams.TEAM_ROT?.playerIds.length || 0} Spieler
+              </span>
             </div>
           </div>
-        );
+        </div>
+      )}
+    </div>
+  );
 
-      default:
-        return null;
-    }
-  };
+  const renderLeaderboardTab = () => (
+    <div className="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-6 animate-in fade-in">
+      <div className="border-b border-slate-800 pb-4">
+        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+          <Trophy className="w-5 h-5 text-amber-400" />
+          <span>Vollständige Klassen-Rangliste</span>
+        </h3>
+        <p className="text-xs text-slate-400 mt-0.5">
+          Punkte und Serien aller {players.length} Schüler
+        </p>
+      </div>
+
+      <div className="space-y-2.5 max-h-[500px] overflow-y-auto pr-1">
+        {(liveLeaderboard.length > 0
+          ? liveLeaderboard
+          : players.sort((a, b) => b.score - a.score)
+        ).map((entry, idx) => (
+          <div
+            key={entry.playerId}
+            className={`p-4 rounded-2xl border flex items-center justify-between ${
+              idx === 0
+                ? 'bg-amber-500/15 border-amber-500/40 shadow-glow-gold'
+                : idx === 1
+                ? 'bg-slate-300/10 border-slate-400/30'
+                : idx === 2
+                ? 'bg-amber-700/15 border-amber-700/30'
+                : 'bg-slate-900/80 border-slate-800'
+            }`}
+          >
+            <div className="flex items-center gap-3">
+              <span className="w-8 h-8 rounded-xl bg-slate-950 text-amber-400 font-mono font-black text-sm flex items-center justify-center">
+                {idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `#${idx + 1}`}
+              </span>
+              <div>
+                <p className="font-bold text-white text-sm">{entry.name}</p>
+                {entry.streak >= 2 && (
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-400">
+                    <Flame className="w-3 h-3" />
+                    <span>{entry.streak}er Serie</span>
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <span className="text-lg font-black font-mono text-white">
+              {entry.score.toLocaleString('de-DE')}{' '}
+              <span className="text-xs text-slate-400 font-normal">Pkt</span>
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+  const renderSettingsTab = () => (
+    <div className="glass-card rounded-3xl p-6 sm:p-8 border border-slate-800 space-y-6 animate-in fade-in max-w-xl mx-auto">
+      <div className="border-b border-slate-800 pb-4">
+        <h3 className="text-xl font-bold text-white flex items-center gap-2">
+          <Sliders className="w-5 h-5 text-amber-400" />
+          <span>Lehrer-Optionen & Einstellungen</span>
+        </h3>
+        <p className="text-xs text-slate-400 mt-0.5">
+          Präsentation, Audio und Raumsteuerung (Spiel läuft unterbrechungsfrei)
+        </p>
+      </div>
+
+      <div className="space-y-4">
+        <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-300 flex items-center gap-2.5">
+          <Check className="w-4 h-4 text-amber-400 shrink-0" />
+          <span>Das Spiel und die Schüler-Synchronisation laufen im Hintergrund weiter.</span>
+        </div>
+
+        <button
+          onClick={() => setShowAudioModal(true)}
+          className="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 hover:border-amber-500/40 text-left flex items-center justify-between transition-colors cursor-pointer"
+        >
+          <div className="flex items-center gap-3">
+            <Volume2 className="w-5 h-5 text-amber-400" />
+            <div>
+              <span className="font-bold text-white text-sm block">
+                Audio & Lautstärke
+              </span>
+              <span className="text-xs text-slate-400">
+                Hintergrundmusik & Soundeffekte anpassen
+              </span>
+            </div>
+          </div>
+          <span className="text-xs text-amber-400 font-bold">Öffnen →</span>
+        </button>
+
+        <button
+          onClick={() => {
+            if (!document.fullscreenElement) {
+              document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+              document.exitFullscreen().catch(() => {});
+            }
+          }}
+          className="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 hover:border-cyan-500/40 text-left flex items-center justify-between transition-colors cursor-pointer"
+        >
+          <div className="flex items-center gap-3">
+            <Tv className="w-5 h-5 text-cyan-400" />
+            <div>
+              <span className="font-bold text-white text-sm block">
+                Vollbildmodus (⛶)
+              </span>
+              <span className="text-xs text-slate-400">
+                Für Smartboards und Klassen-Beamer umschalten
+              </span>
+            </div>
+          </div>
+          <span className="text-xs text-cyan-400 font-bold">Umschalten</span>
+        </button>
+      </div>
+    </div>
+  );
 
   // Active Game Mode View
   if (isGameActive) {
@@ -648,8 +642,20 @@ export const TeacherLobby: React.FC = () => {
             </div>
           </div>
 
-          {/* Dynamic Tab Body */}
-          {renderActiveSessionContent()}
+          {/* Persistent GameArena Container - ALWAYS MOUNTED to keep socket listeners, active question & timer 100% active */}
+          <div className={activeTab === 'GAME' ? 'block' : 'hidden'}>
+            <GameArena
+              room={room}
+              isTeacher={true}
+              onExit={() => setShowExitModal(true)}
+            />
+          </div>
+
+          {/* Teacher UI Panels */}
+          {activeTab === 'STUDENTS' && renderStudentsTab()}
+          {activeTab === 'STATS' && renderStatsTab()}
+          {activeTab === 'LEADERBOARD' && renderLeaderboardTab()}
+          {activeTab === 'SETTINGS' && renderSettingsTab()}
 
           {/* Audio Modal */}
           <AudioSettingsModal

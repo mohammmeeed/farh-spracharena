@@ -23,6 +23,52 @@ export type TypedSocket = Socket<
   SocketData
 >;
 
+function syncActiveStateToSocket(socket: TypedSocket, room: any): void {
+  if (!room.gameState) return;
+  const gameState = room.gameState;
+  const currentGame = room.games[room.currentGameIndex];
+  if (!currentGame) return;
+
+  if (room.status === 'QUESTION' && gameState.currentQuestion) {
+    const question = gameState.currentQuestion;
+    const now = Date.now();
+    const startedAt = gameState.currentQuestionStartedAt || now;
+    const endsAt = gameState.currentQuestionEndsAt || now + question.timeLimit * 1000;
+
+    socket.emit('game:questionStarted', {
+      questionId: question.id,
+      text: question.text,
+      format: question.format,
+      options: question.options,
+      words: question.words,
+      clues: question.clues,
+      focusWord: question.focusWord,
+      translation: question.translation,
+      timeLimit: question.timeLimit,
+      startedAt,
+      endsAt,
+      questionNumber: room.currentQuestionIndex + 1,
+      totalQuestions: gameState.questionsForCurrentGame.length,
+      gameType: currentGame.gameType,
+      gameNumber: room.currentGameIndex + 1,
+      totalGames: room.games.length,
+      category: question.category,
+      difficulty: question.difficulty,
+    });
+  } else if (room.status === 'COUNTDOWN') {
+    socket.emit('game:countdown', {
+      value: 3,
+      gameType: currentGame.gameType,
+      questionNumber: room.currentQuestionIndex + 1,
+      totalQuestions: gameState.questionsForCurrentGame.length,
+    });
+  }
+
+  if (room.teams) {
+    socket.emit('game:teamScoreUpdated', { teams: room.teams });
+  }
+}
+
 /**
  * Register all Socket.IO event handlers with rate-limiting, security validation,
  * and race-condition guards.
@@ -108,6 +154,9 @@ export function setupSocketHandlers(io: TypedServer): void {
       const players = roomManager.getPlayersInRoom(room.roomId);
       socket.emit('room:playersUpdated', { players, totalPlayers: players.length });
 
+      // Synchronize active game question state to teacher if already running
+      syncActiveStateToSocket(socket, room);
+
       // Resume game if it was paused
       if (room.gameState?.isPaused) {
         gameEngine.resumeGame(room.roomId, io);
@@ -130,6 +179,9 @@ export function setupSocketHandlers(io: TypedServer): void {
 
         socket.emit('server:roomJoined', { room });
         io.to(room.roomId).emit('teacher:statusChanged', { teacherConnected: true });
+
+        // Synchronize active game question state to teacher
+        syncActiveStateToSocket(socket, room);
 
         if (room.gameState?.isPaused) {
           gameEngine.resumeGame(room.roomId, io);
@@ -349,6 +401,9 @@ export function setupSocketHandlers(io: TypedServer): void {
 
       socket.emit('room:playersUpdated', { players, totalPlayers: players.length });
       socket.emit('teacher:statusChanged', { teacherConnected: room.teacherConnected });
+
+      // Synchronize active game question state if game is running
+      syncActiveStateToSocket(socket, room);
     });
 
     /**
@@ -372,10 +427,6 @@ export function setupSocketHandlers(io: TypedServer): void {
     socket.on('disconnect', () => {
       // Case 1: Teacher disconnected
       if (socket.data.isTeacher) {
-        if (socket.data.roomId) {
-          gameEngine.pauseGame(socket.data.roomId, io);
-        }
-
         roomManager.handleTeacherDisconnect(socket.id, (expiredRoomId) => {
           gameEngine.cleanupRoom(expiredRoomId);
           io.to(expiredRoomId).emit('server:roomClosed', {

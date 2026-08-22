@@ -165,7 +165,35 @@ export const GameArena: React.FC<GameArenaProps> = ({
   const [teams, setTeams] = useState<Record<string, Team> | undefined>(room.teams);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
 
-  // Socket.IO event registrations
+  // Stable refs to prevent tearing down socket listeners on re-render
+  const playerRef = useRef(player);
+  playerRef.current = player;
+
+  const isTeacherRef = useRef(isTeacher);
+  isTeacherRef.current = isTeacher;
+
+  const myStreakRef = useRef(myStreak);
+  myStreakRef.current = myStreak;
+
+  const playSoundRef = useRef(playSound);
+  playSoundRef.current = playSound;
+
+  const fadeInRef = useRef(fadeIn);
+  fadeInRef.current = fadeIn;
+
+  const fadeOutRef = useRef(fadeOut);
+  fadeOutRef.current = fadeOut;
+
+  const pauseMusicRef = useRef(pauseMusic);
+  pauseMusicRef.current = pauseMusic;
+
+  const resumeMusicRef = useRef(resumeMusic);
+  resumeMusicRef.current = resumeMusic;
+
+  const showToastRef = useRef(showToast);
+  showToastRef.current = showToast;
+
+  // Socket.IO event registrations - Stable lifecycle
   useEffect(() => {
     const socket = socketService.getSocket();
 
@@ -199,7 +227,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
       // Reset student answer state for new question
       setSelectedAnswer(null);
       setIsAnswerSubmitted(false);
-      setMyAnswerResult({ status: null, pointsEarned: 0, currentStreak: myStreak });
+      setMyAnswerResult({ status: null, pointsEarned: 0, currentStreak: myStreakRef.current });
 
       // Start synchronized timer
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
@@ -218,9 +246,10 @@ export const GameArena: React.FC<GameArenaProps> = ({
 
     // 3. Answer Accepted (Student acknowledged by server)
     const handleAnswerAccepted = ({ playerId }: { playerId: string }) => {
-      if (player && playerId === player.playerId) {
+      const currentPlayer = playerRef.current;
+      if (currentPlayer && playerId === currentPlayer.playerId) {
         setMyAnswerResult((prev) => ({ ...prev, status: 'PENDING' }));
-        showToast('Antwort gespeichert ✓', 'success', 2000);
+        showToastRef.current('Antwort gespeichert ✓', 'success', 2000);
       }
     };
 
@@ -239,7 +268,8 @@ export const GameArena: React.FC<GameArenaProps> = ({
       isCorrect: boolean;
       teamId?: 'TEAM_BLAU' | 'TEAM_ROT';
     }) => {
-      if (player && playerId === player.playerId) {
+      const currentPlayer = playerRef.current;
+      if (currentPlayer && playerId === currentPlayer.playerId) {
         setMyScore(totalScore);
         setLastPointsEarned(pointsEarned);
         setMyStreak(currentStreak);
@@ -260,8 +290,9 @@ export const GameArena: React.FC<GameArenaProps> = ({
       setLeaderboard(data.leaderboard || []);
       if (data.teams) setTeams(data.teams);
 
-      if (player && data.playerResults?.[player.playerId]) {
-        const pRes = data.playerResults[player.playerId];
+      const currentPlayer = playerRef.current;
+      if (currentPlayer && data.playerResults?.[currentPlayer.playerId]) {
+        const pRes = data.playerResults[currentPlayer.playerId];
         setMyScore(pRes.totalScore);
         setMyStreak(pRes.currentStreak);
         setLastPointsEarned(pRes.pointsEarned);
@@ -270,11 +301,14 @@ export const GameArena: React.FC<GameArenaProps> = ({
           pointsEarned: pRes.pointsEarned,
           currentStreak: pRes.currentStreak,
         });
-      } else if (!isTeacher && !isAnswerSubmitted) {
-        setMyAnswerResult({
-          status: 'TIMEOUT',
-          pointsEarned: 0,
-          currentStreak: 0,
+      } else if (!isTeacherRef.current) {
+        setMyAnswerResult((prev) => {
+          if (prev.status === 'CORRECT' || prev.status === 'INCORRECT') return prev;
+          return {
+            status: 'TIMEOUT',
+            pointsEarned: 0,
+            currentStreak: 0,
+          };
         });
       }
     };
@@ -294,7 +328,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
     // 7. Team Score Updated
     const handleTeamScoreUpdated = ({ teams: updatedTeams }: { teams: Record<string, Team> }) => {
       setTeams(updatedTeams);
-      playSound('teamScore');
+      playSoundRef.current('teamScore');
     };
 
     // 8. Next Game Event
@@ -308,24 +342,24 @@ export const GameArena: React.FC<GameArenaProps> = ({
       setSessionFinishedData(data);
       setLeaderboard(data.finalLeaderboard || []);
       if (data.teams) setTeams(data.teams);
-      if (isTeacher) {
-        fadeOut(1500);
+      if (isTeacherRef.current) {
+        fadeOutRef.current(1500);
       }
-      playSound('victory');
+      playSoundRef.current('victory');
     };
 
     // 10. Pause & Resume Events
     const handleGamePaused = ({ reason }: { reason: string }) => {
       setIsPaused(true);
       setPauseReason(reason);
-      if (isTeacher) pauseMusic();
+      if (isTeacherRef.current) pauseMusicRef.current();
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     };
 
     const handleGameResumed = ({ remainingSeconds }: { remainingSeconds: number }) => {
       setIsPaused(false);
       setTimeRemaining(remainingSeconds);
-      if (isTeacher) resumeMusic();
+      if (isTeacherRef.current) resumeMusicRef.current();
     };
 
     // Attach listeners
@@ -341,6 +375,18 @@ export const GameArena: React.FC<GameArenaProps> = ({
     socket.on('game:gamePaused', handleGamePaused);
     socket.on('game:gameResumed', handleGameResumed);
 
+    // Initial sync request if mounted mid-game
+    if (socket.connected) {
+      if (isTeacherRef.current) {
+        socket.emit('teacher:joinRoom', { roomId: room.roomId });
+      } else {
+        socket.emit('student:syncLobby', {
+          roomId: room.roomId,
+          playerId: playerRef.current?.playerId,
+        });
+      }
+    }
+
     return () => {
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
       socket.off('game:countdown', handleCountdown);
@@ -355,7 +401,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
       socket.off('game:gamePaused', handleGamePaused);
       socket.off('game:gameResumed', handleGameResumed);
     };
-  }, [player, isTeacher, myStreak, playSound, fadeIn, fadeOut, pauseMusic, resumeMusic, showToast]);
+  }, [room.roomId]);
 
   // Handle student answer submission
   const handleStudentSubmit = (answer: string | string[]) => {
