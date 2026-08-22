@@ -1,0 +1,583 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { AlertTriangle } from 'lucide-react';
+import {
+  GameRoom,
+  Player,
+  LeaderboardEntry,
+  GameType,
+  Team,
+  QuestionFormat,
+} from '../../types/game.types';
+import { socketService } from '../../socket/socket.service';
+import { useAudio } from '../../hooks/useAudio';
+import { useToast } from '../../context/ToastContext';
+
+// Common Design System Components
+import {
+  GameHeader,
+  Timer,
+  CountdownOverlay,
+  AnswerFeedback,
+  Leaderboard,
+  GameTransition,
+  VictoryOverlay,
+  LoadingScreen,
+} from '../common';
+
+
+// 5 Game Components
+import { SchnellantwortGame } from './SchnellantwortGame';
+import { SatzRennenGame } from './SatzRennenGame';
+import { WortschatzDuellGame } from './WortschatzDuellGame';
+import { WasBinIchGame } from './WasBinIchGame';
+import { TeamBattleGame } from './TeamBattleGame';
+
+interface QuestionStartedPayload {
+  questionId: string;
+  text: string;
+  format?: QuestionFormat;
+  options?: string[];
+  words?: string[];
+  clues?: string[];
+  focusWord?: string;
+  translation?: string;
+  timeLimit: number;
+  startedAt: number;
+  endsAt: number;
+  questionNumber: number;
+  totalQuestions: number;
+  gameType: GameType;
+  gameNumber: number;
+  totalGames: number;
+  category?: string;
+  difficulty?: string;
+}
+
+interface QuestionResultPayload {
+  questionId: string;
+  correctAnswer: string | string[];
+  stats: {
+    correctCount: number;
+    incorrectCount: number;
+    unansweredCount: number;
+    totalPlayers: number;
+  };
+  leaderboard: LeaderboardEntry[];
+  teams?: Record<string, Team>;
+  playerResults?: Record<
+    string,
+    {
+      isCorrect: boolean;
+      pointsEarned: number;
+      totalScore: number;
+      currentStreak: number;
+      teamId?: 'TEAM_BLAU' | 'TEAM_ROT';
+    }
+  >;
+}
+
+interface NextGamePayload {
+  previousGameType: GameType;
+  nextGameType: GameType;
+  gameNumber: number;
+  totalGames: number;
+  nextGameQuestionCount: number;
+}
+
+interface SessionFinishedPayload {
+  finalLeaderboard: LeaderboardEntry[];
+  totalGames: number;
+  totalQuestions: number;
+  teams?: Record<string, Team>;
+  winner?: LeaderboardEntry | Team;
+}
+
+interface GameArenaProps {
+  room: GameRoom;
+  player?: Player | null;
+  isTeacher: boolean;
+  onExit: () => void;
+}
+
+export const GameArena: React.FC<GameArenaProps> = ({
+  room,
+  player,
+  isTeacher,
+  onExit,
+}) => {
+  const { playSound, fadeIn, fadeOut, stopMusic, pauseMusic, resumeMusic } = useAudio();
+  const { showToast } = useToast();
+
+  const handleExit = () => {
+    if (isTeacher) {
+      stopMusic();
+    }
+    onExit();
+  };
+
+  // Projector mode state for teacher
+  const [isProjectorMode, setIsProjectorMode] = useState(false);
+
+  // Trigger continuous gameplay background music for teacher presentation mode
+  useEffect(() => {
+    if (isTeacher) {
+      fadeIn(1200, 'GAME');
+    }
+    return () => {
+      if (isTeacher) {
+        stopMusic();
+      }
+    };
+  }, [isTeacher, fadeIn, stopMusic]);
+
+  // Game flow states
+  const [currentCountdown, setCurrentCountdown] = useState<number | null>(null);
+  const [currentQuestion, setCurrentQuestion] = useState<QuestionStartedPayload | null>(null);
+  const [questionResult, setQuestionResult] = useState<QuestionResultPayload | null>(null);
+  const [nextGameData, setNextGameData] = useState<NextGamePayload | null>(null);
+  const [sessionFinishedData, setSessionFinishedData] = useState<SessionFinishedPayload | null>(null);
+  const [isPaused, setIsPaused] = useState<boolean>(false);
+  const [pauseReason, setPauseReason] = useState<string>('');
+
+  // Active answer submission state for student
+  const [selectedAnswer, setSelectedAnswer] = useState<string | string[] | null>(null);
+  const [isAnswerSubmitted, setIsAnswerSubmitted] = useState<boolean>(false);
+  const [myAnswerResult, setMyAnswerResult] = useState<{
+    status: 'PENDING' | 'CORRECT' | 'INCORRECT' | 'TIMEOUT' | null;
+    pointsEarned: number;
+    currentStreak: number;
+  }>({
+    status: null,
+    pointsEarned: 0,
+    currentStreak: player?.currentStreak || 0,
+  });
+
+  // Client score tracking with animated updates
+  const [myScore, setMyScore] = useState<number>(player?.score || 0);
+  const [lastPointsEarned, setLastPointsEarned] = useState<number>(0);
+  const [myStreak, setMyStreak] = useState<number>(player?.currentStreak || 0);
+
+  // Synchronized Timer state
+  const [timeRemaining, setTimeRemaining] = useState<number>(15);
+  const timerIntervalRef = useRef<any>(null);
+
+  // Active teams and leaderboard
+  const [teams, setTeams] = useState<Record<string, Team> | undefined>(room.teams);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+
+  // Socket.IO event registrations
+  useEffect(() => {
+    const socket = socketService.getSocket();
+
+    // 1. Countdown Event
+    const handleCountdown = ({
+      value,
+    }: {
+      value: number;
+      gameType: GameType;
+      questionNumber: number;
+      totalQuestions: number;
+    }) => {
+      setCurrentCountdown(value);
+      setQuestionResult(null);
+      setNextGameData(null);
+      setIsPaused(false);
+
+      if (value === 0) {
+        setTimeout(() => setCurrentCountdown(null), 700);
+      }
+    };
+
+    // 2. Question Started Event
+    const handleQuestionStarted = (data: QuestionStartedPayload) => {
+      setCurrentCountdown(null);
+      setCurrentQuestion(data);
+      setQuestionResult(null);
+      setNextGameData(null);
+      setIsPaused(false);
+
+      // Reset student answer state for new question
+      setSelectedAnswer(null);
+      setIsAnswerSubmitted(false);
+      setMyAnswerResult({ status: null, pointsEarned: 0, currentStreak: myStreak });
+
+      // Start synchronized timer
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+      const updateTimer = () => {
+        const now = Date.now();
+        const remaining = Math.max(0, Math.ceil((data.endsAt - now) / 1000));
+        setTimeRemaining(remaining);
+        if (remaining <= 0 && timerIntervalRef.current) {
+          clearInterval(timerIntervalRef.current);
+        }
+      };
+
+      updateTimer();
+      timerIntervalRef.current = setInterval(updateTimer, 200);
+    };
+
+    // 3. Answer Accepted (Student acknowledged by server)
+    const handleAnswerAccepted = ({ playerId }: { playerId: string }) => {
+      if (player && playerId === player.playerId) {
+        setMyAnswerResult((prev) => ({ ...prev, status: 'PENDING' }));
+        showToast('Antwort gespeichert ✓', 'success', 2000);
+      }
+    };
+
+    // 4. Score Updated Event
+    const handleScoreUpdated = ({
+      playerId,
+      pointsEarned,
+      totalScore,
+      currentStreak,
+      isCorrect,
+    }: {
+      playerId: string;
+      pointsEarned: number;
+      totalScore: number;
+      currentStreak: number;
+      isCorrect: boolean;
+      teamId?: 'TEAM_BLAU' | 'TEAM_ROT';
+    }) => {
+      if (player && playerId === player.playerId) {
+        setMyScore(totalScore);
+        setLastPointsEarned(pointsEarned);
+        setMyStreak(currentStreak);
+
+        setMyAnswerResult({
+          status: isCorrect ? 'CORRECT' : 'INCORRECT',
+          pointsEarned,
+          currentStreak,
+        });
+      }
+    };
+
+    // 5. Question Result Event
+    const handleQuestionResult = (data: QuestionResultPayload) => {
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+      setTimeRemaining(0);
+      setQuestionResult(data);
+      setLeaderboard(data.leaderboard || []);
+      if (data.teams) setTeams(data.teams);
+
+      if (player && data.playerResults?.[player.playerId]) {
+        const pRes = data.playerResults[player.playerId];
+        setMyScore(pRes.totalScore);
+        setMyStreak(pRes.currentStreak);
+        setLastPointsEarned(pRes.pointsEarned);
+        setMyAnswerResult({
+          status: pRes.isCorrect ? 'CORRECT' : 'INCORRECT',
+          pointsEarned: pRes.pointsEarned,
+          currentStreak: pRes.currentStreak,
+        });
+      } else if (!isTeacher && !isAnswerSubmitted) {
+        setMyAnswerResult({
+          status: 'TIMEOUT',
+          pointsEarned: 0,
+          currentStreak: 0,
+        });
+      }
+    };
+
+    // 6. Leaderboard Updated Event
+    const handleLeaderboardUpdated = ({
+      leaderboard: updatedLeaderboard,
+      teams: updatedTeams,
+    }: {
+      leaderboard: LeaderboardEntry[];
+      teams?: Record<string, Team>;
+    }) => {
+      setLeaderboard(updatedLeaderboard);
+      if (updatedTeams) setTeams(updatedTeams);
+    };
+
+    // 7. Team Score Updated
+    const handleTeamScoreUpdated = ({ teams: updatedTeams }: { teams: Record<string, Team> }) => {
+      setTeams(updatedTeams);
+      playSound('teamScore');
+    };
+
+    // 8. Next Game Event
+    const handleNextGame = (data: NextGamePayload) => {
+      setNextGameData(data);
+      setQuestionResult(null);
+    };
+
+    // 9. Session Finished Event
+    const handleSessionFinished = (data: SessionFinishedPayload) => {
+      setSessionFinishedData(data);
+      setLeaderboard(data.finalLeaderboard || []);
+      if (data.teams) setTeams(data.teams);
+      if (isTeacher) {
+        fadeOut(1500);
+      }
+      playSound('victory');
+    };
+
+    // 10. Pause & Resume Events
+    const handleGamePaused = ({ reason }: { reason: string }) => {
+      setIsPaused(true);
+      setPauseReason(reason);
+      if (isTeacher) pauseMusic();
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+    };
+
+    const handleGameResumed = ({ remainingSeconds }: { remainingSeconds: number }) => {
+      setIsPaused(false);
+      setTimeRemaining(remainingSeconds);
+      if (isTeacher) resumeMusic();
+    };
+
+    // Attach listeners
+    socket.on('game:countdown', handleCountdown);
+    socket.on('game:questionStarted', handleQuestionStarted);
+    socket.on('game:answerAccepted', handleAnswerAccepted);
+    socket.on('game:scoreUpdated', handleScoreUpdated);
+    socket.on('game:questionResult', handleQuestionResult);
+    socket.on('game:leaderboardUpdated', handleLeaderboardUpdated);
+    socket.on('game:teamScoreUpdated', handleTeamScoreUpdated);
+    socket.on('game:nextGame', handleNextGame);
+    socket.on('game:sessionFinished', handleSessionFinished);
+    socket.on('game:gamePaused', handleGamePaused);
+    socket.on('game:gameResumed', handleGameResumed);
+
+    return () => {
+      if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+      socket.off('game:countdown', handleCountdown);
+      socket.off('game:questionStarted', handleQuestionStarted);
+      socket.off('game:answerAccepted', handleAnswerAccepted);
+      socket.off('game:scoreUpdated', handleScoreUpdated);
+      socket.off('game:questionResult', handleQuestionResult);
+      socket.off('game:leaderboardUpdated', handleLeaderboardUpdated);
+      socket.off('game:teamScoreUpdated', handleTeamScoreUpdated);
+      socket.off('game:nextGame', handleNextGame);
+      socket.off('game:sessionFinished', handleSessionFinished);
+      socket.off('game:gamePaused', handleGamePaused);
+      socket.off('game:gameResumed', handleGameResumed);
+    };
+  }, [player, isTeacher, myStreak, playSound, fadeIn, fadeOut, pauseMusic, resumeMusic, showToast]);
+
+  // Handle student answer submission
+  const handleStudentSubmit = (answer: string | string[]) => {
+    if (isTeacher || isAnswerSubmitted || !currentQuestion) return;
+
+    setSelectedAnswer(answer);
+    setIsAnswerSubmitted(true);
+    playSound('click');
+
+    socketService.submitAnswer(room.roomId, currentQuestion.questionId, answer);
+  };
+
+  // Determine current game type
+  const currentGameType: GameType =
+    currentQuestion?.gameType ||
+    room.games[room.currentGameIndex]?.gameType ||
+    'SCHNELLANTWORT';
+
+  // Render Game Specific Body
+  const renderGameContent = () => {
+    if (!currentQuestion) {
+      return (
+        <LoadingScreen
+          message="Spiel wird vorbereitet..."
+          subMessage="Die Fragen werden synchronisiert..."
+        />
+      );
+    }
+
+    switch (currentQuestion.gameType) {
+      case 'SCHNELLANTWORT':
+        return (
+          <SchnellantwortGame
+            text={currentQuestion.text}
+            category={currentQuestion.category}
+            difficulty={currentQuestion.difficulty}
+            options={currentQuestion.options}
+            selectedAnswer={typeof selectedAnswer === 'string' ? selectedAnswer : null}
+            isAnswerSubmitted={isAnswerSubmitted}
+            onSelectAnswer={handleStudentSubmit}
+            isTeacher={isTeacher}
+            isProjectorMode={isProjectorMode}
+          />
+        );
+
+      case 'SATZ_RENNEN':
+        return (
+          <SatzRennenGame
+            text={currentQuestion.text}
+            words={currentQuestion.words}
+            category={currentQuestion.category}
+            difficulty={currentQuestion.difficulty}
+            isAnswerSubmitted={isAnswerSubmitted}
+            onSubmitAnswer={handleStudentSubmit}
+            isTeacher={isTeacher}
+            isProjectorMode={isProjectorMode}
+          />
+        );
+
+      case 'WORTSCHATZ_DUELL':
+        return (
+          <WortschatzDuellGame
+            text={currentQuestion.text}
+            focusWord={currentQuestion.focusWord}
+            format={currentQuestion.format}
+            category={currentQuestion.category}
+            difficulty={currentQuestion.difficulty}
+            options={currentQuestion.options}
+            selectedAnswer={typeof selectedAnswer === 'string' ? selectedAnswer : null}
+            isAnswerSubmitted={isAnswerSubmitted}
+            onSelectAnswer={handleStudentSubmit}
+            isTeacher={isTeacher}
+            isProjectorMode={isProjectorMode}
+          />
+        );
+
+      case 'WAS_BIN_ICH':
+        return (
+          <WasBinIchGame
+            text={currentQuestion.text}
+            clues={currentQuestion.clues}
+            options={currentQuestion.options}
+            category={currentQuestion.category}
+            difficulty={currentQuestion.difficulty}
+            selectedAnswer={typeof selectedAnswer === 'string' ? selectedAnswer : null}
+            isAnswerSubmitted={isAnswerSubmitted}
+            onSelectAnswer={handleStudentSubmit}
+            isTeacher={isTeacher}
+            isProjectorMode={isProjectorMode}
+          />
+        );
+
+      case 'TEAM_BATTLE':
+        return (
+          <TeamBattleGame
+            text={currentQuestion.text}
+            category={currentQuestion.category}
+            difficulty={currentQuestion.difficulty}
+            options={currentQuestion.options}
+            selectedAnswer={typeof selectedAnswer === 'string' ? selectedAnswer : null}
+            isAnswerSubmitted={isAnswerSubmitted}
+            onSelectAnswer={handleStudentSubmit}
+            teams={teams}
+            player={player}
+            isTeacher={isTeacher}
+            isProjectorMode={isProjectorMode}
+          />
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div
+      className={`min-h-screen flex flex-col bg-[#0B0F19] text-slate-100 selection:bg-indigo-500/30 ${isProjectorMode ? 'p-2 md:p-6' : ''
+        }`}
+    >
+      {/* Game Header */}
+      <GameHeader
+        level={room.level}
+        gameType={currentGameType}
+        currentQuestion={currentQuestion?.questionNumber || 1}
+        totalQuestions={currentQuestion?.totalQuestions || room.totalQuestions}
+        score={myScore}
+        lastPointsEarned={lastPointsEarned}
+        streak={myStreak}
+        isTeacher={isTeacher}
+        isProjectorMode={isProjectorMode}
+        onToggleProjectorMode={() => setIsProjectorMode((prev) => !prev)}
+        onExit={handleExit}
+      />
+
+      {/* Main Arena Body */}
+      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 flex flex-col gap-4 md:gap-6 justify-between">
+        {/* Pause Banner */}
+        {isPaused && (
+          <div className="p-3.5 rounded-2xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-center font-bold text-sm flex items-center justify-center gap-2 animate-pulse">
+            <AlertTriangle className="w-5 h-5" />
+            <span>{pauseReason || 'Spiel pausiert (Lehrer getrennt)...'}</span>
+          </div>
+        )}
+
+        {/* Top Timer Bar */}
+        {currentQuestion && !questionResult && (
+          <div className="flex items-center justify-between gap-4">
+            <Timer
+              timeRemaining={timeRemaining}
+              totalTime={currentQuestion.timeLimit}
+              variant={isProjectorMode ? 'projector' : 'bar'}
+              className="flex-1"
+            />
+          </div>
+        )}
+
+        {/* Dynamic Game Content */}
+        <div className="flex-1 flex flex-col justify-center">
+          {renderGameContent()}
+        </div>
+
+        {/* Student Answer Feedback HUD */}
+        {!isTeacher && (
+          <AnswerFeedback
+            status={myAnswerResult.status}
+            pointsEarned={myAnswerResult.pointsEarned}
+            currentStreak={myAnswerResult.currentStreak}
+            correctAnswerText={questionResult?.correctAnswer}
+          />
+        )}
+
+        {/* Live Leaderboard / Team Bar Bottom Drawer (When question evaluated or on projector) */}
+        {(questionResult || isProjectorMode) && leaderboard.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+            <div className="md:col-span-3">
+              <Leaderboard
+                leaderboard={leaderboard}
+                currentPlayerId={player?.playerId}
+                teams={teams}
+                limit={isProjectorMode ? 10 : 5}
+                compact
+              />
+            </div>
+          </div>
+        )}
+      </main>
+
+      {/* Fullscreen Overlays */}
+      {/* 1. Countdown Overlay (3, 2, 1, LOS!) */}
+      {currentCountdown !== null && (
+        <CountdownOverlay
+          countdownValue={currentCountdown}
+          gameName={currentGameType}
+          questionNumber={currentQuestion?.questionNumber}
+          totalQuestions={currentQuestion?.totalQuestions}
+        />
+      )}
+
+      {/* 2. Intermediate Game Transition Overlay */}
+      {nextGameData && (
+        <GameTransition
+          completedGameType={nextGameData.previousGameType}
+          nextGameType={nextGameData.nextGameType}
+          gameNumber={nextGameData.gameNumber}
+          totalGames={nextGameData.totalGames}
+        />
+      )}
+
+
+      {/* 3. Final Session Victory Overlay */}
+      {sessionFinishedData && (
+        <VictoryOverlay
+          leaderboard={sessionFinishedData.finalLeaderboard}
+          totalGames={sessionFinishedData.totalGames}
+          totalQuestions={sessionFinishedData.totalQuestions}
+          teams={sessionFinishedData.teams}
+          winner={sessionFinishedData.winner}
+          isTeacher={isTeacher}
+          onRestart={handleExit}
+          onExit={handleExit}
+        />
+      )}
+    </div>
+  );
+};

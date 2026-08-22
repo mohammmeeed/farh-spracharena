@@ -1,0 +1,18 @@
+{
+  "name": "farh-spracharena",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Farh SprachArena - Interaktive Deutsch-Lernplattform für den Unterricht",
+  "scripts": {
+    "install:all": "npm --prefix server install && npm --prefix client install",
+    "build": "npm --prefix server run build && npm --prefix client run build",
+    "dev:server": "npm --prefix server run dev",
+    "dev:client": "npm --prefix client run dev",
+    "validate:questions": "npm --prefix server run validate:questions",
+    "test:distribution": "npm --prefix server run test:distribution",
+    "test:anti-repetition": "npm --prefix server run test:anti-repetition",
+    "test:multiplayer": "npm --prefix server run test:multiplayer"
+  },
+  "keywords": ["german-learning", "classroom-game", "socket.io", "react", "express", "farh-spracharena"],
+  "author": "Farh SprachArena Team"
+}

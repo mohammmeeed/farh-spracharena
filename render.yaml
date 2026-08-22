@@ -1,0 +1,15 @@
+services:
+  # Backend Node.js WebSockets API
+  - type: web
+    name: farh-spracharena-server
+    env: node
+    rootDir: server
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: CLIENT_ORIGIN
+        sync: false
