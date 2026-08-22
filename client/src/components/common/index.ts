@@ -14,4 +14,6 @@ export * from './GameHeader';
 export * from './QuestionCard';
 export * from './QuestionResultOverlay';
 export * from './ProgressBar';
+export * from './TeamIntroOverlay';
+export * from './TeamRosterDrawer';
 export * from './LoadingScreen';

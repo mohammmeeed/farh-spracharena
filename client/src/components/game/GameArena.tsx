@@ -21,6 +21,7 @@ import {
   VictoryOverlay,
   LoadingScreen,
   QuestionResultOverlay,
+  TeamIntroOverlay,
 } from '../common';
 
 
@@ -90,6 +91,8 @@ interface SessionFinishedPayload {
   totalQuestions: number;
   teams?: Record<string, Team>;
   winner?: LeaderboardEntry | Team;
+  questionHistory?: any[];
+  sessionStats?: any;
 }
 
 interface GameArenaProps {
@@ -165,6 +168,11 @@ export const GameArena: React.FC<GameArenaProps> = ({
   // Active teams and leaderboard
   const [teams, setTeams] = useState<Record<string, Team> | undefined>(room.teams);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [teamIntroData, setTeamIntroData] = useState<{
+    teams: Record<string, Team>;
+    players: Player[];
+    durationMs: number;
+  } | null>(null);
 
   // Stable refs to prevent tearing down socket listeners on re-render
   const playerRef = useRef(player);
@@ -372,6 +380,16 @@ export const GameArena: React.FC<GameArenaProps> = ({
       if (isTeacherRef.current) resumeMusicRef.current();
     };
 
+    // 6. Team Intro Event
+    const handleTeamIntro = (data: {
+      teams: Record<string, Team>;
+      players: Player[];
+      durationMs: number;
+    }) => {
+      setTeams(data.teams);
+      setTeamIntroData(data);
+    };
+
     // Attach listeners
     socket.on('game:countdown', handleCountdown);
     socket.on('game:questionStarted', handleQuestionStarted);
@@ -380,6 +398,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
     socket.on('game:questionResult', handleQuestionResult);
     socket.on('game:leaderboardUpdated', handleLeaderboardUpdated);
     socket.on('game:teamScoreUpdated', handleTeamScoreUpdated);
+    socket.on('game:teamIntro', handleTeamIntro);
     socket.on('game:nextGame', handleNextGame);
     socket.on('game:sessionFinished', handleSessionFinished);
     socket.on('game:gamePaused', handleGamePaused);
@@ -406,6 +425,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
       socket.off('game:questionResult', handleQuestionResult);
       socket.off('game:leaderboardUpdated', handleLeaderboardUpdated);
       socket.off('game:teamScoreUpdated', handleTeamScoreUpdated);
+      socket.off('game:teamIntro', handleTeamIntro);
       socket.off('game:nextGame', handleNextGame);
       socket.off('game:sessionFinished', handleSessionFinished);
       socket.off('game:gamePaused', handleGamePaused);
@@ -555,6 +575,10 @@ export const GameArena: React.FC<GameArenaProps> = ({
         isProjectorMode={isProjectorMode}
         onToggleProjectorMode={() => setIsProjectorMode((prev) => !prev)}
         onExit={handleExit}
+        teams={teams}
+        myTeamId={player?.teamId}
+        players={Object.values(room.players || {})}
+        currentPlayerId={player?.playerId}
       />
 
       {/* Main Arena Body */}
@@ -666,6 +690,16 @@ export const GameArena: React.FC<GameArenaProps> = ({
       </main>
 
       {/* Fullscreen Overlays */}
+      {/* 0. Team Intro Showdown Overlay */}
+      {teamIntroData && (
+        <TeamIntroOverlay
+          teams={teamIntroData.teams}
+          players={teamIntroData.players}
+          durationMs={teamIntroData.durationMs}
+          onComplete={() => setTeamIntroData(null)}
+        />
+      )}
+
       {/* 1. Countdown Overlay (3, 2, 1, LOS!) */}
       {currentCountdown !== null && (
         <CountdownOverlay
@@ -696,6 +730,9 @@ export const GameArena: React.FC<GameArenaProps> = ({
           teams={sessionFinishedData.teams}
           winner={sessionFinishedData.winner}
           isTeacher={isTeacher}
+          questionHistory={sessionFinishedData.questionHistory}
+          sessionStats={sessionFinishedData.sessionStats}
+          level={room.level}
           onRestart={handleExit}
           onExit={handleExit}
         />

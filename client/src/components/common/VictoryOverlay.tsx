@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
-import { Sparkles, RefreshCw, Home } from 'lucide-react';
-import { LeaderboardEntry, Team } from '../../types/game.types';
+import React, { useEffect, useState } from 'react';
+import { Sparkles, RefreshCw, Home, BarChart3 } from 'lucide-react';
+import { LeaderboardEntry, Team, QuestionHistoryItem, SessionStatistics } from '../../types/game.types';
 import { Confetti } from './Confetti';
 import { useAudio } from '../../hooks/useAudio';
+import { TeacherSessionReportModal } from '../teacher/TeacherSessionReportModal';
 
 interface VictoryOverlayProps {
   leaderboard: LeaderboardEntry[];
@@ -11,6 +12,9 @@ interface VictoryOverlayProps {
   teams?: Record<string, Team>;
   winner?: LeaderboardEntry | Team;
   isTeacher: boolean;
+  questionHistory?: QuestionHistoryItem[];
+  sessionStats?: SessionStatistics;
+  level?: string;
   onRestart?: () => void;
   onExit: () => void;
 }
@@ -19,12 +23,17 @@ export const VictoryOverlay: React.FC<VictoryOverlayProps> = ({
   leaderboard,
   totalGames,
   totalQuestions,
+  teams,
   winner,
   isTeacher,
+  questionHistory = [],
+  sessionStats,
+  level = 'A1-B2',
   onRestart,
   onExit,
 }) => {
   const { playSound } = useAudio();
+  const [showReportModal, setShowReportModal] = useState(false);
 
   useEffect(() => {
     playSound('victory');
@@ -126,10 +135,20 @@ export const VictoryOverlay: React.FC<VictoryOverlayProps> = ({
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-4 border-t border-white/10">
+          {questionHistory.length > 0 && (
+            <button
+              onClick={() => setShowReportModal(true)}
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm transition-all shadow-lg shadow-indigo-600/30 flex items-center justify-center gap-2 cursor-pointer border border-indigo-400/40"
+            >
+              <BarChart3 className="w-4 h-4 text-amber-300" />
+              <span>📊 Antwort-Historie & Statistiken</span>
+            </button>
+          )}
+
           {isTeacher && onRestart && (
             <button
               onClick={onRestart}
-              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/30 flex items-center justify-center gap-2"
+              className="w-full sm:w-auto px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold text-sm transition-all shadow-lg shadow-amber-500/30 flex items-center justify-center gap-2 cursor-pointer"
             >
               <RefreshCw className="w-4 h-4" />
               <span>Neue Runde starten</span>
@@ -138,13 +157,25 @@ export const VictoryOverlay: React.FC<VictoryOverlayProps> = ({
 
           <button
             onClick={onExit}
-            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm transition-all border border-white/10 flex items-center justify-center gap-2"
+            className="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold text-sm transition-all border border-white/10 flex items-center justify-center gap-2 cursor-pointer"
           >
             <Home className="w-4 h-4" />
             <span>Zurück zur Startseite</span>
           </button>
         </div>
       </div>
+
+      {/* Full Pedagogical Report Modal */}
+      <TeacherSessionReportModal
+        isOpen={showReportModal}
+        onClose={() => setShowReportModal(false)}
+        questionHistory={questionHistory}
+        sessionStats={sessionStats}
+        finalLeaderboard={leaderboard}
+        teams={teams}
+        level={level}
+        totalGames={totalGames}
+      />
     </div>
   );
 };

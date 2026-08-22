@@ -64,6 +64,31 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
         </span>
       </div>
 
+      {/* Team Battle Score Showdown */}
+      {teams && teams.TEAM_ROT && teams.TEAM_BLAU && (
+        <div className="grid grid-cols-2 gap-2 pb-2">
+          <div className="p-2.5 rounded-2xl bg-rose-950/60 border border-rose-500/40 flex items-center justify-between shadow-md shadow-rose-950/40">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-sm">🔴</span>
+              <span className="font-bold text-xs text-rose-300 truncate">Rotes Team</span>
+            </div>
+            <span className="font-mono font-black text-xs sm:text-sm text-white">
+              {teams.TEAM_ROT.score.toLocaleString('de-DE')} Pkt
+            </span>
+          </div>
+
+          <div className="p-2.5 rounded-2xl bg-blue-950/60 border border-blue-500/40 flex items-center justify-between shadow-md shadow-blue-950/40">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="text-sm">🔵</span>
+              <span className="font-bold text-xs text-blue-300 truncate">Blaues Team</span>
+            </div>
+            <span className="font-mono font-black text-xs sm:text-sm text-white">
+              {teams.TEAM_BLAU.score.toLocaleString('de-DE')} Pkt
+            </span>
+          </div>
+        </div>
+      )}
+
       {/* List */}
       <div className="space-y-1.5 overflow-y-auto max-h-[380px] pr-1">
         {displayList.map((entry, index) => {
@@ -104,7 +129,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({
                           : 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
                       }`}
                     >
-                      {team.teamName}
+                      {team.name || (team as any).teamName}
                     </span>
                   )}
                 </div>

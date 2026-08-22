@@ -6,6 +6,9 @@ import {
   ServerToClientEvents,
   InterServerEvents,
   SocketData,
+  QuestionHistoryItem,
+  QuestionResponseRecord,
+  SessionStatistics,
 } from '../types/game.types.js';
 import { roomManager } from '../rooms/room.manager.js';
 import { ScoreService } from './ScoreService.js';
@@ -107,12 +110,40 @@ export class GameEngine {
       totalPlayers: Object.keys(room.players).length,
     };
 
-    // If first game is Team Battle, initialize teams
+    room.teamsLocked = true;
+
+    // If first game is Team Battle, ensure teams are ready
     if (currentGameConfig.gameType === 'TEAM_BATTLE') {
-      const teams = TeamManager.createTeams(room.players);
-      room.teams = teams;
-      gameState.teams = teams;
+      if (!room.teams || Object.keys(room.teams).length === 0) {
+        room.teams = TeamManager.createTeams(room.players);
+      } else {
+        // Ensure every active player is properly assigned
+        for (const player of Object.values(room.players)) {
+          TeamManager.ensurePlayerTeam(player, room.teams);
+        }
+      }
+      gameState.teams = room.teams;
       this.broadcastTeamAssignment(room, io);
+
+      room.status = 'COUNTDOWN';
+      room.gameState = gameState;
+
+      logger.info(
+        `[GameEngine] Started Team Battle session for Room ${roomId} (Red: ${room.teams.TEAM_ROT.playerIds.length}, Blue: ${room.teams.TEAM_BLAU.playerIds.length})`
+      );
+
+      // Broadcast animated Team Intro before first countdown
+      io.to(roomId).emit('game:teamIntro', {
+        teams: room.teams,
+        players: Object.values(room.players),
+        durationMs: 3800,
+      });
+
+      const introTimerKey = `teamIntro_${roomId}`;
+      timerService.startTimer(introTimerKey, 3800, () => {
+        this.startCountdown(roomId, io);
+      });
+      return;
     }
 
     room.status = 'COUNTDOWN';
@@ -505,6 +536,46 @@ export class GameEngine {
     const averageResponseTimeMs =
       responseCount > 0 ? Math.round(totalResponseTimeMs / responseCount) : undefined;
 
+    // Record response history for every student on this question
+    const studentResponses: QuestionResponseRecord[] = Object.values(room.players).map((p) => ({
+      playerId: p.playerId,
+      playerName: p.name,
+      teamId: p.teamId,
+      answer: p.lastAnswer !== undefined ? p.lastAnswer : 'Keine Antwort',
+      isCorrect: p.lastAnswerCorrect || false,
+      pointsEarned: p.lastPointsEarned || 0,
+      responseTimeMs:
+        p.lastAnswerTime && p.lastAnswerTime >= startedAt
+          ? p.lastAnswerTime - startedAt
+          : undefined,
+    }));
+
+    const historyItem: QuestionHistoryItem = {
+      questionNumber: (room.sessionQuestionHistory?.length || 0) + 1,
+      totalQuestions: room.totalQuestions,
+      gameType: currentQuestion.gameType,
+      questionId: currentQuestion.id,
+      questionText: currentQuestion.text,
+      category: currentQuestion.category,
+      difficulty: currentQuestion.difficulty,
+      correctAnswer: currentQuestion.correctAnswer,
+      explanation: currentQuestion.explanation,
+      stats: {
+        correctCount,
+        incorrectCount,
+        unansweredCount,
+        totalPlayers,
+        accuracyPercentage,
+        averageResponseTimeMs,
+      },
+      studentResponses,
+    };
+
+    if (!room.sessionQuestionHistory) {
+      room.sessionQuestionHistory = [];
+    }
+    room.sessionQuestionHistory.push(historyItem);
+
     const leaderboard = LeaderboardService.generateLeaderboard(room.players);
 
     // Broadcast question result with correct answer and rich class performance standings
@@ -551,11 +622,13 @@ export class GameEngine {
     if (room.currentQuestionIndex + 1 < gameState.questionsForCurrentGame.length) {
       room.currentQuestionIndex++;
       gameState.currentQuestionIndex = room.currentQuestionIndex;
+      logger.info(
+        `[GameEngine] Room ${roomId} moving to Question ${room.currentQuestionIndex + 1}/${gameState.questionsForCurrentGame.length}`
+      );
       this.startCountdown(roomId, io);
       return;
     }
 
-    // Current Game is completed!
     const currentGameIndex = room.currentGameIndex;
     const currentGameConfig = room.games[currentGameIndex];
     const leaderboard = LeaderboardService.generateLeaderboard(room.players);
@@ -602,7 +675,6 @@ export class GameEngine {
         allowedCategories,
       });
 
-
       // Mark questions as used
       nextQuestions.forEach((q) => {
         room.usedQuestionIds?.add(q.id);
@@ -615,12 +687,16 @@ export class GameEngine {
       gameState.currentQuestionIndex = 0;
       gameState.questionsForCurrentGame = nextQuestions;
 
-
       // If next game is Team Battle, initialize teams
-      if (nextGameConfig.gameType === 'TEAM_BATTLE' && !room.teams) {
-        const teams = TeamManager.createTeams(room.players);
-        room.teams = teams;
-        gameState.teams = teams;
+      if (nextGameConfig.gameType === 'TEAM_BATTLE') {
+        if (!room.teams) {
+          room.teams = TeamManager.createTeams(room.players);
+        } else {
+          for (const player of Object.values(room.players)) {
+            TeamManager.ensurePlayerTeam(player, room.teams);
+          }
+        }
+        gameState.teams = room.teams;
         this.broadcastTeamAssignment(room, io);
       }
 
@@ -653,16 +729,94 @@ export class GameEngine {
           ? TeamManager.getWinningTeam(room.teams)
           : LeaderboardService.getTopPlayer(finalLeaderboard);
 
+      const history = room.sessionQuestionHistory || [];
+      const totalSessionQuestions = history.length;
+      let totalAccSum = 0;
+      history.forEach((h) => (totalAccSum += h.stats.accuracyPercentage));
+      const averageAccuracy =
+        totalSessionQuestions > 0 ? Math.round(totalAccSum / totalSessionQuestions) : 0;
+
+      const hardestQuestions = [...history]
+        .sort((a, b) => a.stats.accuracyPercentage - b.stats.accuracyPercentage)
+        .slice(0, 5);
+
+      const totalPointsAwarded = Object.values(room.players).reduce(
+        (sum, p) => sum + p.score,
+        0
+      );
+
+      let teamStats: SessionStatistics['teamStats'] = undefined;
+      if (room.teams) {
+        const rotPlayers = Object.values(room.players).filter((p) => p.teamId === 'TEAM_ROT');
+        const blauPlayers = Object.values(room.players).filter((p) => p.teamId === 'TEAM_BLAU');
+
+        let rotCorrect = 0;
+        let rotTotal = 0;
+        let blauCorrect = 0;
+        let blauTotal = 0;
+
+        history.forEach((h) => {
+          h.studentResponses.forEach((r) => {
+            if (r.teamId === 'TEAM_ROT') {
+              rotTotal++;
+              if (r.isCorrect) rotCorrect++;
+            } else if (r.teamId === 'TEAM_BLAU') {
+              blauTotal++;
+              if (r.isCorrect) blauCorrect++;
+            }
+          });
+        });
+
+        teamStats = {
+          rot: {
+            name: room.teams.TEAM_ROT?.name || 'Rotes Team',
+            score: room.teams.TEAM_ROT?.score || 0,
+            accuracy: rotTotal > 0 ? Math.round((rotCorrect / rotTotal) * 100) : 0,
+            membersCount: rotPlayers.length,
+          },
+          blau: {
+            name: room.teams.TEAM_BLAU?.name || 'Blaues Team',
+            score: room.teams.TEAM_BLAU?.score || 0,
+            accuracy: blauTotal > 0 ? Math.round((blauCorrect / blauTotal) * 100) : 0,
+            membersCount: blauPlayers.length,
+          },
+        };
+      }
+
+      // Find highest streak player
+      let highestStreakPlayer: { name: string; streak: number } | undefined = undefined;
+      let maxStreak = 0;
+      Object.values(room.players).forEach((p) => {
+        if (p.highestStreak > maxStreak) {
+          maxStreak = p.highestStreak;
+          highestStreakPlayer = { name: p.name, streak: p.highestStreak };
+        }
+      });
+
+      const sessionStats: SessionStatistics = {
+        totalQuestions: totalSessionQuestions,
+        totalGames: room.games.length,
+        totalPlayers: Object.keys(room.players).length,
+        averageAccuracy,
+        totalPointsAwarded,
+        hardestQuestions,
+        topPerformers: finalLeaderboard.slice(0, 5),
+        highestStreakPlayer,
+        teamStats,
+      };
+
       io.to(roomId).emit('game:sessionFinished', {
         finalLeaderboard,
         totalGames: room.games.length,
         totalQuestions: room.totalQuestions,
         teams: room.teams,
         winner: sessionWinner,
+        questionHistory: history,
+        sessionStats,
       });
 
       logger.info(
-        `[GameEngine] Room ${roomId} completed all ${room.games.length} games. Session Finished!`
+        `[GameEngine] Room ${roomId} completed all ${room.games.length} games. Session Finished with ${history.length} question records!`
       );
     }
   }

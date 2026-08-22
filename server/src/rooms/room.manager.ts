@@ -7,6 +7,7 @@ import {
   Player,
 } from '../types/game.types.js';
 import { questionSelectionService } from '../questions/questionSelectionService.js';
+import { TeamManager } from '../games/TeamManager.js';
 import { logger } from '../utils/logger.js';
 
 const VALID_LEVELS: GameLevel[] = ['A1', 'A2', 'B1', 'B2'];
@@ -198,6 +199,8 @@ export class RoomManager {
     }));
 
     const totalQuestions = games.reduce((acc, curr) => acc + curr.questionCount, 0);
+    const hasTeamBattle = games.some((g) => g.gameType === 'TEAM_BATTLE');
+    const teams = hasTeamBattle ? TeamManager.createDefaultTeams() : undefined;
 
     const room: GameRoom = {
       roomId,
@@ -210,6 +213,8 @@ export class RoomManager {
       totalQuestions,
       createdAt: Date.now(),
       players: {},
+      teams,
+      teamsLocked: false,
       currentGameIndex: 0,
       currentQuestionIndex: 0,
       difficulty: payload.difficulty || 'AUTO',
@@ -221,7 +226,7 @@ export class RoomManager {
     this.pinToRoomId.set(pin, roomId);
 
     logger.info(
-      `[RoomManager] Room created: ID ${roomId} | PIN ${pin} | Level ${room.level} | Games: ${games.length} | Questions: ${totalQuestions} | Teacher: ${teacherSocketId}`
+      `[RoomManager] Room created: ID ${roomId} | PIN ${pin} | Level ${room.level} | Games: ${games.length} | Questions: ${totalQuestions} | Teacher: ${teacherSocketId} | HasTeamBattle: ${hasTeamBattle}`
     );
 
     return room;
@@ -270,6 +275,9 @@ export class RoomManager {
       joinedAt: Date.now(),
     };
 
+    if (room.teams) {
+      TeamManager.ensurePlayerTeam(player, room.teams);
+    }
 
     room.players[playerId] = player;
     this.socketIdToPlayer.set(socketId, { roomId, playerId });
@@ -280,9 +288,20 @@ export class RoomManager {
   }
 
   /**
-   * Remove a player associated with a socket (e.g. on disconnect or explicit leave)
+   * Bind/rebind a socket ID to an existing player (e.g. on student reconnection)
    */
-  public removePlayer(socketId: string): { room: GameRoom; removedPlayer: Player; remainingPlayers: Player[] } | null {
+  public bindSocketToPlayer(socketId: string, roomId: string, playerId: string): void {
+    this.socketIdToPlayer.set(socketId, { roomId, playerId });
+  }
+
+  /**
+   * Remove or disconnect a player associated with a socket
+   * During active games (status !== 'WAITING'), players are kept with connected=false to allow reconnecting without losing team/score.
+   */
+  public removePlayer(
+    socketId: string,
+    isExplicitLeave: boolean = false
+  ): { room: GameRoom; removedPlayer: Player; remainingPlayers: Player[]; isSoftDisconnect?: boolean } | null {
     const mapping = this.socketIdToPlayer.get(socketId);
     if (!mapping) return null;
 
@@ -292,13 +311,32 @@ export class RoomManager {
 
     if (!room || !room.players[playerId]) return null;
 
-    const removedPlayer = room.players[playerId];
+    const player = room.players[playerId];
+
+    // If game is active and it's not an explicit leave, preserve player for reconnection
+    if (room.status !== 'WAITING' && !isExplicitLeave) {
+      player.connected = false;
+      player.isConnected = false;
+      logger.info(
+        `[RoomManager] Player "${player.name}" (${playerId}) temporarily disconnected during active game in Room ${roomId}`
+      );
+      return { room, removedPlayer: player, remainingPlayers: Object.values(room.players), isSoftDisconnect: true };
+    }
+
+    // Explicit leave or waiting lobby: remove completely
     delete room.players[playerId];
 
-    const remainingPlayers = Object.values(room.players);
-    logger.info(`[RoomManager] Player "${removedPlayer.name}" left Room ${roomId}. Remaining: ${remainingPlayers.length}`);
+    // Remove from team in Team Battle mode
+    if (room.teams && player.teamId && room.teams[player.teamId]) {
+      room.teams[player.teamId].playerIds = room.teams[player.teamId].playerIds.filter(
+        (id) => id !== playerId
+      );
+    }
 
-    return { room, removedPlayer, remainingPlayers };
+    const remainingPlayers = Object.values(room.players);
+    logger.info(`[RoomManager] Player "${player.name}" left Room ${roomId}. Remaining: ${remainingPlayers.length}`);
+
+    return { room, removedPlayer: player, remainingPlayers, isSoftDisconnect: false };
   }
 
   /**

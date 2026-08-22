@@ -136,15 +136,62 @@ export interface GameRoom {
   createdAt: number;
   players: Record<string, Player>;
   teams?: Record<string, Team>;
+  teamsLocked?: boolean;
   currentGameIndex: number;
   currentQuestionIndex: number;
   usedQuestionIds?: Set<string>;
   difficulty?: 'AUTO' | 'EASY' | 'MEDIUM' | 'HARD';
   category?: string;
   gameState?: GameState;
+  sessionQuestionHistory?: QuestionHistoryItem[];
 }
 
+export interface QuestionResponseRecord {
+  playerId: string;
+  playerName: string;
+  teamId?: 'TEAM_BLAU' | 'TEAM_ROT';
+  answer: string | string[];
+  isCorrect: boolean;
+  pointsEarned: number;
+  responseTimeMs?: number;
+}
 
+export interface QuestionHistoryItem {
+  questionNumber: number;
+  totalQuestions: number;
+  gameType: GameType;
+  questionId: string;
+  questionText: string;
+  category?: string;
+  difficulty?: string;
+  correctAnswer: string | string[];
+  explanation?: string;
+  stats: {
+    correctCount: number;
+    incorrectCount: number;
+    unansweredCount: number;
+    totalPlayers: number;
+    accuracyPercentage: number;
+    averageResponseTimeMs?: number;
+  };
+  studentResponses: QuestionResponseRecord[];
+}
+
+export interface SessionStatistics {
+  totalQuestions: number;
+  totalGames: number;
+  totalPlayers: number;
+  averageAccuracy: number;
+  totalPointsAwarded: number;
+  hardestQuestions: QuestionHistoryItem[];
+  topPerformers: LeaderboardEntry[];
+  highestStreakPlayer?: { name: string; streak: number };
+  fastestPlayer?: { name: string; avgTimeMs: number };
+  teamStats?: {
+    rot: { name: string; score: number; accuracy: number; membersCount: number };
+    blau: { name: string; score: number; accuracy: number; membersCount: number };
+  };
+}
 
 export interface CreateRoomPayload {
   level: GameLevel;
@@ -277,10 +324,14 @@ export interface ServerToClientEvents {
     totalQuestions: number;
     teams?: Record<string, Team>;
     winner?: LeaderboardEntry | Team;
+    questionHistory?: QuestionHistoryItem[];
+    sessionStats?: SessionStatistics;
   }) => void;
   'game:gamePaused': (data: { reason: string; explanation?: string; questionText?: string }) => void;
   'game:gameResumed': (data: { remainingSeconds: number }) => void;
   'student:kicked': (data: { reason?: string }) => void;
+  'room:teamsUpdated': (data: { teams: Record<string, Team>; players: Player[] }) => void;
+  'game:teamIntro': (data: { teams: Record<string, Team>; players: Player[]; durationMs: number }) => void;
   'game:error': (data: { message: string }) => void;
 
   // Backward compatibility
@@ -301,6 +352,12 @@ export interface ClientToServerEvents {
   'teacher:pauseGame': (data: { roomId: string; reason?: string }) => void;
   'teacher:resumeGame': (data: { roomId: string }) => void;
   'teacher:kickStudent': (data: { roomId: string; playerId: string }) => void;
+  'teacher:assignPlayerTeam': (data: {
+    roomId: string;
+    playerId: string;
+    targetTeamId: 'TEAM_BLAU' | 'TEAM_ROT';
+  }) => void;
+  'teacher:autoBalanceTeams': (data: { roomId: string }) => void;
   'student:joinRoom': (data: { pin: string; name: string }) => void;
   'student:leaveRoom': (data: { roomId: string; playerId?: string }) => void;
   'student:syncLobby': (data: { roomId: string; playerId?: string }) => void;

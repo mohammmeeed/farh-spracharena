@@ -27,6 +27,7 @@ import { GameRoom, Player, LeaderboardEntry, Team } from '../../types/game.types
 import { GAME_TYPES } from '../../utils/constants';
 import { socketService } from '../../socket/socket.service';
 import { GameArena } from '../../components/game/GameArena';
+import { TeacherTeamAssignment } from '../../components/teacher/TeacherTeamAssignment';
 import { useAudio } from '../../hooks/useAudio';
 import { AudioSettingsModal } from '../../components/common/AudioSettingsModal';
 
@@ -161,8 +162,22 @@ export const TeacherLobby: React.FC = () => {
       navigateRef.current('/teacher');
     };
 
+    const handleTeamsUpdated = ({
+      teams,
+      players: updatedPlayers,
+    }: {
+      teams: Record<string, Team>;
+      players: Player[];
+    }) => {
+      setLiveTeams(teams);
+      if (updatedPlayers) {
+        setPlayers(updatedPlayers);
+      }
+    };
+
     socket.on('server:roomJoined', handleRoomJoined);
     socket.on('room:playersUpdated', handlePlayersUpdated);
+    socket.on('room:teamsUpdated', handleTeamsUpdated);
     socket.on('game:countdown', handleCountdown);
     socket.on('game:leaderboardUpdated', handleLeaderboardUpdated);
     socket.on('game:questionResult', handleQuestionResult);
@@ -180,6 +195,7 @@ export const TeacherLobby: React.FC = () => {
     return () => {
       socket.off('server:roomJoined', handleRoomJoined);
       socket.off('room:playersUpdated', handlePlayersUpdated);
+      socket.off('room:teamsUpdated', handleTeamsUpdated);
       socket.off('game:countdown', handleCountdown);
       socket.off('game:leaderboardUpdated', handleLeaderboardUpdated);
       socket.off('game:questionResult', handleQuestionResult);
@@ -859,6 +875,16 @@ export const TeacherLobby: React.FC = () => {
           </div>
         </div>
 
+        {/* Team Assignment Panel if Team Battle is in the Session */}
+        {room.games.some((g) => g.gameType === 'TEAM_BATTLE') && (
+          <TeacherTeamAssignment
+            roomId={room.roomId}
+            players={players}
+            teams={liveTeams}
+            isLocked={isGameActive}
+          />
+        )}
+
         {/* Content Columns: Games Schedule & Live Waiting Students Area */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
           {/* Left: Games Sequence (5 cols) */}
@@ -944,6 +970,17 @@ export const TeacherLobby: React.FC = () => {
                     </div>
 
                     <div className="flex items-center gap-1.5 shrink-0">
+                      {p.teamId && (
+                        <span
+                          className={`text-[9px] px-1.5 py-0.2 rounded font-bold ${
+                            p.teamId === 'TEAM_ROT'
+                              ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
+                              : 'bg-blue-500/20 text-blue-300 border border-blue-500/30'
+                          }`}
+                        >
+                          {p.teamId === 'TEAM_ROT' ? '🔴 Rot' : '🔵 Blau'}
+                        </span>
+                      )}
                       {p.isReady && (
                         <span className="text-[10px] text-emerald-400 font-bold shrink-0">
                           ✓
@@ -966,14 +1003,21 @@ export const TeacherLobby: React.FC = () => {
               </div>
             )}
 
-            {/* Start Classroom Session Button */}
+            {/* Start Classroom Session Button with Team Counts */}
             <button
               onClick={handleStartGame}
               disabled={players.length === 0}
-              className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-lg flex items-center justify-center gap-3 shadow-lg shadow-emerald-500/20 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
+              className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-black text-lg flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-3 shadow-lg shadow-emerald-500/20 hover:scale-[1.01] active:scale-[0.99] disabled:opacity-50 disabled:cursor-not-allowed transition-all cursor-pointer"
             >
-              <Play className="w-6 h-6 fill-slate-950" />
-              <span>🚀 Spiel starten ({players.length} Schüler)</span>
+              <div className="flex items-center gap-2">
+                <Play className="w-6 h-6 fill-slate-950" />
+                <span>🚀 Spiel starten ({players.length} Schüler)</span>
+              </div>
+              {room.games.some((g) => g.gameType === 'TEAM_BATTLE') && liveTeams && (
+                <span className="text-xs font-mono font-bold bg-slate-950/20 px-3 py-1 rounded-xl">
+                  🔴 {players.filter(p => p.teamId === 'TEAM_ROT' || liveTeams.TEAM_ROT?.playerIds.includes(p.playerId)).length} Rot vs 🔵 {players.filter(p => p.teamId === 'TEAM_BLAU' || liveTeams.TEAM_BLAU?.playerIds.includes(p.playerId)).length} Blau
+                </span>
+              )}
             </button>
           </div>
         </div>

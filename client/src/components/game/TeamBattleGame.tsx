@@ -131,7 +131,7 @@ export const TeamBattleGame: React.FC<TeamBattleGameProps> = ({
                 }`}
               >
                 <Shield className="w-3.5 h-3.5" />
-                <span>Du kämpfst für: {myTeam.teamName}</span>
+                <span>Du kämpfst für: {myTeam.name}</span>
               </span>
             </div>
           )}

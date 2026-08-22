@@ -8,7 +8,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 
-import { GameRoom, Player } from '../../types/game.types';
+import { GameRoom, Player, Team } from '../../types/game.types';
 import { socketService } from '../../socket/socket.service';
 import { useSocket } from '../../hooks/useSocket';
 import { GameArena } from '../../components/game/GameArena';
@@ -28,6 +28,7 @@ export const StudentLobby: React.FC = () => {
   const [players, setPlayers] = useState<Player[]>(
     initialRoom?.players ? Object.values(initialRoom.players) : []
   );
+  const [liveTeams, setLiveTeams] = useState<Record<string, Team> | undefined>(initialRoom?.teams);
   const [teacherConnected, setTeacherConnected] = useState<boolean>(true);
   const [loading, setLoading] = useState<boolean>(!initialRoom);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -52,6 +53,9 @@ export const StudentLobby: React.FC = () => {
       if (syncedRoom.players) {
         setPlayers(Object.values(syncedRoom.players));
       }
+      if (syncedRoom.teams) {
+        setLiveTeams(syncedRoom.teams);
+      }
       setTeacherConnected(syncedRoom.teacherConnected);
       setIsGameActive(syncedRoom.status !== 'WAITING');
       setLoading(false);
@@ -66,14 +70,49 @@ export const StudentLobby: React.FC = () => {
       totalPlayers: number;
     }) => {
       setPlayers(updatedPlayers);
+      if (player) {
+        const me = updatedPlayers.find((p) => p.playerId === player.playerId);
+        if (me) setPlayer(me);
+      }
     };
 
-    // 3. Countdown started
+    // 3. Real-time teams update
+    const handleTeamsUpdated = ({
+      teams,
+      players: updatedPlayers,
+    }: {
+      teams: Record<string, Team>;
+      players: Player[];
+    }) => {
+      setLiveTeams(teams);
+      if (updatedPlayers) {
+        setPlayers(updatedPlayers);
+        if (player) {
+          const me = updatedPlayers.find((p) => p.playerId === player.playerId);
+          if (me) setPlayer(me);
+        }
+      }
+    };
+
+    const handleTeamAssignment = ({
+      teams,
+      myTeamId,
+    }: {
+      teams: Record<string, Team>;
+      myTeamId?: 'TEAM_BLAU' | 'TEAM_ROT';
+    }) => {
+      setLiveTeams(teams);
+      if (myTeamId) {
+        setPlayer((prev) => (prev ? { ...prev, teamId: myTeamId } : prev));
+      }
+    };
+
+    // 4. Countdown started
     const handleCountdown = () => {
       setIsGameActive(true);
     };
 
-    // 4. Teacher status change (Grace Period)
+    // 5. Teacher status change (Grace Period)
     const handleTeacherStatusChanged = ({
       teacherConnected: isTeacherOnline,
     }: {
@@ -82,19 +121,19 @@ export const StudentLobby: React.FC = () => {
       setTeacherConnected(isTeacherOnline);
     };
 
-    // 5. Room closed by teacher / timeout
+    // 6. Room closed by teacher / timeout
     const handleRoomClosed = ({ reason }: { roomId: string; reason?: string }) => {
       alert(reason || 'Der Spielraum wurde beendet.');
       navigate('/join');
     };
 
-    // 6. Error
+    // 7. Error
     const handleJoinError = ({ message }: { message: string }) => {
       setLoading(false);
       setErrorMessage(message || 'Fehler beim Laden des Spielraums.');
     };
 
-    // 7. Kicked by teacher
+    // 8. Kicked by teacher
     const handleStudentKicked = ({ reason }: { reason?: string }) => {
       alert(reason || 'Du wurdest vom Lehrer aus dem Spielraum entfernt.');
       navigate('/join');
@@ -102,6 +141,8 @@ export const StudentLobby: React.FC = () => {
 
     socket.on('student:joinedRoom', handleJoinedRoom);
     socket.on('room:playersUpdated', handlePlayersUpdated);
+    socket.on('room:teamsUpdated', handleTeamsUpdated);
+    socket.on('game:teamAssignment', handleTeamAssignment);
     socket.on('game:countdown', handleCountdown);
     socket.on('teacher:statusChanged', handleTeacherStatusChanged);
     socket.on('server:roomClosed', handleRoomClosed);
@@ -126,13 +167,15 @@ export const StudentLobby: React.FC = () => {
     return () => {
       socket.off('student:joinedRoom', handleJoinedRoom);
       socket.off('room:playersUpdated', handlePlayersUpdated);
+      socket.off('room:teamsUpdated', handleTeamsUpdated);
+      socket.off('game:teamAssignment', handleTeamAssignment);
       socket.off('game:countdown', handleCountdown);
       socket.off('teacher:statusChanged', handleTeacherStatusChanged);
       socket.off('server:roomClosed', handleRoomClosed);
       socket.off('student:joinError', handleJoinError);
       socket.off('student:kicked', handleStudentKicked);
     };
-  }, [roomId, initialPlayer, navigate]);
+  }, [roomId, initialPlayer, player, navigate]);
 
   const handleLeaveRoom = () => {
     if (!roomId) return;
@@ -306,6 +349,47 @@ export const StudentLobby: React.FC = () => {
               </button>
             </div>
 
+            {/* Student's Assigned Team Identity (Rot / Blau) */}
+            {player?.teamId && liveTeams && (
+              <div
+                className={`p-4 rounded-2xl border-2 flex items-center justify-between gap-4 text-left shadow-lg transition-all ${
+                  player.teamId === 'TEAM_ROT'
+                    ? 'bg-rose-950/60 border-rose-500/50 shadow-rose-950/40 text-rose-200'
+                    : 'bg-blue-950/60 border-blue-500/50 shadow-blue-950/40 text-blue-200'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <span className="text-3xl">
+                    {player.teamId === 'TEAM_ROT' ? '🔴' : '🔵'}
+                  </span>
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-wider block text-slate-400">
+                      Dein zugewiesenes Team
+                    </span>
+                    <span className="text-base sm:text-lg font-black text-white">
+                      {player.teamId === 'TEAM_ROT' ? 'ROTES TEAM' : 'BLAUES TEAM'}
+                    </span>
+                  </div>
+                </div>
+
+                <span
+                  className={`text-xs font-mono font-bold px-3 py-1 rounded-xl shrink-0 ${
+                    player.teamId === 'TEAM_ROT'
+                      ? 'bg-rose-500/20 text-rose-300 border border-rose-500/40'
+                      : 'bg-blue-500/20 text-blue-300 border border-blue-500/40'
+                  }`}
+                >
+                  {
+                    players.filter(
+                      (p) =>
+                        p.teamId === player.teamId ||
+                        (player.teamId && liveTeams[player.teamId]?.playerIds.includes(p.playerId))
+                    ).length
+                  }{' '}
+                  Mitspieler
+                </span>
+              </div>
+            )}
 
             {/* Session Metadata Badges */}
             <div className="flex flex-wrap items-center justify-center gap-2.5 pt-2">

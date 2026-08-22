@@ -284,6 +284,25 @@ export const QuestionResultOverlay: React.FC<QuestionResultOverlayProps> = ({
             </span>
           </div>
 
+          {/* Team Battle Score Showdown */}
+          {teams && teams.TEAM_ROT && teams.TEAM_BLAU && (
+            <div className="grid grid-cols-2 gap-2 pb-1">
+              <div className="p-2 rounded-2xl bg-rose-950/60 border border-rose-500/40 flex items-center justify-between shadow-sm">
+                <span className="font-bold text-[11px] text-rose-300">🔴 Rot</span>
+                <span className="font-mono font-black text-xs text-white">
+                  {teams.TEAM_ROT.score.toLocaleString('de-DE')} Pkt
+                </span>
+              </div>
+
+              <div className="p-2 rounded-2xl bg-blue-950/60 border border-blue-500/40 flex items-center justify-between shadow-sm">
+                <span className="font-bold text-[11px] text-blue-300">🔵 Blau</span>
+                <span className="font-mono font-black text-xs text-white">
+                  {teams.TEAM_BLAU.score.toLocaleString('de-DE')} Pkt
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Compact animated player rows with FLIP transition */}
           <div className="space-y-2 flex-1">
             <AnimatePresence>
@@ -323,7 +342,7 @@ export const QuestionResultOverlay: React.FC<QuestionResultOverlayProps> = ({
                               : 'bg-rose-500/20 text-rose-300'
                           }`}
                         >
-                          {team.teamName}
+                          {team.name || (team as any).teamName}
                         </span>
                       )}
                     </div>

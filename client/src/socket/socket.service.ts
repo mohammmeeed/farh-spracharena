@@ -74,6 +74,20 @@ class SocketService {
     s.emit('teacher:kickStudent', { roomId, playerId });
   }
 
+  public assignPlayerTeam(
+    roomId: string,
+    playerId: string,
+    targetTeamId: 'TEAM_BLAU' | 'TEAM_ROT'
+  ): void {
+    const s = this.getSocket();
+    s.emit('teacher:assignPlayerTeam', { roomId, playerId, targetTeamId });
+  }
+
+  public autoBalanceTeams(roomId: string): void {
+    const s = this.getSocket();
+    s.emit('teacher:autoBalanceTeams', { roomId });
+  }
+
   public getServerUrl(): string {
     return this.serverUrl;
   }

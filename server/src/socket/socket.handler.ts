@@ -7,6 +7,7 @@ import {
 } from '../types/game.types.js';
 import { roomManager } from '../rooms/room.manager.js';
 import { gameEngine } from '../games/GameEngine.js';
+import { TeamManager } from '../games/TeamManager.js';
 import { socketRateLimiter } from '../utils/rateLimiter.js';
 import { logger } from '../utils/logger.js';
 
@@ -347,6 +348,74 @@ export function setupSocketHandlers(io: TypedServer): void {
     });
 
     /**
+     * Teacher assigns a student to a specific team (Team Rot vs Team Blau)
+     */
+    socket.on('teacher:assignPlayerTeam', ({ roomId, playerId, targetTeamId }) => {
+      const room = roomManager.getRoomById(roomId);
+      if (!room) {
+        socket.emit('server:roomError', { message: 'Raum nicht gefunden.' });
+        return;
+      }
+
+      if (room.teacherSocketId !== socket.id) {
+        socket.emit('server:roomError', { message: 'Nur der Lehrer kann Teams zuweisen.' });
+        return;
+      }
+
+      if (room.teamsLocked) {
+        socket.emit('server:roomError', {
+          message: 'Die Team-Zuweisung ist während des laufenden Spiels gesperrt.',
+        });
+        return;
+      }
+
+      if (!room.teams) {
+        room.teams = TeamManager.createDefaultTeams();
+      }
+
+      const success = TeamManager.assignPlayerToTeam(room.players, room.teams, playerId, targetTeamId);
+      if (success) {
+        const players = roomManager.getPlayersInRoom(room.roomId);
+        io.to(roomId).emit('room:teamsUpdated', { teams: room.teams, players });
+        io.to(roomId).emit('room:playersUpdated', { players, totalPlayers: players.length });
+        logger.info(`Teacher assigned player ${playerId} to ${targetTeamId} in room ${roomId}`);
+      }
+    });
+
+    /**
+     * Teacher automatically balances all students across both teams
+     */
+    socket.on('teacher:autoBalanceTeams', ({ roomId }) => {
+      const room = roomManager.getRoomById(roomId);
+      if (!room) {
+        socket.emit('server:roomError', { message: 'Raum nicht gefunden.' });
+        return;
+      }
+
+      if (room.teacherSocketId !== socket.id) {
+        socket.emit('server:roomError', { message: 'Nur der Lehrer kann Teams ausgleichen.' });
+        return;
+      }
+
+      if (room.teamsLocked) {
+        socket.emit('server:roomError', {
+          message: 'Die Team-Zuweisung ist während des laufenden Spiels gesperrt.',
+        });
+        return;
+      }
+
+      if (!room.teams) {
+        room.teams = TeamManager.createDefaultTeams();
+      }
+
+      room.teams = TeamManager.autoBalanceTeams(room.players, room.teams);
+      const players = roomManager.getPlayersInRoom(room.roomId);
+      io.to(roomId).emit('room:teamsUpdated', { teams: room.teams, players });
+      io.to(roomId).emit('room:playersUpdated', { players, totalPlayers: players.length });
+      logger.info(`Teacher auto-balanced teams in room ${roomId}`);
+    });
+
+    /**
      * Student toggles ready state in lobby
      */
     socket.on('student:toggleReady', ({ roomId }) => {
@@ -431,6 +500,11 @@ export function setupSocketHandlers(io: TypedServer): void {
           totalPlayers: players.length,
         });
 
+        if (room.teams) {
+          io.to(room.roomId).emit('room:teamsUpdated', { teams: room.teams, players });
+          socket.emit('game:teamAssignment', { teams: room.teams, myTeamId: player.teamId });
+        }
+
         // Backward compatibility event
         io.to(room.roomId).emit('player:list_updated', { players });
 
@@ -464,14 +538,22 @@ export function setupSocketHandlers(io: TypedServer): void {
         currentPlayer.socketId = socket.id;
         currentPlayer.connected = true;
         currentPlayer.isConnected = true;
+        roomManager.bindSocketToPlayer(socket.id, room.roomId, currentPlayer.playerId);
         socket.data.playerId = currentPlayer.playerId;
         socket.data.playerName = currentPlayer.name;
         socket.data.roomId = room.roomId;
         socket.data.roomPin = room.pin;
         socket.emit('student:joinedRoom', { room, player: currentPlayer });
+
+        if (room.teams) {
+          socket.emit('game:teamAssignment', { teams: room.teams, myTeamId: currentPlayer.teamId });
+        }
       }
 
       socket.emit('room:playersUpdated', { players, totalPlayers: players.length });
+      if (room.teams) {
+        socket.emit('room:teamsUpdated', { teams: room.teams, players });
+      }
       socket.emit('teacher:statusChanged', { teacherConnected: room.teacherConnected });
 
       // Synchronize active game question state if game is running
@@ -489,6 +571,12 @@ export function setupSocketHandlers(io: TypedServer): void {
           players: removed.remainingPlayers,
           totalPlayers: removed.remainingPlayers.length,
         });
+        if (removed.room.teams) {
+          io.to(roomId).emit('room:teamsUpdated', {
+            teams: removed.room.teams,
+            players: removed.remainingPlayers,
+          });
+        }
         io.to(roomId).emit('player:list_updated', { players: removed.remainingPlayers });
       }
     });

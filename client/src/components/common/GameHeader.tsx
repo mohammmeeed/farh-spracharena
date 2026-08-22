@@ -16,9 +16,10 @@ import {
   Pause,
   Play,
 } from 'lucide-react';
-import { GameLevel, GameType } from '../../types/game.types';
+import { GameLevel, GameType, Team, Player } from '../../types/game.types';
 import { ScoreDisplay } from './ScoreDisplay';
 import { StreakBadge } from './StreakBadge';
+import { TeamRosterDrawer } from './TeamRosterDrawer';
 import { AudioSettingsModal } from './AudioSettingsModal';
 import { useAudio } from '../../hooks/useAudio';
 
@@ -36,6 +37,10 @@ interface GameHeaderProps {
   isProjectorMode?: boolean;
   onToggleProjectorMode?: () => void;
   onExit?: () => void;
+  teams?: Record<string, Team>;
+  myTeamId?: 'TEAM_BLAU' | 'TEAM_ROT';
+  players?: Player[];
+  currentPlayerId?: string;
 }
 
 export const GameHeader: React.FC<GameHeaderProps> = ({
@@ -52,6 +57,10 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
   isProjectorMode = false,
   onToggleProjectorMode,
   onExit,
+  teams,
+  myTeamId,
+  players = [],
+  currentPlayerId,
 }) => {
   const [isAudioModalOpen, setIsAudioModalOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -92,7 +101,7 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
     <>
       <header className="w-full glass-card border-x-0 border-t-0 border-b border-white/10 px-3 py-2.5 md:px-6 md:py-3 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 md:gap-4">
-          {/* Left: Branding & Level */}
+          {/* Left: Branding & Level & Team Badge */}
           <div className="flex items-center gap-2 md:gap-3 shrink-0">
             <div className="flex flex-col">
               <span className="font-extrabold text-sm md:text-base gradient-text-gold tracking-tight whitespace-nowrap">
@@ -108,9 +117,20 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
                 </span>
               </div>
             </div>
+
+            {/* Permanent Team Identity & Teammate Drawer */}
+            {gameType === 'TEAM_BATTLE' && teams && (
+              <TeamRosterDrawer
+                myTeamId={myTeamId}
+                teams={teams}
+                players={players}
+                currentPlayerId={currentPlayerId}
+                className="hidden sm:block"
+              />
+            )}
           </div>
 
-          {/* Center: Question Progress & Streak */}
+          {/* Center: Question Progress, Team Battle Tug-of-war, & Streak */}
           <div className="flex items-center gap-2 md:gap-3">
             <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-white/5 border border-white/10 text-xs md:text-sm font-semibold shadow-inner">
               <span className="text-slate-400 hidden sm:inline font-medium">Frage</span>
@@ -118,6 +138,15 @@ export const GameHeader: React.FC<GameHeaderProps> = ({
               <span className="text-slate-500">/</span>
               <span className="font-mono text-slate-400">{totalQuestions}</span>
             </div>
+
+            {/* Team Battle Quick Score Summary */}
+            {gameType === 'TEAM_BATTLE' && teams && (
+              <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-xl bg-slate-950/80 border border-white/10 text-xs font-mono font-black shadow-inner">
+                <span className="text-rose-400">🔴 {teams.TEAM_ROT?.score || 0}</span>
+                <span className="text-slate-500 text-[10px]">vs</span>
+                <span className="text-blue-400">🔵 {teams.TEAM_BLAU?.score || 0}</span>
+              </div>
+            )}
 
             {!isTeacher && streak > 0 && (
               <StreakBadge streak={streak} size="sm" className="inline-flex" />
