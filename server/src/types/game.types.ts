@@ -193,6 +193,54 @@ export interface SessionStatistics {
   };
 }
 
+export interface GameStateSnapshot {
+  roomId: string;
+  roomPin: string;
+  level: GameLevel;
+  status: RoomStatus;
+  phaseSequence: number;
+  currentGameIndex: number;
+  totalGames: number;
+  currentGameType: GameType;
+  currentQuestionIndex: number;
+  totalQuestionsInGame: number;
+  currentQuestion?: {
+    questionId: string;
+    text: string;
+    format?: QuestionFormat;
+    options?: string[];
+    words?: string[];
+    clues?: string[];
+    focusWord?: string;
+    translation?: string;
+    explanation?: string;
+    timeLimit: number;
+    startedAt: number;
+    endsAt: number;
+    questionNumber: number;
+    totalQuestions: number;
+    gameType: GameType;
+    gameNumber: number;
+    totalGames: number;
+    category?: string;
+    difficulty?: string;
+  };
+  countdownValue?: number;
+  countdownEndsAt?: number;
+  countdownStartedAt?: number;
+  countdownDurationMs?: number;
+  resultEndsAt?: number;
+  nextGameEndsAt?: number;
+  lastQuestionResult?: any;
+  nextGameData?: any;
+  isPaused: boolean;
+  pauseReason?: string;
+  pauseExplanation?: string;
+  teams?: Record<string, Team>;
+  players: Player[];
+  serverTime: number;
+}
+
 export interface CreateRoomPayload {
   level: GameLevel;
   games: {
@@ -209,6 +257,7 @@ export interface CreateRoomPayload {
 export interface ServerToClientEvents {
   'server:pong': (data: { timestamp: number }) => void;
   'connection:ack': (data: { socketId: string; serverTime: number }) => void;
+  'time:pong': (data: { clientTimestamp: number; serverTimestamp: number }) => void;
   'server:roomCreated': (data: { room: GameRoom }) => void;
   'server:roomJoined': (data: { room: GameRoom }) => void;
   'server:roomClosed': (data: { roomId: string; reason?: string }) => void;
@@ -218,7 +267,10 @@ export interface ServerToClientEvents {
   'student:joinError': (data: { message: string }) => void;
   'room:playersUpdated': (data: { players: Player[]; totalPlayers: number }) => void;
 
-  // Phase 4 & 5 Game Engine Events
+  // Full state snapshot for seamless reconnection & sync
+  'game:stateSnapshot': (data: GameStateSnapshot) => void;
+
+  // Phase 4 & 5 Game Engine Events with authoritative sequence and timestamps
   'game:countdown': (data: {
     value: number;
     gameType: GameType;
@@ -227,6 +279,7 @@ export interface ServerToClientEvents {
     countdownEndsAt?: number;
     startedAt?: number;
     durationMs?: number;
+    phaseSequence?: number;
   }) => void;
   'game:questionStarted': (data: {
     questionId: string;
@@ -247,6 +300,7 @@ export interface ServerToClientEvents {
     totalGames: number;
     category?: string;
     difficulty?: string;
+    phaseSequence?: number;
   }) => void;
   'game:clueRevealed': (data: {
     clueIndex: number;
@@ -305,6 +359,7 @@ export interface ServerToClientEvents {
         teamId?: 'TEAM_BLAU' | 'TEAM_ROT';
       }
     >;
+    phaseSequence?: number;
   }) => void;
   'game:nextGame': (data: {
     previousGameType: GameType;
@@ -312,6 +367,7 @@ export interface ServerToClientEvents {
     gameNumber: number;
     totalGames: number;
     nextGameQuestionCount: number;
+    phaseSequence?: number;
   }) => void;
   'game:gameResult': (data: {
     gameType: GameType;
@@ -320,6 +376,7 @@ export interface ServerToClientEvents {
     leaderboard: LeaderboardEntry[];
     teams?: Record<string, Team>;
     winner?: LeaderboardEntry | Team;
+    phaseSequence?: number;
   }) => void;
   'game:sessionFinished': (data: {
     finalLeaderboard: LeaderboardEntry[];
@@ -329,9 +386,18 @@ export interface ServerToClientEvents {
     winner?: LeaderboardEntry | Team;
     questionHistory?: QuestionHistoryItem[];
     sessionStats?: SessionStatistics;
+    phaseSequence?: number;
   }) => void;
-  'game:gamePaused': (data: { reason: string; explanation?: string; questionText?: string }) => void;
-  'game:gameResumed': (data: { remainingSeconds: number }) => void;
+  'game:gamePaused': (data: {
+    reason: string;
+    explanation?: string;
+    questionText?: string;
+    phaseSequence?: number;
+  }) => void;
+  'game:gameResumed': (data: {
+    remainingSeconds: number;
+    phaseSequence?: number;
+  }) => void;
   'student:kicked': (data: { reason?: string }) => void;
   'room:teamsUpdated': (data: { teams: Record<string, Team>; players: Player[] }) => void;
   'game:teamIntro': (data: { teams: Record<string, Team>; players: Player[]; durationMs: number }) => void;
@@ -346,6 +412,8 @@ export interface ServerToClientEvents {
 
 export interface ClientToServerEvents {
   'client:ping': (data: { timestamp: number }) => void;
+  'time:ping': (data: { clientTimestamp: number }) => void;
+  'game:requestStateSnapshot': (data: { roomId: string; playerId?: string }) => void;
   'teacher:createRoom': (data: CreateRoomPayload) => void;
   'teacher:joinRoom': (data: { roomId: string }) => void;
   'teacher:closeRoom': (data: { roomId: string }) => void;

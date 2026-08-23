@@ -7,6 +7,7 @@ import {
   GameType,
   Team,
   QuestionFormat,
+  GameStateSnapshot,
 } from '../../types/game.types';
 import { socketService } from '../../socket/socket.service';
 import { useAudio } from '../../hooks/useAudio';
@@ -51,6 +52,7 @@ interface QuestionStartedPayload {
   totalGames: number;
   category?: string;
   difficulty?: string;
+  phaseSequence?: number;
 }
 
 interface QuestionResultPayload {
@@ -74,6 +76,7 @@ interface QuestionResultPayload {
       teamId?: 'TEAM_BLAU' | 'TEAM_ROT';
     }
   >;
+  phaseSequence?: number;
 }
 
 interface NextGamePayload {
@@ -82,6 +85,7 @@ interface NextGamePayload {
   gameNumber: number;
   totalGames: number;
   nextGameQuestionCount: number;
+  phaseSequence?: number;
 }
 
 interface SessionFinishedPayload {
@@ -92,6 +96,7 @@ interface SessionFinishedPayload {
   winner?: LeaderboardEntry | Team;
   questionHistory?: any[];
   sessionStats?: any;
+  phaseSequence?: number;
 }
 
 interface GameArenaProps {
@@ -165,6 +170,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
   // Synchronized Timer state
   const [timeRemaining, setTimeRemaining] = useState<number>(15);
   const timerIntervalRef = useRef<any>(null);
+  const currentPhaseSequenceRef = useRef<number>(0);
 
   // Active teams and leaderboard
   const [teams, setTeams] = useState<Record<string, Team> | undefined>(room.teams);
@@ -204,12 +210,100 @@ export const GameArena: React.FC<GameArenaProps> = ({
   useEffect(() => {
     const socket = socketService.getSocket();
 
+    // 0. Full Authoritative State Snapshot Reconciler
+    const handleStateSnapshot = (snapshot: GameStateSnapshot) => {
+      if (snapshot.phaseSequence && snapshot.phaseSequence < currentPhaseSequenceRef.current) {
+        return;
+      }
+      if (snapshot.phaseSequence) {
+        currentPhaseSequenceRef.current = snapshot.phaseSequence;
+      }
+
+      if (snapshot.teams) setTeams(snapshot.teams);
+      if (snapshot.players) {
+        const sorted = [...snapshot.players].sort((a, b) => b.score - a.score);
+        setLeaderboard(
+          sorted.map((p, idx) => ({
+            rank: idx + 1,
+            playerId: p.playerId,
+            name: p.name,
+            score: p.score,
+            streak: p.currentStreak,
+            teamId: p.teamId,
+            answeredCurrentQuestion: p.answeredCurrentQuestion,
+            connected: p.connected,
+          }))
+        );
+      }
+
+      setIsPaused(snapshot.isPaused);
+      if (snapshot.pauseReason) setPauseReason(snapshot.pauseReason);
+      if (snapshot.pauseExplanation) setPauseExplanation(snapshot.pauseExplanation);
+
+      switch (snapshot.status) {
+        case 'QUESTION':
+          if (snapshot.currentQuestion) {
+            setCurrentCountdown(null);
+            setCountdownEndsAt(undefined);
+            setCurrentQuestion(snapshot.currentQuestion as any);
+            setQuestionResult(null);
+            setNextGameData(null);
+
+            if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+            const updateTimer = () => {
+              const now = socketService.getServerNow();
+              const remaining = Math.max(0, Math.ceil((snapshot.currentQuestion!.endsAt - now) / 1000));
+              setTimeRemaining(remaining);
+              if (remaining <= 0 && timerIntervalRef.current) {
+                clearInterval(timerIntervalRef.current);
+              }
+            };
+            updateTimer();
+            timerIntervalRef.current = setInterval(updateTimer, 150);
+          }
+          break;
+
+        case 'COUNTDOWN':
+          setCurrentCountdown(snapshot.countdownValue || 3);
+          setCountdownEndsAt(snapshot.countdownEndsAt);
+          setCountdownMeta({
+            questionNumber: snapshot.currentQuestionIndex + 1,
+            totalQuestions: snapshot.totalQuestionsInGame,
+          });
+          setCurrentQuestion(null);
+          setQuestionResult(null);
+          break;
+
+        case 'QUESTION_RESULT':
+          if (snapshot.lastQuestionResult) {
+            setCurrentCountdown(null);
+            setCountdownEndsAt(undefined);
+            setQuestionResult(snapshot.lastQuestionResult);
+          }
+          break;
+
+        case 'NEXT_GAME':
+          if (snapshot.nextGameData) {
+            setCurrentCountdown(null);
+            setCountdownEndsAt(undefined);
+            setNextGameData(snapshot.nextGameData);
+          }
+          break;
+
+        case 'FINISHED':
+          setCurrentCountdown(null);
+          setCountdownEndsAt(undefined);
+          break;
+      }
+    };
+
     // 1. Countdown Event
     const handleCountdown = ({
       value,
       countdownEndsAt: endsAt,
       questionNumber,
       totalQuestions,
+      phaseSequence,
     }: {
       value: number;
       gameType: GameType;
@@ -218,7 +312,11 @@ export const GameArena: React.FC<GameArenaProps> = ({
       countdownEndsAt?: number;
       startedAt?: number;
       durationMs?: number;
+      phaseSequence?: number;
     }) => {
+      if (phaseSequence && phaseSequence < currentPhaseSequenceRef.current) return;
+      if (phaseSequence) currentPhaseSequenceRef.current = phaseSequence;
+
       setCurrentCountdown(value);
       setCountdownEndsAt(endsAt);
       setCountdownMeta({ questionNumber, totalQuestions });
@@ -227,13 +325,16 @@ export const GameArena: React.FC<GameArenaProps> = ({
       setIsPaused(false);
 
       if (value === 0) {
-        setTimeout(() => setCurrentCountdown(null), 600);
+        setTimeout(() => setCurrentCountdown(null), 500);
       }
     };
 
     // 2. Question Started Event
     const handleQuestionStarted = (data: QuestionStartedPayload) => {
-      // Countdown Failsafe: immediately clear countdown when question starts
+      if (data.phaseSequence && data.phaseSequence < currentPhaseSequenceRef.current) return;
+      if (data.phaseSequence) currentPhaseSequenceRef.current = data.phaseSequence;
+
+      // Countdown Failsafe: unconditionally clear countdown overlay
       setCurrentCountdown(null);
       setCountdownEndsAt(undefined);
       setCurrentQuestion(data);
@@ -246,10 +347,10 @@ export const GameArena: React.FC<GameArenaProps> = ({
       setIsAnswerSubmitted(false);
       setMyAnswerResult({ status: null, pointsEarned: 0, currentStreak: myStreakRef.current });
 
-      // Start synchronized timer from authoritative endsAt
+      // Start synchronized timer from authoritative endsAt using synchronized server time
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
       const updateTimer = () => {
-        const now = Date.now();
+        const now = socketService.getServerNow();
         const remaining = Math.max(0, Math.ceil((data.endsAt - now) / 1000));
         setTimeRemaining(remaining);
         if (remaining <= 0 && timerIntervalRef.current) {
@@ -258,7 +359,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
       };
 
       updateTimer();
-      timerIntervalRef.current = setInterval(updateTimer, 200);
+      timerIntervalRef.current = setInterval(updateTimer, 150);
     };
 
     // 3. Answer Accepted (Student acknowledged by server)
@@ -301,6 +402,9 @@ export const GameArena: React.FC<GameArenaProps> = ({
 
     // 5. Question Result Event
     const handleQuestionResult = (data: QuestionResultPayload) => {
+      if (data.phaseSequence && data.phaseSequence < currentPhaseSequenceRef.current) return;
+      if (data.phaseSequence) currentPhaseSequenceRef.current = data.phaseSequence;
+
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
       setTimeRemaining(0);
       setCurrentCountdown(null);
@@ -352,6 +456,9 @@ export const GameArena: React.FC<GameArenaProps> = ({
 
     // 8. Next Game Event
     const handleNextGame = (data: NextGamePayload) => {
+      if (data.phaseSequence && data.phaseSequence < currentPhaseSequenceRef.current) return;
+      if (data.phaseSequence) currentPhaseSequenceRef.current = data.phaseSequence;
+
       setNextGameData(data);
       setCurrentCountdown(null);
       setQuestionResult(null);
@@ -359,6 +466,9 @@ export const GameArena: React.FC<GameArenaProps> = ({
 
     // 9. Session Finished Event
     const handleSessionFinished = (data: SessionFinishedPayload) => {
+      if (data.phaseSequence && data.phaseSequence < currentPhaseSequenceRef.current) return;
+      if (data.phaseSequence) currentPhaseSequenceRef.current = data.phaseSequence;
+
       setSessionFinishedData(data);
       setCurrentCountdown(null);
       setLeaderboard(data.finalLeaderboard || []);
@@ -373,10 +483,15 @@ export const GameArena: React.FC<GameArenaProps> = ({
     const handleGamePaused = ({
       reason,
       explanation,
+      phaseSequence,
     }: {
       reason: string;
       explanation?: string;
+      phaseSequence?: number;
     }) => {
+      if (phaseSequence && phaseSequence < currentPhaseSequenceRef.current) return;
+      if (phaseSequence) currentPhaseSequenceRef.current = phaseSequence;
+
       setIsPaused(true);
       setPauseReason(reason);
       if (explanation) setPauseExplanation(explanation);
@@ -384,7 +499,16 @@ export const GameArena: React.FC<GameArenaProps> = ({
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
     };
 
-    const handleGameResumed = ({ remainingSeconds }: { remainingSeconds: number }) => {
+    const handleGameResumed = ({
+      remainingSeconds,
+      phaseSequence,
+    }: {
+      remainingSeconds: number;
+      phaseSequence?: number;
+    }) => {
+      if (phaseSequence && phaseSequence < currentPhaseSequenceRef.current) return;
+      if (phaseSequence) currentPhaseSequenceRef.current = phaseSequence;
+
       setIsPaused(false);
       setPauseReason('');
       setPauseExplanation(null);
@@ -403,6 +527,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
     };
 
     // Attach listeners
+    socket.on('game:stateSnapshot', handleStateSnapshot);
     socket.on('game:countdown', handleCountdown);
     socket.on('game:questionStarted', handleQuestionStarted);
     socket.on('game:answerAccepted', handleAnswerAccepted);
@@ -416,20 +541,12 @@ export const GameArena: React.FC<GameArenaProps> = ({
     socket.on('game:gamePaused', handleGamePaused);
     socket.on('game:gameResumed', handleGameResumed);
 
-    // Initial sync request if mounted mid-game
-    if (socket.connected) {
-      if (isTeacherRef.current) {
-        socket.emit('teacher:joinRoom', { roomId: room.roomId });
-      } else {
-        socket.emit('student:syncLobby', {
-          roomId: room.roomId,
-          playerId: playerRef.current?.playerId,
-        });
-      }
-    }
+    // Initial snapshot sync
+    socketService.requestStateSnapshot(room.roomId, playerRef.current?.playerId);
 
     return () => {
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
+      socket.off('game:stateSnapshot', handleStateSnapshot);
       socket.off('game:countdown', handleCountdown);
       socket.off('game:questionStarted', handleQuestionStarted);
       socket.off('game:answerAccepted', handleAnswerAccepted);

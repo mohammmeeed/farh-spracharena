@@ -26,11 +26,17 @@ export type TypedSocket = Socket<
 
 function syncActiveStateToSocket(socket: TypedSocket, room: any): void {
   if (!room.gameState) return;
+
+  // Emit authoritative state snapshot for unified reconciliation
+  const snapshot = gameEngine.generateStateSnapshot(room);
+  socket.emit('game:stateSnapshot', snapshot);
+
   const gameState = room.gameState;
   const currentGame = room.games[room.currentGameIndex];
   if (!currentGame) return;
 
   const now = Date.now();
+  const phaseSequence = (room as any).phaseSequence || 1;
 
   if (room.status === 'QUESTION' && gameState.currentQuestion) {
     const question = gameState.currentQuestion;
@@ -56,6 +62,7 @@ function syncActiveStateToSocket(socket: TypedSocket, room: any): void {
       totalGames: room.games.length,
       category: question.category,
       difficulty: question.difficulty,
+      phaseSequence,
     });
   } else if (room.status === 'COUNTDOWN') {
     const startedAt = gameState.countdownStartedAt || now;
@@ -71,6 +78,7 @@ function syncActiveStateToSocket(socket: TypedSocket, room: any): void {
       countdownEndsAt,
       startedAt,
       durationMs: 3000,
+      phaseSequence,
     });
   } else if (room.status === 'QUESTION_RESULT' && gameState.lastQuestionResult) {
     socket.emit('game:questionResult', gameState.lastQuestionResult);
@@ -83,6 +91,7 @@ function syncActiveStateToSocket(socket: TypedSocket, room: any): void {
       reason: 'Lehrer Farh erklärt die Frage und Sprachregel',
       explanation: gameState.currentQuestion?.explanation,
       questionText: gameState.currentQuestion?.text,
+      phaseSequence,
     });
   }
 
@@ -110,6 +119,23 @@ export function setupSocketHandlers(io: TypedServer): void {
     // Handle ping/pong for live latency calculation
     socket.on('client:ping', (data) => {
       socket.emit('server:pong', { timestamp: data.timestamp });
+    });
+
+    // High-precision NTP-like time synchronization
+    socket.on('time:ping', (data) => {
+      socket.emit('time:pong', {
+        clientTimestamp: data.clientTimestamp,
+        serverTimestamp: Date.now(),
+      });
+    });
+
+    // Client requests authoritative state snapshot on recovery
+    socket.on('game:requestStateSnapshot', (data) => {
+      const room = roomManager.getRoomById(data.roomId);
+      if (room) {
+        const snapshot = gameEngine.generateStateSnapshot(room);
+        socket.emit('game:stateSnapshot', snapshot);
+      }
     });
 
     // ==========================================

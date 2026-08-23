@@ -2,12 +2,15 @@ import { Server } from 'socket.io';
 import {
   GameRoom,
   GameState,
+  GameType,
+  QuestionFormat,
   ClientToServerEvents,
   ServerToClientEvents,
   InterServerEvents,
   SocketData,
-  QuestionHistoryItem,
+  GameStateSnapshot,
   QuestionResponseRecord,
+  QuestionHistoryItem,
   SessionStatistics,
 } from '../types/game.types.js';
 import { roomManager } from '../rooms/room.manager.js';
@@ -29,7 +32,7 @@ export type TypedServer = Server<
 
 /**
  * GameEngine - Server-Authoritative Real-Time Game Loop
- * Phase 6 - Powered by the Scalable Question Bank & Selection System
+ * Hardened for Mobile Latency Compensation and State Snapshot Synchronization
  */
 export class GameEngine {
   private static instance: GameEngine;
@@ -39,6 +42,69 @@ export class GameEngine {
       this.instance = new GameEngine();
     }
     return this.instance;
+  }
+
+  /**
+   * Generates a complete authoritative snapshot of the current room state
+   */
+  public generateStateSnapshot(room: GameRoom): GameStateSnapshot {
+    const gameState = room.gameState;
+    const currentGame = room.games[room.currentGameIndex];
+    const now = Date.now();
+
+    let currentQuestionPayload = undefined;
+    if (gameState && gameState.currentQuestion) {
+      const q = gameState.currentQuestion;
+      currentQuestionPayload = {
+        questionId: q.id,
+        text: q.text,
+        format: q.format,
+        options: q.options,
+        words: q.words,
+        clues: q.clues,
+        focusWord: q.focusWord,
+        translation: q.translation,
+        explanation: q.explanation,
+        timeLimit: q.timeLimit,
+        startedAt: (gameState as any).currentQuestionStartedAt || now,
+        endsAt: (gameState as any).currentQuestionEndsAt || now + q.timeLimit * 1000,
+        questionNumber: room.currentQuestionIndex + 1,
+        totalQuestions: gameState.questionsForCurrentGame.length,
+        gameType: currentGame?.gameType || 'SCHNELLANTWORT',
+        gameNumber: room.currentGameIndex + 1,
+        totalGames: room.games.length,
+        category: q.category,
+        difficulty: q.difficulty,
+      };
+    }
+
+    return {
+      roomId: room.roomId,
+      roomPin: room.pin,
+      level: room.level,
+      status: room.status,
+      phaseSequence: (room as any).phaseSequence || 1,
+      currentGameIndex: room.currentGameIndex,
+      totalGames: room.games.length,
+      currentGameType: currentGame?.gameType || 'SCHNELLANTWORT',
+      currentQuestionIndex: room.currentQuestionIndex,
+      totalQuestionsInGame: gameState?.questionsForCurrentGame?.length || 0,
+      currentQuestion: currentQuestionPayload,
+      countdownValue: gameState?.countdownValue,
+      countdownEndsAt: (gameState as any)?.countdownEndsAt,
+      countdownStartedAt: (gameState as any)?.countdownStartedAt,
+      countdownDurationMs: 3000,
+      resultEndsAt: (gameState as any)?.resultEndsAt,
+      nextGameEndsAt: (gameState as any)?.nextGameEndsAt,
+      lastQuestionResult: (gameState as any)?.lastQuestionResult,
+      nextGameData: (gameState as any)?.nextGameData,
+      isPaused: !!(gameState as any)?.isPaused,
+      pauseReason: (gameState as any)?.isPaused ? 'Lehrer Farh erklärt die Frage und Sprachregel' : undefined,
+      pauseExplanation: gameState?.currentQuestion?.explanation,
+      teams: room.teams,
+      players: Object.values(room.players),
+      serverTime: now,
+    };
   }
 
   /**
@@ -54,6 +120,7 @@ export class GameEngine {
       throw new Error('Keine Spiele für diese Runde konfiguriert.');
     }
 
+    (room as any).phaseSequence = 1;
     room.currentGameIndex = 0;
     room.currentQuestionIndex = 0;
     room.usedQuestionIds = new Set<string>();
@@ -181,6 +248,9 @@ export class GameEngine {
     const room = roomManager.getRoomById(roomId);
     if (!room || !room.gameState) return;
 
+    (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+    const phaseSequence = (room as any).phaseSequence;
+
     room.status = 'COUNTDOWN';
     room.gameState.status = 'COUNTDOWN';
 
@@ -199,7 +269,7 @@ export class GameEngine {
     let count = 3;
     const timerKey = `countdown_${roomId}`;
 
-    // Emit initial countdown value 3 with authoritative timestamps
+    // Emit initial countdown value 3 with authoritative timestamps & phaseSequence
     io.to(roomId).emit('game:countdown', {
       value: count,
       gameType: currentGame.gameType,
@@ -208,6 +278,7 @@ export class GameEngine {
       countdownEndsAt,
       startedAt,
       durationMs,
+      phaseSequence,
     });
 
     timerService.startTimer(
@@ -230,6 +301,7 @@ export class GameEngine {
             countdownEndsAt,
             startedAt,
             durationMs,
+            phaseSequence,
           });
         }
       }
@@ -252,6 +324,9 @@ export class GameEngine {
       this.nextStep(roomId, io);
       return;
     }
+
+    (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+    const phaseSequence = (room as any).phaseSequence;
 
     room.status = 'QUESTION';
     gameState.status = 'QUESTION';
@@ -280,7 +355,7 @@ export class GameEngine {
 
     const currentGame = room.games[room.currentGameIndex];
 
-    // Broadcast safe question payload (WITHOUT correctAnswer)
+    // Broadcast safe question payload with phaseSequence
     io.to(roomId).emit('game:questionStarted', {
       questionId: question.id,
       text: question.text,
@@ -300,6 +375,7 @@ export class GameEngine {
       totalGames: room.games.length,
       category: question.category,
       difficulty: question.difficulty,
+      phaseSequence,
     });
 
     // If Team Battle, ensure all players have team state
@@ -594,7 +670,8 @@ export class GameEngine {
     }
     room.sessionQuestionHistory.push(historyItem);
 
-    const leaderboard = LeaderboardService.generateLeaderboard(room.players);
+    const leaderboard = LeaderboardService.generateLeaderboard(room.players);    (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+    const phaseSequence = (room as any).phaseSequence;
 
     const questionResultData = {
       questionId: currentQuestion.id,
@@ -613,6 +690,7 @@ export class GameEngine {
       leaderboard,
       teams: room.teams,
       playerResults,
+      phaseSequence,
     };
 
     (gameState as any).lastQuestionResult = questionResultData;
@@ -668,10 +746,14 @@ export class GameEngine {
       leaderboard,
       teams: room.teams,
       winner,
+      phaseSequence: (room as any).phaseSequence,
     });
 
     // Check if there is another game in the session
     if (currentGameIndex + 1 < room.games.length) {
+      (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+      const phaseSequence = (room as any).phaseSequence;
+
       room.currentGameIndex++;
       room.currentQuestionIndex = 0;
 
@@ -729,6 +811,7 @@ export class GameEngine {
         gameNumber: room.currentGameIndex + 1,
         totalGames: room.games.length,
         nextGameQuestionCount: nextGameConfig.questionCount,
+        phaseSequence,
       };
 
       (gameState as any).nextGameData = nextGamePayload;
@@ -747,6 +830,9 @@ export class GameEngine {
         this.startCountdown(roomId, io);
       });
     } else {
+      (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+      const phaseSequence = (room as any).phaseSequence;
+
       // All games in the session are finished!
       room.status = 'FINISHED';
       gameState.status = 'FINISHED';
@@ -841,6 +927,7 @@ export class GameEngine {
         winner: sessionWinner,
         questionHistory: history,
         sessionStats,
+        phaseSequence,
       });
 
       logger.info(
@@ -857,6 +944,9 @@ export class GameEngine {
     if (!room || !room.gameState) return;
 
     if (room.status === 'QUESTION') {
+      (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+      const phaseSequence = (room as any).phaseSequence;
+
       const remainingMs = timerService.pauseTimer(`question_${roomId}`);
       room.gameState.isPaused = true;
       room.gameState.pauseRemainingMs = remainingMs;
@@ -868,6 +958,7 @@ export class GameEngine {
         reason,
         explanation: question?.explanation,
         questionText: question?.text,
+        phaseSequence,
       });
       logger.info(`[GameEngine] Game in Room ${roomId} paused for explanation. Remaining: ${remainingMs}ms`);
     }
@@ -880,6 +971,9 @@ export class GameEngine {
     const room = roomManager.getRoomById(roomId);
     if (!room || !room.gameState || !room.gameState.isPaused) return;
 
+    (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+    const phaseSequence = (room as any).phaseSequence;
+
     room.gameState.isPaused = false;
     const resumed = timerService.resumeTimer(`question_${roomId}`);
     if (resumed) {
@@ -889,6 +983,7 @@ export class GameEngine {
 
       io.to(roomId).emit('game:gameResumed', {
         remainingSeconds: remainingSec,
+        phaseSequence,
       });
       logger.info(`[GameEngine] Game in Room ${roomId} resumed. Remaining: ${remainingSec}s`);
     }

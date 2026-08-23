@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Sparkles } from 'lucide-react';
 import { useAudio } from '../../hooks/useAudio';
+import { socketService } from '../../socket/socket.service';
 
 interface CountdownOverlayProps {
   countdownValue?: number; // 3, 2, 1, 0 (LOS!)
@@ -25,7 +26,7 @@ export const CountdownOverlay: React.FC<CountdownOverlayProps> = ({
   const onCompleteRef = useRef(onComplete);
   onCompleteRef.current = onComplete;
 
-  // Local authoritative timer calculation if countdownEndsAt is provided
+  // Local authoritative timer calculation using synchronized server time
   useEffect(() => {
     if (!countdownEndsAt) {
       setDisplayValue(countdownValue);
@@ -33,7 +34,7 @@ export const CountdownOverlay: React.FC<CountdownOverlayProps> = ({
     }
 
     const updateValue = () => {
-      const now = Date.now();
+      const now = socketService.getServerNow();
       const remainingMs = Math.max(0, countdownEndsAt - now);
       const val = Math.ceil(remainingMs / 1000);
       setDisplayValue(val);
@@ -46,11 +47,11 @@ export const CountdownOverlay: React.FC<CountdownOverlayProps> = ({
     };
 
     updateValue();
-    const interval = setInterval(updateValue, 100);
+    const interval = setInterval(updateValue, 80);
     return () => clearInterval(interval);
   }, [countdownEndsAt, countdownValue]);
 
-  // Audio cues triggered only once per second tick
+  // Audio cues triggered strictly once per second tick
   useEffect(() => {
     if (displayValue !== lastSoundRef.current) {
       lastSoundRef.current = displayValue;
