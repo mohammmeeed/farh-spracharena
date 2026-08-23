@@ -18,7 +18,7 @@ import { useToast } from '../../context/ToastContext';
 import {
   GameHeader,
   Timer,
-  CountdownOverlay,
+  MotivationalTransitionOverlay,
   GameTransition,
   VictoryOverlay,
   LoadingScreen,
@@ -356,13 +356,10 @@ export const GameArena: React.FC<GameArenaProps> = ({
       setCurrentCountdown(value);
       setCountdownEndsAt(endsAt);
       setCountdownMeta({ questionNumber, totalQuestions });
+      setCurrentQuestion(null); // Clear previous question so it never renders behind transition
       setQuestionResult(null);
       setNextGameData(null);
       setIsPaused(false);
-
-      if (value === 0) {
-        setTimeout(() => setCurrentCountdown(null), 500);
-      }
     };
 
     // 2. Question Started Event
@@ -681,9 +678,11 @@ export const GameArena: React.FC<GameArenaProps> = ({
       );
     }
 
+    let gameElement: React.ReactNode = null;
+
     switch (currentQuestion.gameType) {
       case 'SCHNELLANTWORT':
-        return (
+        gameElement = (
           <SchnellantwortGame
             key={currentQuestion.questionId}
             text={currentQuestion.text}
@@ -697,9 +696,10 @@ export const GameArena: React.FC<GameArenaProps> = ({
             isProjectorMode={isProjectorMode}
           />
         );
+        break;
 
       case 'SATZ_RENNEN':
-        return (
+        gameElement = (
           <SatzRennenGame
             key={currentQuestion.questionId}
             text={currentQuestion.text}
@@ -712,9 +712,10 @@ export const GameArena: React.FC<GameArenaProps> = ({
             isProjectorMode={isProjectorMode}
           />
         );
+        break;
 
       case 'WORTSCHATZ_DUELL':
-        return (
+        gameElement = (
           <WortschatzDuellGame
             key={currentQuestion.questionId}
             text={currentQuestion.text}
@@ -730,9 +731,10 @@ export const GameArena: React.FC<GameArenaProps> = ({
             isProjectorMode={isProjectorMode}
           />
         );
+        break;
 
       case 'WAS_BIN_ICH':
-        return (
+        gameElement = (
           <WasBinIchGame
             key={currentQuestion.questionId}
             text={currentQuestion.text}
@@ -747,9 +749,10 @@ export const GameArena: React.FC<GameArenaProps> = ({
             isProjectorMode={isProjectorMode}
           />
         );
+        break;
 
       case 'TEAM_BATTLE':
-        return (
+        gameElement = (
           <TeamBattleGame
             key={currentQuestion.questionId}
             text={currentQuestion.text}
@@ -765,10 +768,17 @@ export const GameArena: React.FC<GameArenaProps> = ({
             isProjectorMode={isProjectorMode}
           />
         );
+        break;
 
       default:
         return null;
     }
+
+    return (
+      <div key={currentQuestion.questionId} className="w-full animate-in fade-in slide-in-from-bottom-3 duration-300">
+        {gameElement}
+      </div>
+    );
   };
 
   const handleTogglePause = () => {
@@ -981,15 +991,13 @@ export const GameArena: React.FC<GameArenaProps> = ({
         />
       )}
 
-      {/* 1. Countdown Overlay (3, 2, 1, LOS!) with Failsafe */}
+      {/* 1. Motivational Question Transition Overlay */}
       {currentCountdown !== null && !currentQuestion && (
-        <CountdownOverlay
-          countdownValue={currentCountdown}
-          countdownEndsAt={countdownEndsAt}
-          gameName={currentGameType}
+        <MotivationalTransitionOverlay
           questionNumber={countdownMeta.questionNumber}
           totalQuestions={countdownMeta.totalQuestions}
-          onComplete={() => setCurrentCountdown(null)}
+          gameType={currentGameType}
+          countdownValue={currentCountdown}
         />
       )}
 

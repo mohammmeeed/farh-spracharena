@@ -17,3 +17,4 @@ export * from './ProgressBar';
 export * from './TeamIntroOverlay';
 export * from './TeamRosterDrawer';
 export * from './LoadingScreen';
+export * from './MotivationalTransitionOverlay';
