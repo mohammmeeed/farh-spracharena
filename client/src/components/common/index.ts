@@ -18,3 +18,4 @@ export * from './TeamIntroOverlay';
 export * from './TeamRosterDrawer';
 export * from './LoadingScreen';
 export * from './MotivationalTransitionOverlay';
+export * from './AnimatedLeaderboard';

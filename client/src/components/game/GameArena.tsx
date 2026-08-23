@@ -183,6 +183,8 @@ export const GameArena: React.FC<GameArenaProps> = ({
   // Active teams and leaderboard
   const [teams, setTeams] = useState<Record<string, Team> | undefined>(room.teams);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [previousLeaderboard, setPreviousLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const previousLeaderboardRef = useRef<LeaderboardEntry[]>([]);
   const [teamIntroData, setTeamIntroData] = useState<{
     teams: Record<string, Team>;
     players: Player[];
@@ -256,18 +258,20 @@ export const GameArena: React.FC<GameArenaProps> = ({
       if (snapshot.teams) setTeams(snapshot.teams);
       if (snapshot.players) {
         const sorted = [...snapshot.players].sort((a, b) => b.score - a.score);
-        setLeaderboard(
-          sorted.map((p, idx) => ({
-            rank: idx + 1,
-            playerId: p.playerId,
-            name: p.name,
-            score: p.score,
-            streak: p.currentStreak,
-            teamId: p.teamId,
-            answeredCurrentQuestion: p.answeredCurrentQuestion,
-            connected: p.connected,
-          }))
-        );
+        const mapped = sorted.map((p, idx) => ({
+          rank: idx + 1,
+          playerId: p.playerId,
+          name: p.name,
+          score: p.score,
+          streak: p.currentStreak,
+          teamId: p.teamId,
+          answeredCurrentQuestion: p.answeredCurrentQuestion,
+          connected: p.connected,
+        }));
+        setLeaderboard(mapped);
+        if (previousLeaderboardRef.current.length === 0) {
+          previousLeaderboardRef.current = mapped;
+        }
       }
 
       setIsPaused(snapshot.isPaused);
@@ -443,7 +447,14 @@ export const GameArena: React.FC<GameArenaProps> = ({
       setCurrentCountdown(null);
       setCountdownEndsAt(undefined);
       setQuestionResult(data);
-      setLeaderboard(data.leaderboard || []);
+      const newStandings = data.leaderboard || [];
+      setPreviousLeaderboard(
+        previousLeaderboardRef.current.length > 0
+          ? [...previousLeaderboardRef.current]
+          : newStandings
+      );
+      previousLeaderboardRef.current = newStandings;
+      setLeaderboard(newStandings);
       if (data.teams) setTeams(data.teams);
 
       const currentPlayer = playerRef.current;
@@ -960,6 +971,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
               correctAnswer={questionResult.correctAnswer}
               explanation={currentQuestion?.explanation}
               leaderboard={leaderboard}
+              previousLeaderboard={previousLeaderboard}
               currentPlayerId={player?.playerId}
               teams={teams}
               isTeacher={isTeacher}

@@ -26,7 +26,10 @@ export type SoundEffectType =
   | 'victory'
   | 'warning'
   | 'tick'
-  | 'click';
+  | 'click'
+  | 'pointsGained'
+  | 'rankUp'
+  | 'top3';
 
 export type MusicState = 'LOBBY' | 'GAME' | 'FINAL_RESULT' | 'NONE';
 export type InternalAudioState = 'IDLE' | 'PLAYING' | 'PAUSED' | 'STOPPED';
@@ -285,6 +288,15 @@ class AudioManager {
           break;
         case 'tick':
           this.playTimerTick(now, vol);
+          break;
+        case 'pointsGained':
+          this.playPointsGainedSound(now, vol);
+          break;
+        case 'rankUp':
+          this.playRankUpSound(now, vol);
+          break;
+        case 'top3':
+          this.playTop3Sound(now, vol);
           break;
         default:
           break;
@@ -747,6 +759,90 @@ class AudioManager {
     gain.connect(this.sfxMasterGain);
     osc.start(now);
     osc.stop(now + 0.025);
+  }
+
+  /**
+   * Short, pleasant positive "point increase" sound (180ms)
+   */
+  private playPointsGainedSound(now: number, vol: number): void {
+    if (!this.ctx || !this.sfxMasterGain) return;
+    const notes = [
+      { freq: 587.33, time: 0.0, dur: 0.08 }, // D5
+      { freq: 880.0, time: 0.05, dur: 0.12 }, // A5
+    ];
+
+    notes.forEach((n) => {
+      if (!this.ctx || !this.sfxMasterGain) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(n.freq, now + n.time);
+
+      const start = now + n.time;
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.linearRampToValueAtTime(vol * 0.38, start + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + n.dur);
+
+      osc.connect(gain);
+      gain.connect(this.sfxMasterGain);
+      osc.start(start);
+      osc.stop(start + n.dur + 0.02);
+    });
+  }
+
+  /**
+   * Short achievement / rising sound for rank improvement (320ms)
+   */
+  private playRankUpSound(now: number, vol: number): void {
+    if (!this.ctx || !this.sfxMasterGain) return;
+    const notes = [
+      { freq: 523.25, time: 0.0, dur: 0.09 }, // C5
+      { freq: 659.25, time: 0.08, dur: 0.09 }, // E5
+      { freq: 783.99, time: 0.16, dur: 0.15 }, // G5
+    ];
+
+    notes.forEach((n) => {
+      if (!this.ctx || !this.sfxMasterGain) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(n.freq, now + n.time);
+
+      const start = now + n.time;
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.linearRampToValueAtTime(vol * 0.42, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + n.dur);
+
+      osc.connect(gain);
+      gain.connect(this.sfxMasterGain);
+      osc.start(start);
+      osc.stop(start + n.dur + 0.02);
+    });
+  }
+
+  /**
+   * Subtle celebration sound for Top 3 position (380ms)
+   */
+  private playTop3Sound(now: number, vol: number): void {
+    if (!this.ctx || !this.sfxMasterGain) return;
+    const chord = [659.25, 830.61, 987.77, 1318.51]; // E5, G#5, B5, E6
+    chord.forEach((freq, idx) => {
+      if (!this.ctx || !this.sfxMasterGain) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + idx * 0.02);
+
+      const start = now + idx * 0.02;
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.linearRampToValueAtTime(vol * 0.28, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.35);
+
+      osc.connect(gain);
+      gain.connect(this.sfxMasterGain);
+      osc.start(start);
+      osc.stop(start + 0.37);
+    });
   }
 
   // ==========================================
