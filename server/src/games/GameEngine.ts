@@ -83,13 +83,16 @@ export class GameEngine {
       roomPin: room.pin,
       level: room.level,
       status: room.status,
+      stateVersion: (room as any).stateVersion || 100,
       phaseSequence: (room as any).phaseSequence || 1,
       currentGameIndex: room.currentGameIndex,
       totalGames: room.games.length,
       currentGameType: currentGame?.gameType || 'SCHNELLANTWORT',
       currentQuestionIndex: room.currentQuestionIndex,
       totalQuestionsInGame: gameState?.questionsForCurrentGame?.length || 0,
+      currentQuestionId: currentQuestionPayload?.questionId,
       currentQuestion: currentQuestionPayload,
+      questionEndsAt: (gameState as any)?.currentQuestionEndsAt,
       countdownValue: gameState?.countdownValue,
       countdownEndsAt: (gameState as any)?.countdownEndsAt,
       countdownStartedAt: (gameState as any)?.countdownStartedAt,
@@ -120,6 +123,7 @@ export class GameEngine {
       throw new Error('Keine Spiele für diese Runde konfiguriert.');
     }
 
+    (room as any).stateVersion = 100;
     (room as any).phaseSequence = 1;
     room.currentGameIndex = 0;
     room.currentQuestionIndex = 0;
@@ -249,7 +253,9 @@ export class GameEngine {
     if (!room || !room.gameState) return;
 
     (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+    (room as any).stateVersion = ((room as any).stateVersion || 100) + 1;
     const phaseSequence = (room as any).phaseSequence;
+    const stateVersion = (room as any).stateVersion;
 
     room.status = 'COUNTDOWN';
     room.gameState.status = 'COUNTDOWN';
@@ -269,7 +275,7 @@ export class GameEngine {
     let count = 3;
     const timerKey = `countdown_${roomId}`;
 
-    // Emit initial countdown value 3 with authoritative timestamps & phaseSequence
+    // Emit initial countdown value 3 with authoritative timestamps, stateVersion & phaseSequence
     io.to(roomId).emit('game:countdown', {
       value: count,
       gameType: currentGame.gameType,
@@ -279,6 +285,7 @@ export class GameEngine {
       startedAt,
       durationMs,
       phaseSequence,
+      stateVersion,
     });
 
     timerService.startTimer(
@@ -302,6 +309,7 @@ export class GameEngine {
             startedAt,
             durationMs,
             phaseSequence,
+            stateVersion,
           });
         }
       }
@@ -326,7 +334,9 @@ export class GameEngine {
     }
 
     (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+    (room as any).stateVersion = ((room as any).stateVersion || 100) + 1;
     const phaseSequence = (room as any).phaseSequence;
+    const stateVersion = (room as any).stateVersion;
 
     room.status = 'QUESTION';
     gameState.status = 'QUESTION';
@@ -355,7 +365,7 @@ export class GameEngine {
 
     const currentGame = room.games[room.currentGameIndex];
 
-    // Broadcast safe question payload with phaseSequence
+    // Broadcast safe question payload with stateVersion & phaseSequence
     io.to(roomId).emit('game:questionStarted', {
       questionId: question.id,
       text: question.text,
@@ -376,6 +386,7 @@ export class GameEngine {
       category: question.category,
       difficulty: question.difficulty,
       phaseSequence,
+      stateVersion,
     });
 
     // If Team Battle, ensure all players have team state
@@ -670,8 +681,11 @@ export class GameEngine {
     }
     room.sessionQuestionHistory.push(historyItem);
 
-    const leaderboard = LeaderboardService.generateLeaderboard(room.players);    (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+    const leaderboard = LeaderboardService.generateLeaderboard(room.players);
+    (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+    (room as any).stateVersion = ((room as any).stateVersion || 100) + 1;
     const phaseSequence = (room as any).phaseSequence;
+    const stateVersion = (room as any).stateVersion;
 
     const questionResultData = {
       questionId: currentQuestion.id,
@@ -691,6 +705,7 @@ export class GameEngine {
       teams: room.teams,
       playerResults,
       phaseSequence,
+      stateVersion,
     };
 
     (gameState as any).lastQuestionResult = questionResultData;
@@ -747,12 +762,15 @@ export class GameEngine {
       teams: room.teams,
       winner,
       phaseSequence: (room as any).phaseSequence,
+      stateVersion: (room as any).stateVersion,
     });
 
     // Check if there is another game in the session
     if (currentGameIndex + 1 < room.games.length) {
       (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+      (room as any).stateVersion = ((room as any).stateVersion || 100) + 1;
       const phaseSequence = (room as any).phaseSequence;
+      const stateVersion = (room as any).stateVersion;
 
       room.currentGameIndex++;
       room.currentQuestionIndex = 0;
@@ -812,6 +830,7 @@ export class GameEngine {
         totalGames: room.games.length,
         nextGameQuestionCount: nextGameConfig.questionCount,
         phaseSequence,
+        stateVersion,
       };
 
       (gameState as any).nextGameData = nextGamePayload;
@@ -831,7 +850,9 @@ export class GameEngine {
       });
     } else {
       (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+      (room as any).stateVersion = ((room as any).stateVersion || 100) + 1;
       const phaseSequence = (room as any).phaseSequence;
+      const stateVersion = (room as any).stateVersion;
 
       // All games in the session are finished!
       room.status = 'FINISHED';
@@ -928,6 +949,7 @@ export class GameEngine {
         questionHistory: history,
         sessionStats,
         phaseSequence,
+        stateVersion,
       });
 
       logger.info(
@@ -945,7 +967,9 @@ export class GameEngine {
 
     if (room.status === 'QUESTION') {
       (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+      (room as any).stateVersion = ((room as any).stateVersion || 100) + 1;
       const phaseSequence = (room as any).phaseSequence;
+      const stateVersion = (room as any).stateVersion;
 
       const remainingMs = timerService.pauseTimer(`question_${roomId}`);
       room.gameState.isPaused = true;
@@ -959,6 +983,7 @@ export class GameEngine {
         explanation: question?.explanation,
         questionText: question?.text,
         phaseSequence,
+        stateVersion,
       });
       logger.info(`[GameEngine] Game in Room ${roomId} paused for explanation. Remaining: ${remainingMs}ms`);
     }
@@ -972,7 +997,9 @@ export class GameEngine {
     if (!room || !room.gameState || !room.gameState.isPaused) return;
 
     (room as any).phaseSequence = ((room as any).phaseSequence || 0) + 1;
+    (room as any).stateVersion = ((room as any).stateVersion || 100) + 1;
     const phaseSequence = (room as any).phaseSequence;
+    const stateVersion = (room as any).stateVersion;
 
     room.gameState.isPaused = false;
     const resumed = timerService.resumeTimer(`question_${roomId}`);
@@ -984,6 +1011,7 @@ export class GameEngine {
       io.to(roomId).emit('game:gameResumed', {
         remainingSeconds: remainingSec,
         phaseSequence,
+        stateVersion,
       });
       logger.info(`[GameEngine] Game in Room ${roomId} resumed. Remaining: ${remainingSec}s`);
     }

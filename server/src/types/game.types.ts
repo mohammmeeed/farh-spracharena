@@ -198,12 +198,14 @@ export interface GameStateSnapshot {
   roomPin: string;
   level: GameLevel;
   status: RoomStatus;
-  phaseSequence: number;
+  stateVersion: number;
+  phaseSequence?: number;
   currentGameIndex: number;
   totalGames: number;
   currentGameType: GameType;
   currentQuestionIndex: number;
   totalQuestionsInGame: number;
+  currentQuestionId?: string;
   currentQuestion?: {
     questionId: string;
     text: string;
@@ -225,6 +227,7 @@ export interface GameStateSnapshot {
     category?: string;
     difficulty?: string;
   };
+  questionEndsAt?: number;
   countdownValue?: number;
   countdownEndsAt?: number;
   countdownStartedAt?: number;
@@ -280,6 +283,7 @@ export interface ServerToClientEvents {
     startedAt?: number;
     durationMs?: number;
     phaseSequence?: number;
+    stateVersion?: number;
   }) => void;
   'game:questionStarted': (data: {
     questionId: string;
@@ -301,6 +305,7 @@ export interface ServerToClientEvents {
     category?: string;
     difficulty?: string;
     phaseSequence?: number;
+    stateVersion?: number;
   }) => void;
   'game:clueRevealed': (data: {
     clueIndex: number;
@@ -360,6 +365,7 @@ export interface ServerToClientEvents {
       }
     >;
     phaseSequence?: number;
+    stateVersion?: number;
   }) => void;
   'game:nextGame': (data: {
     previousGameType: GameType;
@@ -368,6 +374,7 @@ export interface ServerToClientEvents {
     totalGames: number;
     nextGameQuestionCount: number;
     phaseSequence?: number;
+    stateVersion?: number;
   }) => void;
   'game:gameResult': (data: {
     gameType: GameType;
@@ -377,6 +384,7 @@ export interface ServerToClientEvents {
     teams?: Record<string, Team>;
     winner?: LeaderboardEntry | Team;
     phaseSequence?: number;
+    stateVersion?: number;
   }) => void;
   'game:sessionFinished': (data: {
     finalLeaderboard: LeaderboardEntry[];
@@ -387,16 +395,19 @@ export interface ServerToClientEvents {
     questionHistory?: QuestionHistoryItem[];
     sessionStats?: SessionStatistics;
     phaseSequence?: number;
+    stateVersion?: number;
   }) => void;
   'game:gamePaused': (data: {
     reason: string;
     explanation?: string;
     questionText?: string;
     phaseSequence?: number;
+    stateVersion?: number;
   }) => void;
   'game:gameResumed': (data: {
     remainingSeconds: number;
     phaseSequence?: number;
+    stateVersion?: number;
   }) => void;
   'student:kicked': (data: { reason?: string }) => void;
   'room:teamsUpdated': (data: { teams: Record<string, Team>; players: Player[] }) => void;
@@ -414,6 +425,7 @@ export interface ClientToServerEvents {
   'client:ping': (data: { timestamp: number }) => void;
   'time:ping': (data: { clientTimestamp: number }) => void;
   'game:requestStateSnapshot': (data: { roomId: string; playerId?: string }) => void;
+  'SYNC_GAME_STATE': (data: { roomId: string; playerId?: string }) => void;
   'teacher:createRoom': (data: CreateRoomPayload) => void;
   'teacher:joinRoom': (data: { roomId: string }) => void;
   'teacher:closeRoom': (data: { roomId: string }) => void;

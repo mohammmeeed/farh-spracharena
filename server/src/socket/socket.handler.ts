@@ -37,6 +37,7 @@ function syncActiveStateToSocket(socket: TypedSocket, room: any): void {
 
   const now = Date.now();
   const phaseSequence = (room as any).phaseSequence || 1;
+  const stateVersion = (room as any).stateVersion || 100;
 
   if (room.status === 'QUESTION' && gameState.currentQuestion) {
     const question = gameState.currentQuestion;
@@ -63,6 +64,7 @@ function syncActiveStateToSocket(socket: TypedSocket, room: any): void {
       category: question.category,
       difficulty: question.difficulty,
       phaseSequence,
+      stateVersion,
     });
   } else if (room.status === 'COUNTDOWN') {
     const startedAt = gameState.countdownStartedAt || now;
@@ -79,6 +81,7 @@ function syncActiveStateToSocket(socket: TypedSocket, room: any): void {
       startedAt,
       durationMs: 3000,
       phaseSequence,
+      stateVersion,
     });
   } else if (room.status === 'QUESTION_RESULT' && gameState.lastQuestionResult) {
     socket.emit('game:questionResult', gameState.lastQuestionResult);
@@ -92,6 +95,7 @@ function syncActiveStateToSocket(socket: TypedSocket, room: any): void {
       explanation: gameState.currentQuestion?.explanation,
       questionText: gameState.currentQuestion?.text,
       phaseSequence,
+      stateVersion,
     });
   }
 
@@ -130,13 +134,16 @@ export function setupSocketHandlers(io: TypedServer): void {
     });
 
     // Client requests authoritative state snapshot on recovery
-    socket.on('game:requestStateSnapshot', (data) => {
+    const handleSnapshotRequest = (data: { roomId: string; playerId?: string }) => {
       const room = roomManager.getRoomById(data.roomId);
       if (room) {
         const snapshot = gameEngine.generateStateSnapshot(room);
         socket.emit('game:stateSnapshot', snapshot);
       }
-    });
+    };
+
+    socket.on('game:requestStateSnapshot', handleSnapshotRequest);
+    socket.on('SYNC_GAME_STATE', handleSnapshotRequest);
 
     // ==========================================
     // Phase 2 & 8: Teacher Session Creation & Controls

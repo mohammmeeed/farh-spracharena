@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Lightbulb, CheckCircle2, Shield } from 'lucide-react';
+import { Play, Lightbulb, CheckCircle2, Shield, WifiOff } from 'lucide-react';
 import {
   GameRoom,
   Player,
@@ -10,6 +10,7 @@ import {
   GameStateSnapshot,
 } from '../../types/game.types';
 import { socketService } from '../../socket/socket.service';
+import { useSocket } from '../../hooks/useSocket';
 import { useAudio } from '../../hooks/useAudio';
 import { useToast } from '../../context/ToastContext';
 
@@ -53,6 +54,7 @@ interface QuestionStartedPayload {
   category?: string;
   difficulty?: string;
   phaseSequence?: number;
+  stateVersion?: number;
 }
 
 interface QuestionResultPayload {
@@ -77,6 +79,7 @@ interface QuestionResultPayload {
     }
   >;
   phaseSequence?: number;
+  stateVersion?: number;
 }
 
 interface NextGamePayload {
@@ -86,6 +89,7 @@ interface NextGamePayload {
   totalGames: number;
   nextGameQuestionCount: number;
   phaseSequence?: number;
+  stateVersion?: number;
 }
 
 interface SessionFinishedPayload {
@@ -97,6 +101,7 @@ interface SessionFinishedPayload {
   questionHistory?: any[];
   sessionStats?: any;
   phaseSequence?: number;
+  stateVersion?: number;
 }
 
 interface GameArenaProps {
@@ -112,6 +117,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
   isTeacher,
   onExit,
 }) => {
+  const { isConnected } = useSocket();
   const { playSound, fadeIn, fadeOut, stopMusic, pauseMusic, resumeMusic } = useAudio();
   const { showToast } = useToast();
 
@@ -170,7 +176,9 @@ export const GameArena: React.FC<GameArenaProps> = ({
   // Synchronized Timer state
   const [timeRemaining, setTimeRemaining] = useState<number>(15);
   const timerIntervalRef = useRef<any>(null);
-  const currentPhaseSequenceRef = useRef<number>(0);
+
+  // Monotonically increasing state versioning to discard stale / out-of-order socket events
+  const currentStateVersionRef = useRef<number>(0);
 
   // Active teams and leaderboard
   const [teams, setTeams] = useState<Record<string, Team> | undefined>(room.teams);
@@ -181,7 +189,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
     durationMs: number;
   } | null>(null);
 
-  // Stable refs to prevent tearing down socket listeners on re-render
+  // Stable refs to prevent tearing down socket listeners or missing closures
   const playerRef = useRef(player);
   playerRef.current = player;
 
@@ -206,17 +214,43 @@ export const GameArena: React.FC<GameArenaProps> = ({
   const showToastRef = useRef(showToast);
   showToastRef.current = showToast;
 
-  // Socket.IO event registrations - Stable lifecycle
+  const currentQuestionRef = useRef(currentQuestion);
+  currentQuestionRef.current = currentQuestion;
+
+  const questionResultRef = useRef(questionResult);
+  questionResultRef.current = questionResult;
+
+  const currentCountdownRef = useRef(currentCountdown);
+  currentCountdownRef.current = currentCountdown;
+
+  const countdownEndsAtRef = useRef(countdownEndsAt);
+  countdownEndsAtRef.current = countdownEndsAt;
+
+  const isPausedRef = useRef(isPaused);
+  isPausedRef.current = isPaused;
+
+  // Socket.IO event registrations - Stable single-pass lifecycle
   useEffect(() => {
     const socket = socketService.getSocket();
 
-    // 0. Full Authoritative State Snapshot Reconciler
+    // Helper: Validates that an incoming packet is newer or equal to current state version
+    const isValidTransition = (version?: number): boolean => {
+      if (!version) return true;
+      if (version < currentStateVersionRef.current) {
+        return false;
+      }
+      currentStateVersionRef.current = version;
+      return true;
+    };
+
+    // 0. Full Authoritative State Snapshot Reconciler (Atomic recovery)
     const handleStateSnapshot = (snapshot: GameStateSnapshot) => {
-      if (snapshot.phaseSequence && snapshot.phaseSequence < currentPhaseSequenceRef.current) {
+      const ver = snapshot.stateVersion || snapshot.phaseSequence || 0;
+      if (ver && ver < currentStateVersionRef.current) {
         return;
       }
-      if (snapshot.phaseSequence) {
-        currentPhaseSequenceRef.current = snapshot.phaseSequence;
+      if (ver) {
+        currentStateVersionRef.current = ver;
       }
 
       if (snapshot.teams) setTeams(snapshot.teams);
@@ -304,6 +338,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
       questionNumber,
       totalQuestions,
       phaseSequence,
+      stateVersion,
     }: {
       value: number;
       gameType: GameType;
@@ -313,9 +348,10 @@ export const GameArena: React.FC<GameArenaProps> = ({
       startedAt?: number;
       durationMs?: number;
       phaseSequence?: number;
+      stateVersion?: number;
     }) => {
-      if (phaseSequence && phaseSequence < currentPhaseSequenceRef.current) return;
-      if (phaseSequence) currentPhaseSequenceRef.current = phaseSequence;
+      const ver = stateVersion || phaseSequence;
+      if (!isValidTransition(ver)) return;
 
       setCurrentCountdown(value);
       setCountdownEndsAt(endsAt);
@@ -331,8 +367,8 @@ export const GameArena: React.FC<GameArenaProps> = ({
 
     // 2. Question Started Event
     const handleQuestionStarted = (data: QuestionStartedPayload) => {
-      if (data.phaseSequence && data.phaseSequence < currentPhaseSequenceRef.current) return;
-      if (data.phaseSequence) currentPhaseSequenceRef.current = data.phaseSequence;
+      const ver = data.stateVersion || data.phaseSequence;
+      if (!isValidTransition(ver)) return;
 
       // Countdown Failsafe: unconditionally clear countdown overlay
       setCurrentCountdown(null);
@@ -402,8 +438,8 @@ export const GameArena: React.FC<GameArenaProps> = ({
 
     // 5. Question Result Event
     const handleQuestionResult = (data: QuestionResultPayload) => {
-      if (data.phaseSequence && data.phaseSequence < currentPhaseSequenceRef.current) return;
-      if (data.phaseSequence) currentPhaseSequenceRef.current = data.phaseSequence;
+      const ver = data.stateVersion || data.phaseSequence;
+      if (!isValidTransition(ver)) return;
 
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
       setTimeRemaining(0);
@@ -456,8 +492,8 @@ export const GameArena: React.FC<GameArenaProps> = ({
 
     // 8. Next Game Event
     const handleNextGame = (data: NextGamePayload) => {
-      if (data.phaseSequence && data.phaseSequence < currentPhaseSequenceRef.current) return;
-      if (data.phaseSequence) currentPhaseSequenceRef.current = data.phaseSequence;
+      const ver = data.stateVersion || data.phaseSequence;
+      if (!isValidTransition(ver)) return;
 
       setNextGameData(data);
       setCurrentCountdown(null);
@@ -466,8 +502,8 @@ export const GameArena: React.FC<GameArenaProps> = ({
 
     // 9. Session Finished Event
     const handleSessionFinished = (data: SessionFinishedPayload) => {
-      if (data.phaseSequence && data.phaseSequence < currentPhaseSequenceRef.current) return;
-      if (data.phaseSequence) currentPhaseSequenceRef.current = data.phaseSequence;
+      const ver = data.stateVersion || data.phaseSequence;
+      if (!isValidTransition(ver)) return;
 
       setSessionFinishedData(data);
       setCurrentCountdown(null);
@@ -484,13 +520,15 @@ export const GameArena: React.FC<GameArenaProps> = ({
       reason,
       explanation,
       phaseSequence,
+      stateVersion,
     }: {
       reason: string;
       explanation?: string;
       phaseSequence?: number;
+      stateVersion?: number;
     }) => {
-      if (phaseSequence && phaseSequence < currentPhaseSequenceRef.current) return;
-      if (phaseSequence) currentPhaseSequenceRef.current = phaseSequence;
+      const ver = stateVersion || phaseSequence;
+      if (!isValidTransition(ver)) return;
 
       setIsPaused(true);
       setPauseReason(reason);
@@ -502,12 +540,14 @@ export const GameArena: React.FC<GameArenaProps> = ({
     const handleGameResumed = ({
       remainingSeconds,
       phaseSequence,
+      stateVersion,
     }: {
       remainingSeconds: number;
       phaseSequence?: number;
+      stateVersion?: number;
     }) => {
-      if (phaseSequence && phaseSequence < currentPhaseSequenceRef.current) return;
-      if (phaseSequence) currentPhaseSequenceRef.current = phaseSequence;
+      const ver = stateVersion || phaseSequence;
+      if (!isValidTransition(ver)) return;
 
       setIsPaused(false);
       setPauseReason('');
@@ -526,6 +566,10 @@ export const GameArena: React.FC<GameArenaProps> = ({
       setTeamIntroData(data);
     };
 
+    const handleSocketReconnect = () => {
+      socketService.requestStateSnapshot(room.roomId, playerRef.current?.playerId);
+    };
+
     // Attach listeners
     socket.on('game:stateSnapshot', handleStateSnapshot);
     socket.on('game:countdown', handleCountdown);
@@ -540,6 +584,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
     socket.on('game:sessionFinished', handleSessionFinished);
     socket.on('game:gamePaused', handleGamePaused);
     socket.on('game:gameResumed', handleGameResumed);
+    socket.on('connect', handleSocketReconnect);
 
     // Initial snapshot sync
     socketService.requestStateSnapshot(room.roomId, playerRef.current?.playerId);
@@ -559,8 +604,34 @@ export const GameArena: React.FC<GameArenaProps> = ({
       socket.off('game:sessionFinished', handleSessionFinished);
       socket.off('game:gamePaused', handleGamePaused);
       socket.off('game:gameResumed', handleGameResumed);
+      socket.off('connect', handleSocketReconnect);
     };
   }, [room.roomId]);
+
+  // Client Watchdog: Resynchronizes with server if an expected transition is overdue
+  useEffect(() => {
+    if (isTeacher) return;
+
+    const watchdogInterval = setInterval(() => {
+      const now = socketService.getServerNow();
+
+      // Check if question timer expired + 3500ms and student hasn't received result
+      if (currentQuestionRef.current && !questionResultRef.current && !isPausedRef.current) {
+        if (now > currentQuestionRef.current.endsAt + 3500) {
+          socketService.requestStateSnapshot(room.roomId, playerRef.current?.playerId);
+        }
+      }
+
+      // Check if countdown ended + 3500ms and question hasn't started
+      if (currentCountdownRef.current !== null && countdownEndsAtRef.current) {
+        if (now > countdownEndsAtRef.current + 3500) {
+          socketService.requestStateSnapshot(room.roomId, playerRef.current?.playerId);
+        }
+      }
+    }, 2500);
+
+    return () => clearInterval(watchdogInterval);
+  }, [isTeacher, room.roomId]);
 
   // Handle student answer submission
   const handleStudentSubmit = (answer: string | string[]) => {
@@ -599,7 +670,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
     return 'bg-[#0B0F19] text-slate-100';
   };
 
-  // Render Game Specific Body
+  // Render Game Specific Body with stable keys to avoid state carry-over
   const renderGameContent = () => {
     if (!currentQuestion) {
       return (
@@ -614,6 +685,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
       case 'SCHNELLANTWORT':
         return (
           <SchnellantwortGame
+            key={currentQuestion.questionId}
             text={currentQuestion.text}
             category={currentQuestion.category}
             difficulty={currentQuestion.difficulty}
@@ -629,6 +701,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
       case 'SATZ_RENNEN':
         return (
           <SatzRennenGame
+            key={currentQuestion.questionId}
             text={currentQuestion.text}
             words={currentQuestion.words}
             category={currentQuestion.category}
@@ -643,6 +716,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
       case 'WORTSCHATZ_DUELL':
         return (
           <WortschatzDuellGame
+            key={currentQuestion.questionId}
             text={currentQuestion.text}
             focusWord={currentQuestion.focusWord}
             format={currentQuestion.format}
@@ -660,6 +734,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
       case 'WAS_BIN_ICH':
         return (
           <WasBinIchGame
+            key={currentQuestion.questionId}
             text={currentQuestion.text}
             clues={currentQuestion.clues}
             options={currentQuestion.options}
@@ -676,6 +751,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
       case 'TEAM_BATTLE':
         return (
           <TeamBattleGame
+            key={currentQuestion.questionId}
             text={currentQuestion.text}
             category={currentQuestion.category}
             difficulty={currentQuestion.difficulty}
@@ -710,6 +786,14 @@ export const GameArena: React.FC<GameArenaProps> = ({
         isProjectorMode ? 'p-2 md:p-6' : ''
       }`}
     >
+      {/* Student Reconnection Warning HUD */}
+      {!isConnected && !isTeacher && (
+        <div className="fixed top-0 inset-x-0 z-50 py-2.5 px-4 bg-amber-500 text-slate-950 text-xs sm:text-sm font-black text-center flex items-center justify-center gap-2 shadow-2xl animate-pulse">
+          <WifiOff className="w-4 h-4" />
+          <span>Verbindung wird wiederhergestellt... Bitte warten</span>
+        </div>
+      )}
+
       {/* Team Battle Soft Ambient Glow & Edge Lighting */}
       {isTeamBattle && !isTeacher && myTeamId === 'TEAM_ROT' && (
         <div className="fixed inset-0 pointer-events-none z-0">

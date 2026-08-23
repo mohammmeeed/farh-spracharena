@@ -36,6 +36,12 @@ export const StudentLobby: React.FC = () => {
     initialRoom ? initialRoom.status !== 'WAITING' : false
   );
 
+  const playerRef = React.useRef(player);
+  playerRef.current = player;
+
+  const navigateRef = React.useRef(navigate);
+  navigateRef.current = navigate;
+
   useEffect(() => {
     if (!roomId) return;
     const socket = socketService.getSocket();
@@ -57,9 +63,18 @@ export const StudentLobby: React.FC = () => {
         setLiveTeams(syncedRoom.teams);
       }
       setTeacherConnected(syncedRoom.teacherConnected);
-      setIsGameActive(syncedRoom.status !== 'WAITING');
+      if (syncedRoom.status !== 'WAITING') {
+        setIsGameActive(true);
+      }
       setLoading(false);
       setErrorMessage(null);
+    };
+
+    // Full state snapshot sync
+    const handleStateSnapshot = (snapshot: any) => {
+      if (snapshot.status && snapshot.status !== 'WAITING') {
+        setIsGameActive(true);
+      }
     };
 
     // 2. Real-time player list update
@@ -70,8 +85,9 @@ export const StudentLobby: React.FC = () => {
       totalPlayers: number;
     }) => {
       setPlayers(updatedPlayers);
-      if (player) {
-        const me = updatedPlayers.find((p) => p.playerId === player.playerId);
+      const currentPlayer = playerRef.current;
+      if (currentPlayer) {
+        const me = updatedPlayers.find((p) => p.playerId === currentPlayer.playerId);
         if (me) setPlayer(me);
       }
     };
@@ -87,8 +103,9 @@ export const StudentLobby: React.FC = () => {
       setLiveTeams(teams);
       if (updatedPlayers) {
         setPlayers(updatedPlayers);
-        if (player) {
-          const me = updatedPlayers.find((p) => p.playerId === player.playerId);
+        const currentPlayer = playerRef.current;
+        if (currentPlayer) {
+          const me = updatedPlayers.find((p) => p.playerId === currentPlayer.playerId);
           if (me) setPlayer(me);
         }
       }
@@ -124,7 +141,7 @@ export const StudentLobby: React.FC = () => {
     // 6. Room closed by teacher / timeout
     const handleRoomClosed = ({ reason }: { roomId: string; reason?: string }) => {
       alert(reason || 'Der Spielraum wurde beendet.');
-      navigate('/join');
+      navigateRef.current('/join');
     };
 
     // 7. Error
@@ -136,10 +153,11 @@ export const StudentLobby: React.FC = () => {
     // 8. Kicked by teacher
     const handleStudentKicked = ({ reason }: { reason?: string }) => {
       alert(reason || 'Du wurdest vom Lehrer aus dem Spielraum entfernt.');
-      navigate('/join');
+      navigateRef.current('/join');
     };
 
     socket.on('student:joinedRoom', handleJoinedRoom);
+    socket.on('game:stateSnapshot', handleStateSnapshot);
     socket.on('room:playersUpdated', handlePlayersUpdated);
     socket.on('room:teamsUpdated', handleTeamsUpdated);
     socket.on('game:teamAssignment', handleTeamAssignment);
@@ -167,6 +185,7 @@ export const StudentLobby: React.FC = () => {
 
     return () => {
       socket.off('student:joinedRoom', handleJoinedRoom);
+      socket.off('game:stateSnapshot', handleStateSnapshot);
       socket.off('room:playersUpdated', handlePlayersUpdated);
       socket.off('room:teamsUpdated', handleTeamsUpdated);
       socket.off('game:teamAssignment', handleTeamAssignment);
@@ -177,7 +196,7 @@ export const StudentLobby: React.FC = () => {
       socket.off('student:joinError', handleJoinError);
       socket.off('student:kicked', handleStudentKicked);
     };
-  }, [roomId, initialPlayer, player, navigate]);
+  }, [roomId, initialPlayer]);
 
   const handleLeaveRoom = () => {
     if (!roomId) return;
