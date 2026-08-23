@@ -4,6 +4,7 @@
  * 
  * Provides zero-latency, royalty-free audio effects and ambient classroom music
  * with smooth volume transitions, fade in/out, autoplay unblock handling, and localStorage persistence.
+ * Guaranteed single background music instance with active oscillator tracking and duplicate SFX debouncing.
  */
 
 export type SoundEffectType =
@@ -32,6 +33,7 @@ export interface AudioSettings {
 }
 
 const STORAGE_KEY = 'farh_spracharena_audio_settings';
+const SFX_DEBOUNCE_MS = 60; // Minimum time between identical SFX to prevent acoustic beating
 
 class AudioManager {
   private static instance: AudioManager;
@@ -40,15 +42,18 @@ class AudioManager {
   private sfxMasterGain: GainNode | null = null;
 
   private settings: AudioSettings = {
-    musicEnabled: true, // Enabled by default; starts upon user interaction / start game
+    musicEnabled: true,
     soundEnabled: true,
-    musicVolume: 0.25, // 25% background music volume
-    soundVolume: 0.70, // 70% sound effects volume
+    musicVolume: 0.25,
+    soundVolume: 0.70,
   };
 
   private musicInterval: any = null;
   private isMusicPlaying = false;
   private currentMusicState: MusicState = 'NONE';
+  private activeMusicOscillators: { osc: OscillatorNode; gain: GainNode }[] = [];
+  private lastSoundTimes: Map<SoundEffectType, number> = new Map();
+  private listeners: Set<(settings: AudioSettings) => void> = new Set();
 
   private constructor() {
     this.loadSettings();
@@ -76,13 +81,19 @@ class AudioManager {
       if (this.ctx) {
         if (!this.musicMasterGain) {
           this.musicMasterGain = this.ctx.createGain();
-          this.musicMasterGain.gain.setValueAtTime(this.settings.musicVolume, this.ctx.currentTime);
+          this.musicMasterGain.gain.setValueAtTime(
+            this.settings.musicEnabled ? this.settings.musicVolume : 0.0001,
+            this.ctx.currentTime
+          );
           this.musicMasterGain.connect(this.ctx.destination);
         }
 
         if (!this.sfxMasterGain) {
           this.sfxMasterGain = this.ctx.createGain();
-          this.sfxMasterGain.gain.setValueAtTime(this.settings.soundVolume, this.ctx.currentTime);
+          this.sfxMasterGain.gain.setValueAtTime(
+            this.settings.soundEnabled ? this.settings.soundVolume : 0.0001,
+            this.ctx.currentTime
+          );
           this.sfxMasterGain.connect(this.ctx.destination);
         }
 
@@ -104,7 +115,7 @@ class AudioManager {
   }
 
   /**
-   * Explicitly unblock audio after a user gesture (e.g. click "Start Game" or "Musik aktivieren")
+   * Explicitly unblock audio after a user gesture
    */
   public async unblockAudio(): Promise<boolean> {
     try {
@@ -122,10 +133,37 @@ class AudioManager {
   }
 
   /**
-   * Plays a procedural sound effect
+   * Subscribes a listener callback to audio settings updates
+   */
+  public subscribe(listener: (settings: AudioSettings) => void): () => void {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  }
+
+  private notifyListeners(): void {
+    const settingsCopy = this.getSettings();
+    this.listeners.forEach((listener) => {
+      try {
+        listener(settingsCopy);
+      } catch (err) {
+        console.error('[AudioManager] Error in settings listener:', err);
+      }
+    });
+  }
+
+  /**
+   * Plays a procedural sound effect with duplicate trigger debouncing
    */
   public playSound(effect: SoundEffectType): void {
     if (!this.settings.soundEnabled) return;
+
+    // Rapid duplicate sound trigger protection
+    const nowMs = Date.now();
+    const lastTime = this.lastSoundTimes.get(effect) || 0;
+    if (nowMs - lastTime < SFX_DEBOUNCE_MS) {
+      return;
+    }
+    this.lastSoundTimes.set(effect, nowMs);
 
     try {
       this.initContext();
@@ -453,6 +491,24 @@ class AudioManager {
   // Ambient Classroom Background Music Loop (Continuous During Gameplay)
   // =========================================================================
 
+  private stopAllMusicOscillators(fadeTimeSec = 0.08): void {
+    if (!this.ctx) return;
+    const now = this.ctx.currentTime;
+    const toStop = [...this.activeMusicOscillators];
+    this.activeMusicOscillators = [];
+
+    toStop.forEach(({ osc, gain }) => {
+      try {
+        gain.gain.cancelScheduledValues(now);
+        gain.gain.setValueAtTime(gain.gain.value, now);
+        gain.gain.linearRampToValueAtTime(0.0001, now + fadeTimeSec);
+        osc.stop(now + fadeTimeSec + 0.02);
+      } catch {
+        // Safe disposal
+      }
+    });
+  }
+
   /**
    * Starts or transitions background music for the given state.
    * If already playing in the same state (e.g. GAME), it continues seamlessly without restarting.
@@ -464,7 +520,10 @@ class AudioManager {
     if (!this.ctx || !this.musicMasterGain) return;
 
     if (this.isMusicPlaying && this.currentMusicState === state) {
-      // Already running smoothly, DO NOT restart or interrupt playback
+      // Already running smoothly, ensure volume is restored if it was faded
+      const now = this.ctx.currentTime;
+      this.musicMasterGain.gain.cancelScheduledValues(now);
+      this.musicMasterGain.gain.linearRampToValueAtTime(this.settings.musicVolume, now + 0.3);
       return;
     }
 
@@ -482,9 +541,17 @@ class AudioManager {
     if (!this.ctx || !this.musicMasterGain) return;
 
     const now = this.ctx.currentTime;
-    this.musicMasterGain.gain.cancelScheduledValues(now);
-    this.musicMasterGain.gain.setValueAtTime(0.001, now);
-    this.musicMasterGain.gain.linearRampToValueAtTime(this.settings.musicVolume, now + durationMs / 1000);
+    const currentGain = this.musicMasterGain.gain.value;
+
+    // Only ramp if not already at desired volume
+    if (Math.abs(currentGain - this.settings.musicVolume) > 0.02 || !this.isMusicPlaying) {
+      this.musicMasterGain.gain.cancelScheduledValues(now);
+      this.musicMasterGain.gain.setValueAtTime(Math.max(0.0001, currentGain), now);
+      this.musicMasterGain.gain.linearRampToValueAtTime(
+        this.settings.musicVolume,
+        now + durationMs / 1000
+      );
+    }
 
     this.playMusic(targetState);
   }
@@ -498,7 +565,7 @@ class AudioManager {
     const now = this.ctx.currentTime;
     this.musicMasterGain.gain.cancelScheduledValues(now);
     this.musicMasterGain.gain.setValueAtTime(this.musicMasterGain.gain.value, now);
-    this.musicMasterGain.gain.linearRampToValueAtTime(0.001, now + durationMs / 1000);
+    this.musicMasterGain.gain.linearRampToValueAtTime(0.0001, now + durationMs / 1000);
 
     setTimeout(() => {
       this.stopMusic();
@@ -512,6 +579,7 @@ class AudioManager {
       clearInterval(this.musicInterval);
       this.musicInterval = null;
     }
+    this.stopAllMusicOscillators();
   }
 
   public pauseMusic(): void {
@@ -529,9 +597,11 @@ class AudioManager {
   private startMusicLoop(state: MusicState): void {
     if (this.musicInterval) {
       clearInterval(this.musicInterval);
+      this.musicInterval = null;
     }
+    this.stopAllMusicOscillators();
 
-    // Dynamic chord progression depending on classroom state
+    // Harmonious chord progressions tailored for focus & learning
     const gameProgression = [
       [261.63, 329.63, 392.0, 493.88], // Cmaj7
       [220.0, 261.63, 329.63, 392.0],  // Am7
@@ -547,7 +617,7 @@ class AudioManager {
     ];
 
     const progression = state === 'LOBBY' ? lobbyProgression : gameProgression;
-    const intervalMs = state === 'LOBBY' ? 1600 : 1200;
+    const intervalMs = state === 'LOBBY' ? 1800 : 1400;
 
     let step = 0;
     const playChord = () => {
@@ -559,26 +629,41 @@ class AudioManager {
         const now = this.ctx.currentTime;
         const chord = progression[step % progression.length];
 
+        // Gently cleanup previous chord oscillators before spawning new ones
+        this.stopAllMusicOscillators(0.15);
+
         chord.forEach((freq, idx) => {
           if (!this.ctx || !this.musicMasterGain) return;
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, now + idx * 0.02);
+          osc.frequency.setValueAtTime(freq, now + idx * 0.025);
 
-          gain.gain.setValueAtTime(0.001, now);
-          gain.gain.linearRampToValueAtTime(0.12, now + 0.1);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
+          // Smooth envelope attack, sustain, decay
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.linearRampToValueAtTime(0.10, now + 0.15);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 1.35);
 
           osc.connect(gain);
           gain.connect(this.musicMasterGain);
-          osc.start(now);
-          osc.stop(now + 1.2);
+
+          const nodeEntry = { osc, gain };
+          this.activeMusicOscillators.push(nodeEntry);
+
+          osc.onended = () => {
+            const idxToRemove = this.activeMusicOscillators.indexOf(nodeEntry);
+            if (idxToRemove !== -1) {
+              this.activeMusicOscillators.splice(idxToRemove, 1);
+            }
+          };
+
+          osc.start(now + idx * 0.025);
+          osc.stop(now + 1.38);
         });
 
         step++;
       } catch (err) {
-        console.warn('[AudioManager] Error playing chord in music loop:', err);
+        console.warn('[AudioManager] Error in playChord:', err);
       }
     };
 
@@ -598,6 +683,7 @@ class AudioManager {
     } else {
       this.stopMusic();
     }
+    this.notifyListeners();
     return this.settings.musicEnabled;
   }
 
@@ -607,6 +693,7 @@ class AudioManager {
     if (this.settings.soundEnabled) {
       this.playSound('click');
     }
+    this.notifyListeners();
     return this.settings.soundEnabled;
   }
 
@@ -616,6 +703,7 @@ class AudioManager {
       this.musicMasterGain.gain.setValueAtTime(this.settings.musicVolume, this.ctx.currentTime);
     }
     this.saveSettings();
+    this.notifyListeners();
   }
 
   public setSoundVolume(vol: number): void {
@@ -624,6 +712,7 @@ class AudioManager {
       this.sfxMasterGain.gain.setValueAtTime(this.settings.soundVolume, this.ctx.currentTime);
     }
     this.saveSettings();
+    this.notifyListeners();
   }
 
   public getSettings(): AudioSettings {

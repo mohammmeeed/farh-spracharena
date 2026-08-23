@@ -30,9 +30,10 @@ function syncActiveStateToSocket(socket: TypedSocket, room: any): void {
   const currentGame = room.games[room.currentGameIndex];
   if (!currentGame) return;
 
+  const now = Date.now();
+
   if (room.status === 'QUESTION' && gameState.currentQuestion) {
     const question = gameState.currentQuestion;
-    const now = Date.now();
     const startedAt = gameState.currentQuestionStartedAt || now;
     const endsAt = gameState.currentQuestionEndsAt || now + question.timeLimit * 1000;
 
@@ -57,16 +58,40 @@ function syncActiveStateToSocket(socket: TypedSocket, room: any): void {
       difficulty: question.difficulty,
     });
   } else if (room.status === 'COUNTDOWN') {
+    const startedAt = gameState.countdownStartedAt || now;
+    const countdownEndsAt = gameState.countdownEndsAt || now + 3000;
+    const remainingMs = Math.max(0, countdownEndsAt - now);
+    const value = Math.max(1, Math.ceil(remainingMs / 1000));
+
     socket.emit('game:countdown', {
-      value: 3,
+      value,
       gameType: currentGame.gameType,
       questionNumber: room.currentQuestionIndex + 1,
       totalQuestions: gameState.questionsForCurrentGame.length,
+      countdownEndsAt,
+      startedAt,
+      durationMs: 3000,
+    });
+  } else if (room.status === 'QUESTION_RESULT' && gameState.lastQuestionResult) {
+    socket.emit('game:questionResult', gameState.lastQuestionResult);
+  } else if (room.status === 'NEXT_GAME' && gameState.nextGameData) {
+    socket.emit('game:nextGame', gameState.nextGameData);
+  }
+
+  if (gameState.isPaused) {
+    socket.emit('game:gamePaused', {
+      reason: 'Lehrer Farh erklärt die Frage und Sprachregel',
+      explanation: gameState.currentQuestion?.explanation,
+      questionText: gameState.currentQuestion?.text,
     });
   }
 
   if (room.teams) {
     socket.emit('game:teamScoreUpdated', { teams: room.teams });
+    socket.emit('room:teamsUpdated', {
+      teams: room.teams,
+      players: Object.values(room.players),
+    });
   }
 }
 

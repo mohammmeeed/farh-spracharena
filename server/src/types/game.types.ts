@@ -224,6 +224,9 @@ export interface ServerToClientEvents {
     gameType: GameType;
     questionNumber: number;
     totalQuestions: number;
+    countdownEndsAt?: number;
+    startedAt?: number;
+    durationMs?: number;
   }) => void;
   'game:questionStarted': (data: {
     questionId: string;

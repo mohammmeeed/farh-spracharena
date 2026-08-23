@@ -107,8 +107,8 @@ export const StudentLobby: React.FC = () => {
       }
     };
 
-    // 4. Countdown started
-    const handleCountdown = () => {
+    // 4. Countdown or Question started -> Switch to GameArena
+    const handleGameActive = () => {
       setIsGameActive(true);
     };
 
@@ -143,7 +143,8 @@ export const StudentLobby: React.FC = () => {
     socket.on('room:playersUpdated', handlePlayersUpdated);
     socket.on('room:teamsUpdated', handleTeamsUpdated);
     socket.on('game:teamAssignment', handleTeamAssignment);
-    socket.on('game:countdown', handleCountdown);
+    socket.on('game:countdown', handleGameActive);
+    socket.on('game:questionStarted', handleGameActive);
     socket.on('teacher:statusChanged', handleTeacherStatusChanged);
     socket.on('server:roomClosed', handleRoomClosed);
     socket.on('student:joinError', handleJoinError);
@@ -169,7 +170,8 @@ export const StudentLobby: React.FC = () => {
       socket.off('room:playersUpdated', handlePlayersUpdated);
       socket.off('room:teamsUpdated', handleTeamsUpdated);
       socket.off('game:teamAssignment', handleTeamAssignment);
-      socket.off('game:countdown', handleCountdown);
+      socket.off('game:countdown', handleGameActive);
+      socket.off('game:questionStarted', handleGameActive);
       socket.off('teacher:statusChanged', handleTeacherStatusChanged);
       socket.off('server:roomClosed', handleRoomClosed);
       socket.off('student:joinError', handleJoinError);

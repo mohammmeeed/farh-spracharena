@@ -221,11 +221,10 @@ export const StudentJoinPage: React.FC = () => {
                 type="submit"
                 id="btn-student-join"
                 disabled={isSubmitting || pin.trim().length !== 6 || name.trim().length < 2}
-                className={`w-full py-4 px-6 rounded-2xl font-black text-base flex items-center justify-center gap-2.5 transition-all shadow-glow-cyan ${
-                  pin.trim().length === 6 && name.trim().length >= 2 && !isSubmitting
+                className={`w-full py-4 px-6 rounded-2xl font-black text-base flex items-center justify-center gap-2.5 transition-all shadow-glow-cyan ${pin.trim().length === 6 && name.trim().length >= 2 && !isSubmitting
                     ? 'bg-gradient-to-r from-cyan-500 via-cyan-400 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-slate-950 hover:scale-[1.02] active:scale-[0.98] cursor-pointer'
                     : 'bg-slate-800 text-slate-500 cursor-not-allowed opacity-60'
-                }`}
+                  }`}
               >
                 {isSubmitting ? (
                   <>

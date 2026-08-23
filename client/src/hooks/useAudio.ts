@@ -7,12 +7,23 @@ import {
 } from '../services/audio/AudioManager';
 
 export function useAudio() {
-  const [settings, setSettings] = useState<AudioSettings>(audioManager.getSettings());
-  const [isBlocked, setIsBlocked] = useState<boolean>(audioManager.isAudioBlocked());
+  const [settings, setSettings] = useState<AudioSettings>(() => audioManager.getSettings());
+  const [isBlocked, setIsBlocked] = useState<boolean>(() => audioManager.isAudioBlocked());
 
   useEffect(() => {
+    // Initial sync
     setSettings(audioManager.getSettings());
     setIsBlocked(audioManager.isAudioBlocked());
+
+    // Subscribe to centralized audio settings updates
+    const unsubscribe = audioManager.subscribe((newSettings) => {
+      setSettings(newSettings);
+      setIsBlocked(audioManager.isAudioBlocked());
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   const playSound = useCallback((effect: SoundEffectType) => {
@@ -46,14 +57,16 @@ export function useAudio() {
   }, []);
 
   const toggleMusic = useCallback(() => {
-    audioManager.toggleMusic();
+    const next = audioManager.toggleMusic();
     setSettings(audioManager.getSettings());
     setIsBlocked(audioManager.isAudioBlocked());
+    return next;
   }, []);
 
   const toggleSound = useCallback(() => {
-    audioManager.toggleSound();
+    const next = audioManager.toggleSound();
     setSettings(audioManager.getSettings());
+    return next;
   }, []);
 
   const setMusicVolume = useCallback((vol: number) => {

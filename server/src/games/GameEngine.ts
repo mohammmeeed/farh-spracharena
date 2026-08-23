@@ -188,33 +188,48 @@ export class GameEngine {
     const questionNumber = room.currentQuestionIndex + 1;
     const totalQuestions = room.gameState.questionsForCurrentGame.length;
 
+    const startedAt = Date.now();
+    const durationMs = 3000;
+    const countdownEndsAt = startedAt + durationMs;
+
+    room.gameState.countdownValue = 3;
+    (room.gameState as any).countdownStartedAt = startedAt;
+    (room.gameState as any).countdownEndsAt = countdownEndsAt;
+
     let count = 3;
     const timerKey = `countdown_${roomId}`;
 
-    // Emit initial countdown value 3
+    // Emit initial countdown value 3 with authoritative timestamps
     io.to(roomId).emit('game:countdown', {
       value: count,
       gameType: currentGame.gameType,
       questionNumber,
       totalQuestions,
+      countdownEndsAt,
+      startedAt,
+      durationMs,
     });
 
     timerService.startTimer(
       timerKey,
-      3000,
+      durationMs,
       () => {
         // Countdown completed -> Start Question
         this.startQuestion(roomId, io);
       },
       (remainingMs) => {
-        const nextVal = Math.ceil(remainingMs / 1000);
-        if (nextVal !== count && nextVal >= 0) {
+        const nextVal = Math.max(1, Math.ceil(remainingMs / 1000));
+        if (nextVal !== count && nextVal >= 1) {
           count = nextVal;
+          if (room.gameState) room.gameState.countdownValue = count;
           io.to(roomId).emit('game:countdown', {
             value: count,
             gameType: currentGame.gameType,
             questionNumber,
             totalQuestions,
+            countdownEndsAt,
+            startedAt,
+            durationMs,
           });
         }
       }
@@ -244,6 +259,8 @@ export class GameEngine {
     gameState.answeredCount = 0;
     gameState.totalPlayers = Object.values(room.players).filter((p) => p.connected).length;
     gameState.revealedClueIndex = 0;
+    delete (gameState as any).countdownEndsAt;
+    delete (gameState as any).countdownStartedAt;
 
     const startedAt = Date.now();
     const durationMs = question.timeLimit * 1000;
@@ -459,7 +476,8 @@ export class GameEngine {
     timerService.cancelTimer(`question_${roomId}`);
 
     room.status = 'QUESTION_RESULT';
-    room.gameState.status = 'QUESTION_RESULT';
+    const gameState = room.gameState;
+    gameState.status = 'QUESTION_RESULT';
 
     const currentQuestion = room.gameState.currentQuestion;
     if (!currentQuestion) return;
@@ -578,8 +596,7 @@ export class GameEngine {
 
     const leaderboard = LeaderboardService.generateLeaderboard(room.players);
 
-    // Broadcast question result with correct answer and rich class performance standings
-    io.to(roomId).emit('game:questionResult', {
+    const questionResultData = {
       questionId: currentQuestion.id,
       correctAnswer: currentQuestion.correctAnswer,
       stats: {
@@ -596,7 +613,13 @@ export class GameEngine {
       leaderboard,
       teams: room.teams,
       playerResults,
-    });
+    };
+
+    (gameState as any).lastQuestionResult = questionResultData;
+    (gameState as any).resultEndsAt = Date.now() + 3000;
+
+    // Broadcast question result with correct answer and rich class performance standings
+    io.to(roomId).emit('game:questionResult', questionResultData);
 
     logger.info(
       `[GameEngine] Room ${roomId} | Question Result: Correct: ${correctCount}, Incorrect: ${incorrectCount}, Unanswered: ${unansweredCount}, Accuracy: ${accuracyPercentage}%`
@@ -700,14 +723,19 @@ export class GameEngine {
         this.broadcastTeamAssignment(room, io);
       }
 
-      // Broadcast transition to next game
-      io.to(roomId).emit('game:nextGame', {
+      const nextGamePayload = {
         previousGameType: currentGameConfig.gameType,
         nextGameType: nextGameConfig.gameType,
         gameNumber: room.currentGameIndex + 1,
         totalGames: room.games.length,
         nextGameQuestionCount: nextGameConfig.questionCount,
-      });
+      };
+
+      (gameState as any).nextGameData = nextGamePayload;
+      (gameState as any).nextGameEndsAt = Date.now() + 4000;
+
+      // Broadcast transition to next game
+      io.to(roomId).emit('game:nextGame', nextGamePayload);
 
       logger.info(
         `[GameEngine] Room ${roomId} moving to Game ${room.currentGameIndex + 1}/${room.games.length}: ${nextGameConfig.gameType}`

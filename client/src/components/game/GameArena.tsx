@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Lightbulb, CheckCircle2 } from 'lucide-react';
+import { Play, Lightbulb, CheckCircle2, Shield } from 'lucide-react';
 import {
   GameRoom,
   Player,
@@ -23,7 +23,6 @@ import {
   QuestionResultOverlay,
   TeamIntroOverlay,
 } from '../common';
-
 
 // 5 Game Components
 import { SchnellantwortGame } from './SchnellantwortGame';
@@ -131,10 +130,12 @@ export const GameArena: React.FC<GameArenaProps> = ({
         stopMusic();
       }
     };
-  }, [isTeacher, fadeIn, stopMusic]);
+  }, [isTeacher]); // Stable on purpose to avoid restarting music
 
   // Game flow states
   const [currentCountdown, setCurrentCountdown] = useState<number | null>(null);
+  const [countdownEndsAt, setCountdownEndsAt] = useState<number | undefined>(undefined);
+  const [countdownMeta, setCountdownMeta] = useState<{ questionNumber?: number; totalQuestions?: number }>({});
   const [currentQuestion, setCurrentQuestion] = useState<QuestionStartedPayload | null>(null);
   const [questionResult, setQuestionResult] = useState<QuestionResultPayload | null>(null);
   const [nextGameData, setNextGameData] = useState<NextGamePayload | null>(null);
@@ -187,9 +188,6 @@ export const GameArena: React.FC<GameArenaProps> = ({
   const playSoundRef = useRef(playSound);
   playSoundRef.current = playSound;
 
-  const fadeInRef = useRef(fadeIn);
-  fadeInRef.current = fadeIn;
-
   const fadeOutRef = useRef(fadeOut);
   fadeOutRef.current = fadeOut;
 
@@ -209,25 +207,35 @@ export const GameArena: React.FC<GameArenaProps> = ({
     // 1. Countdown Event
     const handleCountdown = ({
       value,
+      countdownEndsAt: endsAt,
+      questionNumber,
+      totalQuestions,
     }: {
       value: number;
       gameType: GameType;
       questionNumber: number;
       totalQuestions: number;
+      countdownEndsAt?: number;
+      startedAt?: number;
+      durationMs?: number;
     }) => {
       setCurrentCountdown(value);
+      setCountdownEndsAt(endsAt);
+      setCountdownMeta({ questionNumber, totalQuestions });
       setQuestionResult(null);
       setNextGameData(null);
       setIsPaused(false);
 
       if (value === 0) {
-        setTimeout(() => setCurrentCountdown(null), 700);
+        setTimeout(() => setCurrentCountdown(null), 600);
       }
     };
 
     // 2. Question Started Event
     const handleQuestionStarted = (data: QuestionStartedPayload) => {
+      // Countdown Failsafe: immediately clear countdown when question starts
       setCurrentCountdown(null);
+      setCountdownEndsAt(undefined);
       setCurrentQuestion(data);
       setQuestionResult(null);
       setNextGameData(null);
@@ -238,7 +246,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
       setIsAnswerSubmitted(false);
       setMyAnswerResult({ status: null, pointsEarned: 0, currentStreak: myStreakRef.current });
 
-      // Start synchronized timer
+      // Start synchronized timer from authoritative endsAt
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
       const updateTimer = () => {
         const now = Date.now();
@@ -295,6 +303,8 @@ export const GameArena: React.FC<GameArenaProps> = ({
     const handleQuestionResult = (data: QuestionResultPayload) => {
       if (timerIntervalRef.current) clearInterval(timerIntervalRef.current);
       setTimeRemaining(0);
+      setCurrentCountdown(null);
+      setCountdownEndsAt(undefined);
       setQuestionResult(data);
       setLeaderboard(data.leaderboard || []);
       if (data.teams) setTeams(data.teams);
@@ -343,12 +353,14 @@ export const GameArena: React.FC<GameArenaProps> = ({
     // 8. Next Game Event
     const handleNextGame = (data: NextGamePayload) => {
       setNextGameData(data);
+      setCurrentCountdown(null);
       setQuestionResult(null);
     };
 
     // 9. Session Finished Event
     const handleSessionFinished = (data: SessionFinishedPayload) => {
       setSessionFinishedData(data);
+      setCurrentCountdown(null);
       setLeaderboard(data.finalLeaderboard || []);
       if (data.teams) setTeams(data.teams);
       if (isTeacherRef.current) {
@@ -380,7 +392,7 @@ export const GameArena: React.FC<GameArenaProps> = ({
       if (isTeacherRef.current) resumeMusicRef.current();
     };
 
-    // 6. Team Intro Event
+    // 11. Team Intro Event
     const handleTeamIntro = (data: {
       teams: Record<string, Team>;
       players: Player[];
@@ -449,6 +461,26 @@ export const GameArena: React.FC<GameArenaProps> = ({
     currentQuestion?.gameType ||
     room.games[room.currentGameIndex]?.gameType ||
     'SCHNELLANTWORT';
+
+  // Determine team atmosphere classes during Team Battle
+  const isTeamBattle = currentGameType === 'TEAM_BATTLE';
+  const myTeamId = player?.teamId;
+
+  const getTeamBattleThemeClasses = () => {
+    if (!isTeamBattle || isTeacher || !myTeamId) {
+      return 'bg-[#0B0F19] text-slate-100';
+    }
+
+    if (myTeamId === 'TEAM_ROT') {
+      return 'bg-gradient-to-b from-[#18080E] via-[#0E0B14] to-[#08070D] text-slate-100';
+    }
+
+    if (myTeamId === 'TEAM_BLAU') {
+      return 'bg-gradient-to-b from-[#071329] via-[#080E1B] to-[#06080F] text-slate-100';
+    }
+
+    return 'bg-[#0B0F19] text-slate-100';
+  };
 
   // Render Game Specific Body
   const renderGameContent = () => {
@@ -557,32 +589,80 @@ export const GameArena: React.FC<GameArenaProps> = ({
 
   return (
     <div
-      className={`min-h-screen flex flex-col bg-[#0B0F19] text-slate-100 selection:bg-indigo-500/30 ${isProjectorMode ? 'p-2 md:p-6' : ''
-        }`}
+      className={`min-h-screen flex flex-col relative transition-colors duration-700 select-none ${getTeamBattleThemeClasses()} ${
+        isProjectorMode ? 'p-2 md:p-6' : ''
+      }`}
     >
+      {/* Team Battle Soft Ambient Glow & Edge Lighting */}
+      {isTeamBattle && !isTeacher && myTeamId === 'TEAM_ROT' && (
+        <div className="fixed inset-0 pointer-events-none z-0">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-rose-600/15 rounded-full blur-[120px]" />
+          <div className="absolute inset-0 border-t-2 border-rose-500/20 shadow-[inset_0_0_80px_rgba(244,63,94,0.12)]" />
+        </div>
+      )}
+
+      {isTeamBattle && !isTeacher && myTeamId === 'TEAM_BLAU' && (
+        <div className="fixed inset-0 pointer-events-none z-0">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[350px] bg-blue-600/15 rounded-full blur-[120px]" />
+          <div className="absolute inset-0 border-t-2 border-blue-500/20 shadow-[inset_0_0_80px_rgba(59,130,246,0.12)]" />
+        </div>
+      )}
+
       {/* Game Header */}
-      <GameHeader
-        level={room.level}
-        gameType={currentGameType}
-        currentQuestion={currentQuestion?.questionNumber || 1}
-        totalQuestions={currentQuestion?.totalQuestions || room.totalQuestions}
-        score={myScore}
-        lastPointsEarned={lastPointsEarned}
-        streak={myStreak}
-        isTeacher={isTeacher}
-        isPaused={isPaused}
-        onTogglePause={handleTogglePause}
-        isProjectorMode={isProjectorMode}
-        onToggleProjectorMode={() => setIsProjectorMode((prev) => !prev)}
-        onExit={handleExit}
-        teams={teams}
-        myTeamId={player?.teamId}
-        players={Object.values(room.players || {})}
-        currentPlayerId={player?.playerId}
-      />
+      <div className="relative z-10">
+        <GameHeader
+          level={room.level}
+          gameType={currentGameType}
+          currentQuestion={currentQuestion?.questionNumber || 1}
+          totalQuestions={currentQuestion?.totalQuestions || room.totalQuestions}
+          score={myScore}
+          lastPointsEarned={lastPointsEarned}
+          streak={myStreak}
+          isTeacher={isTeacher}
+          isPaused={isPaused}
+          onTogglePause={handleTogglePause}
+          isProjectorMode={isProjectorMode}
+          onToggleProjectorMode={() => setIsProjectorMode((prev) => !prev)}
+          onExit={handleExit}
+          teams={teams}
+          myTeamId={player?.teamId}
+          players={Object.values(room.players || {})}
+          currentPlayerId={player?.playerId}
+        />
+      </div>
 
       {/* Main Arena Body */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 flex flex-col gap-4 md:gap-6 justify-between">
+      <main className="relative z-10 flex-1 max-w-7xl w-full mx-auto p-3 sm:p-4 md:p-6 flex flex-col gap-4 md:gap-6 justify-between">
+        {/* Team Battle Student Team Identity HUD Banner */}
+        {isTeamBattle && !isTeacher && myTeamId && (
+          <div
+            className={`p-3 rounded-2xl border flex items-center justify-between gap-3 shadow-lg transition-all animate-in fade-in ${
+              myTeamId === 'TEAM_ROT'
+                ? 'bg-rose-950/70 border-rose-500/40 text-rose-200 shadow-rose-950/40'
+                : 'bg-blue-950/70 border-blue-500/40 text-blue-200 shadow-blue-950/40'
+            }`}
+          >
+            <div className="flex items-center gap-2.5">
+              <span className="text-xl">{myTeamId === 'TEAM_ROT' ? '🔴' : '🔵'}</span>
+              <div>
+                <span className="text-[10px] font-bold uppercase tracking-wider block text-slate-400">
+                  Deine Team-Mission
+                </span>
+                <span className="text-sm font-black text-white">
+                  {myTeamId === 'TEAM_ROT' ? 'ROTES TEAM' : 'BLAUES TEAM'}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Shield className={`w-4 h-4 ${myTeamId === 'TEAM_ROT' ? 'text-rose-400' : 'text-blue-400'}`} />
+              <span className="text-xs font-mono font-bold">
+                Team-Punkte: {teams?.[myTeamId]?.score.toLocaleString('de-DE') || 0} Pkt
+              </span>
+            </div>
+          </div>
+        )}
+
         {/* Rich Classroom Pause & Pedagogical Explanation Card */}
         {isPaused && (
           <div className="p-6 rounded-3xl bg-gradient-to-br from-amber-500/15 via-slate-900/95 to-slate-950/95 border-2 border-amber-500/40 text-amber-200 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in-95 space-y-4">
@@ -700,13 +780,15 @@ export const GameArena: React.FC<GameArenaProps> = ({
         />
       )}
 
-      {/* 1. Countdown Overlay (3, 2, 1, LOS!) */}
-      {currentCountdown !== null && (
+      {/* 1. Countdown Overlay (3, 2, 1, LOS!) with Failsafe */}
+      {currentCountdown !== null && !currentQuestion && (
         <CountdownOverlay
           countdownValue={currentCountdown}
+          countdownEndsAt={countdownEndsAt}
           gameName={currentGameType}
-          questionNumber={currentQuestion?.questionNumber}
-          totalQuestions={currentQuestion?.totalQuestions}
+          questionNumber={countdownMeta.questionNumber}
+          totalQuestions={countdownMeta.totalQuestions}
+          onComplete={() => setCurrentCountdown(null)}
         />
       )}
 
@@ -719,7 +801,6 @@ export const GameArena: React.FC<GameArenaProps> = ({
           totalGames={nextGameData.totalGames}
         />
       )}
-
 
       {/* 3. Final Session Victory Overlay */}
       {sessionFinishedData && (
