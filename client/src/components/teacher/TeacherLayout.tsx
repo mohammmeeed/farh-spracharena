@@ -57,22 +57,20 @@ export const TeacherLayout: React.FC<TeacherLayoutProps> = ({
             <nav className="hidden md:flex items-center gap-1 bg-slate-900/80 p-1 rounded-xl border border-slate-800">
               <Link
                 to="/teacher"
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  isDashboard
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${isDashboard
                     ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-sm'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-                }`}
+                  }`}
               >
                 <LayoutDashboard className="w-3.5 h-3.5" />
                 <span>Dashboard</span>
               </Link>
               <Link
                 to="/teacher/new-game"
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                  isNewGame
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${isNewGame
                     ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 shadow-sm'
                     : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
-                }`}
+                  }`}
               >
                 <PlusCircle className="w-3.5 h-3.5" />
                 <span>Neue Spielrunde</span>

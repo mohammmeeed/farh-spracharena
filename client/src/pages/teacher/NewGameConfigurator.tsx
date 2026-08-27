@@ -92,12 +92,12 @@ const GAME_DEFINITIONS: {
 
 const CATEGORY_OPTIONS = [
   { id: 'ALL', label: 'Alle Kategorien (Ausgewogen)' },
-  { id: 'Grammatik', label: 'Grammatik & Satzbau' },
-  { id: 'Wortschatz', label: 'Wortschatz & Synonyme' },
-  { id: 'Alltag', label: 'Alltag & Konversation' },
-  { id: 'Reisen', label: 'Reisen & Mobilität' },
-  { id: 'Arbeit', label: 'Arbeit & Beruf' },
-  { id: 'Gesundheit', label: 'Gesundheit & Ernährung' },
+  { id: 'Grammatik & Satzbau', label: 'Grammatik & Satzbau' },
+  { id: 'Wortschatz & Synonyme', label: 'Wortschatz & Synonyme' },
+  { id: 'Alltag & Konversation', label: 'Alltag & Konversation' },
+  { id: 'Reisen & Mobilität', label: 'Reisen & Mobilität' },
+  { id: 'Arbeit & Beruf', label: 'Arbeit & Beruf' },
+  { id: 'Gesundheit & Ernährung', label: 'Gesundheit & Ernährung' },
 ];
 
 export const NewGameConfigurator: React.FC = () => {

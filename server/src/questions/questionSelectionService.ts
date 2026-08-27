@@ -73,7 +73,13 @@ export class QuestionSelectionService {
     let matching = this.repository.getByLevelAndGame(level, gameType);
 
     if (category && category !== 'ALL') {
-      matching = matching.filter((q) => q.category === category);
+      const catLower = category.toLowerCase();
+      matching = matching.filter(
+        (q) =>
+          q.category === category ||
+          q.category.toLowerCase().includes(catLower) ||
+          (q.tags && q.tags.some((t) => t.toLowerCase().includes(catLower)))
+      );
     }
 
     if (difficulty && difficulty !== 'ALL' && difficulty !== 'AUTO') {

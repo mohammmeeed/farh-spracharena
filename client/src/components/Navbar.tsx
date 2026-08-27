@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ConnectionStatusBadge } from './ConnectionStatusBadge';
+
 import { Sparkles } from 'lucide-react';
 
 interface NavbarProps {
