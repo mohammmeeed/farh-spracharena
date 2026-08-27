@@ -84,15 +84,13 @@ export class RoomManager {
       const available = questionSelectionService.getAvailableQuestions(
         payload.level,
         game.gameType,
-        undefined,
-        payload.category,
-        payload.difficulty
+        undefined
       );
 
       if (available.length < count) {
         return {
           valid: false,
-          error: `Für diese Auswahl stehen nur ${available.length} einzigartige Fragen zur Verfügung.`,
+          error: `Für ${game.gameType} (${payload.level}) stehen nur ${available.length} einzigartige Fragen zur Verfügung.`,
         };
       }
     }

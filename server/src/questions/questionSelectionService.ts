@@ -115,16 +115,46 @@ export class QuestionSelectionService {
 
     if (count <= 0) return [];
 
-    // 1. Fetch available unused matching questions
-    let pool = this.getAvailableQuestions(level, gameType, usedQuestionIds);
+    // 1. Fetch available unused matching questions for level and gameType
+    const fullLevelPool = this.getAvailableQuestions(level, gameType, usedQuestionIds);
 
-    // Filter by allowed categories if specified
-    if (allowedCategories && allowedCategories.length > 0) {
-      const filtered = pool.filter((q) => allowedCategories.includes(q.category));
-      pool = filtered;
+    if (fullLevelPool.length === 0) {
+      logger.warn(
+        `[QuestionSelectionService] No questions available for ${level} ${gameType}.`
+      );
+      throw new Error(
+        `Für diese Auswahl stehen nur 0 einzigartige Fragen zur Verfügung.`
+      );
     }
 
-    // 2. Strict Check: If unused pool has fewer questions than count, DO NOT REPEAT.
+    // 2. Filter by allowed categories if specified, with graceful prioritization
+    let pool: BankQuestion[];
+    if (allowedCategories && allowedCategories.length > 0 && !allowedCategories.includes('ALL')) {
+      const catTargets = allowedCategories.map((c) => c.toLowerCase());
+      const matchingCategoryPool = fullLevelPool.filter((q) =>
+        catTargets.some(
+          (cat) =>
+            q.category.toLowerCase() === cat ||
+            q.category.toLowerCase().includes(cat) ||
+            (q.tags && q.tags.some((t) => t.toLowerCase().includes(cat)))
+        )
+      );
+
+      if (matchingCategoryPool.length >= count) {
+        pool = matchingCategoryPool;
+      } else if (matchingCategoryPool.length > 0) {
+        const remaining = fullLevelPool.filter(
+          (q) => !matchingCategoryPool.some((mq) => mq.id === q.id)
+        );
+        pool = [...matchingCategoryPool, ...QuestionSelectionService.shuffle(remaining)];
+      } else {
+        pool = fullLevelPool;
+      }
+    } else {
+      pool = fullLevelPool;
+    }
+
+    // 3. Strict Check: If unused pool has fewer questions than count, DO NOT REPEAT.
     if (pool.length < count) {
       logger.warn(
         `[QuestionSelectionService] Insufficient unique questions for ${level} ${gameType} (available: ${pool.length}, requested: ${count}).`

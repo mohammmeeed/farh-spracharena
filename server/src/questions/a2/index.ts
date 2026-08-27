@@ -115,7 +115,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SA-0005",
     "level": "A2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Die Lehrerin freut sich, dass alle Schüler pünktlich gekommen ___ .",
@@ -132,7 +132,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "dass",
       "Perfekt",
       "Nebensätze mit dass",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -213,7 +214,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SA-0009",
     "level": "A2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Der Mount Everest ist der ___ Berg der ganzen Welt.",
@@ -229,7 +230,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Superlativ",
       "Adjektive",
       "Deklination",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -284,7 +286,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SA-0012",
     "level": "A2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Reisen & Mobilität",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Wenn das Wetter morgen schön ist, ___ wir einen Ausflug an den See.",
@@ -301,7 +303,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "wenn",
       "Inversion",
       "Konditionalsätze mit wenn",
-      "Reisen & Mobilität"
+      "Reisen & Mobilität",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -578,7 +581,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SA-0024",
     "level": "A2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Es regnet in Strömen, ___ gehen wir ohne Schirm spazieren.",
@@ -595,7 +598,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "trotzdem",
       "Adverbien",
       "Konnektoren deshalb / trotzdem",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -603,7 +607,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SA-0025",
     "level": "A2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Er hat viel gelernt, ___ hat er die Deutschprüfung bestanden.",
@@ -620,7 +624,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "deshalb",
       "Folge",
       "Konnektoren deshalb",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -777,7 +782,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SA-0032",
     "level": "A2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Nomen mit der Endung \"-ung\" (wie die Wohnung, die Rechnung) sind immer ___ .",
@@ -794,7 +799,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Artikelregeln",
       "Nomen",
       "Wortbildung Nomen",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -913,7 +919,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0002",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Nebensatz mit \"weil\":",
@@ -944,7 +950,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "weil",
       "Modalverben",
       "Kausalsatz mit weil",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 25
   },
@@ -991,7 +998,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0004",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Bilde die Infinitivkonstruktion mit \"zu\":",
@@ -1017,7 +1024,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Infinitiv mit zu",
       "Satzbau",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 25
   },
@@ -1060,7 +1068,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0006",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz mit \"dass\":",
@@ -1090,7 +1098,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Nebensätze",
       "dass",
       "Dass-Sätze",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 25
   },
@@ -1137,7 +1146,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0008",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz mit der temporalen Konjunktion \"als\":",
@@ -1168,7 +1177,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "als",
       "Modalverben",
       "Temporalsatz mit als",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 30
   },
@@ -1176,7 +1186,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0009",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde die höfliche indirekte Frage:",
@@ -1206,7 +1216,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Indirekte Fragen",
       "Verkehr",
       "Indirekte W-Frage",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 25
   },
@@ -1214,7 +1225,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0010",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Ordne die Satzglieder nach der TeKaMoLo-Regel (Temporal vor Lokal):",
@@ -1242,7 +1253,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Satzglieder",
       "Reisen",
       "Präpositionalphrase TeKaMoLo",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 25
   },
@@ -1250,7 +1262,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0011",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz in der Zukunftsform (Futur I):",
@@ -1280,7 +1292,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Futur",
       "Satzbau",
       "Futur I Satzbau",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 25
   },
@@ -1288,7 +1301,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0012",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bilde die Erklärung beim Arztbesuch:",
@@ -1316,7 +1329,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Arzt",
       "Inversion",
       "Arztbesuch Dialog",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 20
   },
@@ -1362,7 +1376,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0014",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den korrekten Vergleichssatz:",
@@ -1392,7 +1406,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Komparativ",
       "Vergleich",
       "Vergleich mit als",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 20
   },
@@ -1441,7 +1456,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0001",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Medikament",
@@ -1459,7 +1474,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Gesundheit",
       "Wortschatz",
       "Gesundheit & Medizin",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -1467,7 +1483,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0002",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Verspätung",
@@ -1486,7 +1502,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Verkehr",
       "Bahn",
       "Reisen & Bahnhof",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -1494,7 +1511,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0003",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Bewerbung",
@@ -1512,7 +1529,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Arbeit",
       "Beruf",
       "Arbeitswelt",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -1520,7 +1538,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0004",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Gehalt",
@@ -1538,7 +1556,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Arbeit",
       "Finanzen",
       "Arbeit & Gehalt",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -1546,7 +1565,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0005",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Nebenkosten",
@@ -1564,7 +1583,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Wohnen",
       "Miete",
       "Wohnen & Umgebung",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -1572,7 +1592,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0006",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Unterkunft",
@@ -1590,7 +1610,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Reisen",
       "Urlaub",
       "Urlaub & Unterkunft",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -1598,7 +1619,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0007",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "der Husten",
@@ -1616,7 +1637,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Gesundheit",
       "Krankheit",
       "Gesundheit & Symptome",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 12
   },
@@ -1624,7 +1646,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0008",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Rezept",
@@ -1642,7 +1664,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Gesundheit",
       "Arzt",
       "Rezept & Apotheke",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -1676,7 +1699,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0010",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Fahrkarte / das Ticket",
@@ -1694,7 +1717,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Verkehr",
       "Reisen",
       "Verkehr & Tickets",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 12
   },
@@ -1754,7 +1778,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0013",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Kreuzung",
@@ -1772,7 +1796,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Wegbeschreibung",
       "Stadt",
       "Stadt & Orientierung",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -1806,7 +1831,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0015",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "kochen vs braten",
@@ -1824,7 +1849,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Essen",
       "Kochen",
       "Küche & Zubereitung",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -1858,7 +1884,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0017",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Kündigung",
@@ -1876,7 +1902,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Arbeit",
       "Recht",
       "Arbeit & Vertrag",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -2020,7 +2047,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WB-0003",
     "level": "A2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "CLUE_GUESS",
     "question": "Errate das gesuchte Haushaltsgerät:",
@@ -2041,7 +2068,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Haushalt",
       "Geräte",
       "Haushalt & Technik",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 24
   },
@@ -2136,7 +2164,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WB-0007",
     "level": "A2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "CLUE_GUESS",
     "question": "Errate das gesuchte Küchengerät:",
@@ -2157,7 +2185,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Küche",
       "Kochen",
       "Küche & Backen",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 24
   },
@@ -2223,7 +2252,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WB-0010",
     "level": "A2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "CLUE_GUESS",
     "question": "Errate den gesuchten Begriff aus dem Mietrecht:",
@@ -2245,7 +2274,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Recht",
       "Miete",
       "Recht & Finanzen",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 24
   },
@@ -2253,7 +2283,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WB-0011",
     "level": "A2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "CLUE_GUESS",
     "question": "Errate das gesuchte Medium:",
@@ -2274,7 +2304,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Medien",
       "Nachrichten",
       "Medien & Freizeit",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 24
   },
@@ -2369,7 +2400,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WB-0015",
     "level": "A2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "CLUE_GUESS",
     "question": "Errate den gesuchten Bereich einer Wohnung:",
@@ -2390,7 +2421,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Wohnen",
       "Erholung",
       "Wohnen & Erholung",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 24
   },
@@ -2591,7 +2623,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-TB-0009",
     "level": "A2",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Wohin gehören leere Zeitungen, Hefte und Pappkartons in Deutschland?",
@@ -2608,7 +2640,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Umwelt",
       "Alltag",
       "Mülltrennung in Deutschland",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -2664,7 +2697,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-TB-0012",
     "level": "A2",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Wie viele direkte Nachbarländer grenzen an die Bundesrepublik Deutschland?",
@@ -2680,7 +2713,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Geografie",
       "Landeskunde",
       "Geografie & Nachbarländer",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -2712,7 +2746,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-TB-0014",
     "level": "A2",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "In deutschen Mietshäusern gilt die gesetzliche Nachtruhe ab wann?",
@@ -2729,7 +2763,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Kultur",
       "Regeln",
       "Ruhezeiten & Nachbarschaft",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -2737,7 +2772,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-TB-0015",
     "level": "A2",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Was singt und wünscht man in Deutschland zum Geburtstag?",
@@ -2753,7 +2788,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Feste",
       "Geburtstag",
       "Feste & Geburtstag",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -3008,7 +3044,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SA-0046",
     "level": "A2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "___ das Wetter schön ist, machen wir ein Picknick im Park.",
@@ -3025,7 +3061,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Konditionalsatz",
       "Freizeit",
       "Temporale Konjunktion wenn",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -3208,7 +3245,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SA-0054",
     "level": "A2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Im Juli ist es in Deutschland meistens ___ .",
@@ -3225,7 +3262,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Wetter",
       "Grammatik",
       "Superlativ Formen",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -3283,7 +3321,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SA-0057",
     "level": "A2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Alltag & Konversation",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Die Kaltmiete beträgt 600 Euro und die ___ für Heizung und Wasser 150 Euro.",
@@ -3300,7 +3338,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Miete",
       "Wortschatz",
       "Wohnen & Miete",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -3419,7 +3458,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0017",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz im Perfekt:",
@@ -3450,7 +3489,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Reisen",
       "Satzklammer",
       "Perfekt mit unregelmäßigen Verben",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 25
   },
@@ -3458,7 +3498,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0018",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz mit der Konjunktion \"dass\":",
@@ -3489,7 +3529,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Gesundheit",
       "Nebensatz",
       "Dass-Sätze",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 30
   },
@@ -3614,7 +3655,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0022",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Bringe den Satz im Präteritum in die richtige Reihenfolge:",
@@ -3642,7 +3683,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Reisen",
       "Passiv",
       "Präteritum Modalverben",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 30
   },
@@ -3650,7 +3692,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0023",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Bilde die indirekte Frage:",
@@ -3681,7 +3723,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Nebensatz",
       "Verkehr",
       "Indirekte Fragesätze",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 25
   },
@@ -3724,7 +3767,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-SR-0025",
     "level": "A2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz mit \"obwohl\":",
@@ -3752,7 +3795,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Konzessivsatz",
       "Gesundheit",
       "Konzessivsatz obwohl",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 25
   },
@@ -3760,7 +3804,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0021",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Bewerbung",
@@ -3787,7 +3831,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0022",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Gehalt",
@@ -3806,7 +3850,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Finanzen",
       "Artikel",
       "Arbeit & Finanzen",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -3814,7 +3859,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0023",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_REVERSE",
     "sourceWord": "Prescription (medical)",
@@ -3833,7 +3878,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Medizin",
       "Wortschatz",
       "Gesundheit & Medizin",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -3841,7 +3887,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0024",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Kaution",
@@ -3860,7 +3906,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Miete",
       "Wortschatz",
       "Wohnen & Vertrag",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -3868,7 +3915,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0025",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Verspätung",
@@ -3887,7 +3934,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Verkehr",
       "Wortschatz",
       "Reisen & Verkehr",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -3895,7 +3943,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0026",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Krankenversicherung",
@@ -3914,7 +3962,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Versicherung",
       "Gesellschaft",
       "Gesundheit & Versicherung",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -3922,7 +3971,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0027",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_REVERSE",
     "sourceWord": "Overtime (working hours)",
@@ -3941,7 +3990,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Beruf",
       "Wortschatz",
       "Arbeit & Vertrag",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -3949,7 +3999,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0028",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Sehenswürdigkeit",
@@ -3968,7 +4018,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Tourismus",
       "Kultur",
       "Reisen & Tourismus",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -3976,7 +4027,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0029",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Zeugnis",
@@ -3995,7 +4046,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Schule",
       "Arbeit",
       "Bildung & Schule",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -4003,7 +4055,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0030",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_REVERSE",
     "sourceWord": "Waste separation / Sorting",
@@ -4022,7 +4074,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Alltag",
       "Nachhaltigkeit",
       "Umwelt & Alltag",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -4057,7 +4110,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WD-0032",
     "level": "A2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "VOCABULARY_REVERSE",
     "sourceWord": "Emergency doctor / Ambulance",
@@ -4076,7 +4129,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Notfall",
       "Verkehr",
       "Gesundheit & Notfall",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -4435,7 +4489,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-WB-0025",
     "level": "A2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "CLUE_GUESS",
     "question": "Errate den gesuchten Teil der Wohnung:",
@@ -4457,7 +4511,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Möbel",
       "Architektur",
       "Wohnen & Außenbereich",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 24
   },
@@ -4740,7 +4795,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-TB-0027",
     "level": "A2",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "TEAM-AUFGABE: Welche Glückwunschformel wünscht man in Deutschland am 31. Dezember / 1. Januar?",
@@ -4757,7 +4812,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Kultur",
       "Bräuche",
       "Kultur & Feste",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 20
   },
@@ -4815,7 +4871,7 @@ export const A2_QUESTIONS: BankQuestion[] = [
     "id": "A2-TB-0030",
     "level": "A2",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Arbeit & Beruf",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "TEAM-AUFGABE: Am letzten Tag des Deutschkurses bedankt sich die Gruppe bei Lehrer Farh. Welcher Satz drückt die Wertschätzung am besten aus?",
@@ -4832,7 +4888,8 @@ export const A2_QUESTIONS: BankQuestion[] = [
       "Höflichkeit",
       "Sprachkurs",
       "Bildung & Kursabschluss",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 20
   }

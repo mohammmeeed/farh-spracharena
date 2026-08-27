@@ -15,7 +15,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0001",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Die Geschäftsführung muss in dieser schwierigen Situation schnell eine weitreichende Entscheidung ___ .",
@@ -31,7 +31,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Nomen-Verb-Verbindungen",
       "Wirtschaft",
       "B2-Grammatik",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -39,7 +40,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0002",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Für Fragen und Beratungen ___ Ihnen unser Kundenservice jederzeit gern zur Verfügung.",
@@ -55,7 +56,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Nomen-Verb-Verbindungen",
       "Höflichkeit",
       "Geschäftssprache",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -63,7 +65,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0003",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Bei der Planung müssen wir auch mögliche finanzielle Risiken in Betracht ___ .",
@@ -78,7 +80,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Nomen-Verb-Verbindungen",
       "Gehobene Sprache",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -385,7 +388,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0016",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "In den Städten steigen die Mieten rasant, ___ auf dem Land viele Wohnungen leer stehen.",
@@ -402,7 +405,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Kontrast",
       "Soziologie",
       "Adversative Konnektoren während / wohingegen",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -435,7 +439,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0018",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Der Schneesturm war so heftig, ___ viele Straßen unpassierbar wurden.",
@@ -452,7 +456,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "sodass",
       "Wetter",
       "Konnektor sodass (Konsekutivsatz)",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -485,7 +490,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0020",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Formuliere im Nominalstil: \"Weil die Gebühren erhöht wurden...\" -> \"Wegen der ___ der Gebühren...\"",
@@ -502,7 +507,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Wortbildung",
       "Verwaltungssprache",
       "Nominalisierung",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -534,7 +540,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0022",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Ich möchte dieses heikle Thema in der Konferenz lieber nicht zur Sprache ___ .",
@@ -549,7 +555,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Nomen-Verb-Verbindungen",
       "Kommunikation",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -580,7 +587,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0024",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Die Bundesregierung will erneuerbare Energietechnologien gezielt in Schutz ___ .",
@@ -595,7 +602,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Nomen-Verb-Verbindungen",
       "Politik",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -603,7 +611,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0025",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Für diesen gravierenden Fehler müssen die Verantwortlichen die volle Verantwortung ___ .",
@@ -618,7 +626,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Nomen-Verb-Verbindungen",
       "Ethik",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -845,7 +854,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0035",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Die Verhandlungen sind ins Stocken ___ , da sich beide Seiten uneinig sind.",
@@ -860,7 +869,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Nomen-Verb-Verbindungen",
       "Diplomatie",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -868,7 +878,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SR-0001",
     "level": "B2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bilde das komplexe Proportionalgefüge mit \"je ... desto\":",
@@ -899,7 +909,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Satzbau",
       "Arbeit",
       "Doppelkonnektor je... desto",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 25
   },
@@ -907,7 +918,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SR-0002",
     "level": "B2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Ordne das erweiterte Partizipialattribut korrekt an:",
@@ -938,7 +949,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Satzbau",
       "Wissenschaft",
       "Erweitertes Partizipialattribut",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 30
   },
@@ -1062,7 +1074,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SR-0006",
     "level": "B2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz mit Konzessivadverb:",
@@ -1092,7 +1104,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Konnektoren",
       "Gehobene Sprache",
       "Konzessiv ungeachtet dessen",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 25
   },
@@ -1100,7 +1113,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SR-0007",
     "level": "B2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde die Passiversatzkonstruktion:",
@@ -1130,7 +1143,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Passiversatz",
       "Vorschriften",
       "Passiversatz sein + zu + Infinitiv",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 25
   },
@@ -1324,7 +1338,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SR-0013",
     "level": "B2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Zustandspassiv-Satz:",
@@ -1351,7 +1365,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Zustandspassiv",
       "Büro",
       "Passiv Zustand vs Vorgang",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 20
   },
@@ -1426,7 +1441,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0001",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "bahnbrechend",
@@ -1444,7 +1459,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Wissenschaft",
       "Adjektive",
       "Wissenschaft & Innovation",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -1478,7 +1494,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0003",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "der Fachkräftemangel",
@@ -1496,7 +1512,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Wirtschaft",
       "Arbeit",
       "Wirtschaft & Arbeitsmarkt",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -1504,7 +1521,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0004",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "der Algorithmus",
@@ -1522,7 +1539,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Informatik",
       "Technologie",
       "Technik & KI",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -1556,7 +1574,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0006",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Integrität",
@@ -1574,7 +1592,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Ethik",
       "Persönlichkeit",
       "Recht & Ethik",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -1660,7 +1679,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0010",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Dissertation",
@@ -1678,7 +1697,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Universität",
       "Wissenschaft",
       "Bildung & Forschung",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -1686,7 +1706,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0011",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Burnout-Syndrom",
@@ -1705,7 +1725,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Arbeit",
       "Psychologie",
       "Psychologie & Gesundheit",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -1791,7 +1812,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0015",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Automatisierung",
@@ -1809,7 +1830,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Technologie",
       "Industrie",
       "Technologie & Fortschritt",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -1869,7 +1891,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0018",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "akribisch",
@@ -1887,7 +1909,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Adjektive",
       "Arbeitsweise",
       "Charakter & Haltung",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -1977,7 +2000,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WB-0002",
     "level": "B2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "CLUE_GUESS",
     "question": "Errate das zukunftsweisende Wirtschaftsmodell:",
@@ -1999,7 +2022,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Wirtschaft",
       "Nachhaltigkeit",
       "Umwelt & Wirtschaft",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 24
   },
@@ -2067,7 +2091,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WB-0005",
     "level": "B2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "CLUE_GUESS",
     "question": "Errate den gesuchten Energieträger der Zukunft:",
@@ -2089,7 +2113,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Klimaschutz",
       "Wissenschaft",
       "Energiewende & Chemie",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 24
   },
@@ -2214,7 +2239,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WB-0010",
     "level": "B2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Reisen & Mobilität",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "CLUE_GUESS",
     "question": "Errate das moderne Stadtplanungskonzept:",
@@ -2235,7 +2260,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Stadtplanung",
       "Nachhaltigkeit",
       "Stadtplanung & Mobilität",
-      "Reisen & Mobilität"
+      "Reisen & Mobilität",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 24
   },
@@ -2463,7 +2489,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-TB-0004",
     "level": "B2",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Was ist das Leitprinzip der \"Sozialen Marktwirtschaft\" in Deutschland?",
@@ -2480,7 +2506,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Landeskunde",
       "Politik",
       "Soziale Marktwirtschaft",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -2634,7 +2661,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-TB-0011",
     "level": "B2",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Welches fundamentale energiepolitische Ziel verfolgt Deutschland mit der \"Energiewende\"?",
@@ -2651,7 +2678,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Energie",
       "Politik",
       "Energiewende & Atomausstieg",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -2684,7 +2712,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-TB-0013",
     "level": "B2",
     "gameType": "TEAM_BATTLE",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Welche Epoche der deutschen Literaturgeschichte ist untrennbar mit Johann Wolfgang von Goethe und Friedrich Schiller in Weimar verbunden?",
@@ -2701,7 +2729,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Kultur",
       "Geschichte",
       "Literatur & Kulturgeschichte",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -2734,7 +2763,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-TB-0015",
     "level": "B2",
     "gameType": "TEAM_BATTLE",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Was bedeutet die Metapher: \"in den sauren Apfel beißen\"?",
@@ -2750,7 +2779,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Redewendungen",
       "Sprache",
       "Redewendungen & Metaphern",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -2758,7 +2788,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0036",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Die Bürgerinitiative möchte die aktuellen Baupläne der Stadtverwaltung scharf in Frage ___ .",
@@ -2774,7 +2804,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Nomen-Verb-Verbindungen",
       "Gehobene Sprache",
       "Politik",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -2907,7 +2938,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0042",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Man kann die Umwelt schützen, ___ man den Energieverbrauch nachhaltig senkt.",
@@ -2924,7 +2955,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "indem",
       "Umwelt",
       "Konnektor indem (Modalsatz)",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -2982,7 +3014,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0045",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Die Belegschaft musste schweren Herzens von ihrem langjährigen Geschäftsführer Abschied ___ .",
@@ -2999,7 +3031,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Gehobene Sprache",
       "Verabschiedung",
       "Nomen-Verb-Verbindung Abschied nehmen",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -3007,7 +3040,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0046",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "In den Metropolen steigen die Mieten rasant, ___ in ländlichen Regionen viele Wohnungen leer stehen.",
@@ -3024,7 +3057,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Adversativsatz",
       "Gesellschaft",
       "Adversative Konnektoren",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -3057,7 +3091,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0048",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Die stetige ___ der Produktionsprozesse führte zu einer deutlichen Effizienzsteigerung.",
@@ -3073,7 +3107,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Nominalisierung",
       "Wortbildung",
       "Wirtschaft",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -3206,7 +3241,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SA-0054",
     "level": "B2",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Wir müssen auch alternative Energiequellen ernsthaft in Betracht ___ .",
@@ -3223,7 +3258,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Gehobene Sprache",
       "Umwelt",
       "Nomen-Verb-Verbindung in Betracht ziehen",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -3453,7 +3489,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SR-0018",
     "level": "B2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz mit der Genitiv-Präposition \"ungeachtet\":",
@@ -3481,7 +3517,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Konzessiv",
       "Wirtschaft",
       "Konzessiv ungeachtet dessen",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 30
   },
@@ -3561,7 +3598,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-SR-0021",
     "level": "B2",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Bilde das komplexe Satzgefüge mit \"insofern ... als\":",
@@ -3589,7 +3626,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Restriktivsatz",
       "Vertrag",
       "Einschränkung insofern... als",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 30
   },
@@ -3819,7 +3857,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0024",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Mitarbeiterfluktuation",
@@ -3838,7 +3876,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Wirtschaft",
       "Management",
       "Arbeitswelt & Personalwesen",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -3846,7 +3885,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0025",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Verhältnismäßigkeit",
@@ -3865,7 +3904,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Verfassung",
       "Staat",
       "Recht & Verfassung",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -3900,7 +3940,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0027",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Redundanz",
@@ -3919,7 +3959,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Informationstheorie",
       "Stil",
       "Medien & Kommunikation",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -3927,7 +3968,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0028",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Corporate Social Responsibility (CSR)",
@@ -3946,7 +3987,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Ethik",
       "Nachhaltigkeit",
       "Wirtschaft & Unternehmensführung",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -3981,7 +4023,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0030",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "der Föderalismus",
@@ -4000,7 +4042,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Staat",
       "Verfassung",
       "Politik & Gesellschaft",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -4089,7 +4132,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WD-0034",
     "level": "B2",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Algorithmustransparenz",
@@ -4108,7 +4151,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Künstliche Intelligenz",
       "Technologie",
       "Ethik & Technologie",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -4143,7 +4187,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WB-0016",
     "level": "B2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "CLUE_GUESS",
     "question": "Errate die gesuchte Person im Spannungsfeld von Ethik und Recht:",
@@ -4165,7 +4209,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Recht",
       "Gesellschaft",
       "Sicherheit & Ethik",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 24
   },
@@ -4173,7 +4218,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WB-0017",
     "level": "B2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "CLUE_GUESS",
     "question": "Errate die gesuchte staatliche Aufsichtsbehörde:",
@@ -4195,7 +4240,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Recht",
       "Staat",
       "Wirtschaft & Wettbewerb",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 24
   },
@@ -4203,7 +4249,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WB-0018",
     "level": "B2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "CLUE_GUESS",
     "question": "Errate das kontrovers diskutierte sozialpolitische Konzept:",
@@ -4225,7 +4271,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Zukunft",
       "Wirtschaft",
       "Sozialpolitik & Zukunft",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 24
   },
@@ -4233,7 +4280,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WB-0019",
     "level": "B2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "CLUE_GUESS",
     "question": "Errate das wirtschaftspolitische Erfolgsmodell der Bundesrepublik:",
@@ -4255,7 +4302,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Geschichte",
       "Politik",
       "Wirtschaftsordnung Deutschland",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 24
   },
@@ -4293,7 +4341,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WB-0021",
     "level": "B2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "HARD",
     "type": "CLUE_GUESS",
     "question": "Errate das generationenübergreifende Transformationsprojekt:",
@@ -4315,7 +4363,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Energie",
       "Politik",
       "Klima & Energiepolitik",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 24
   },
@@ -4353,7 +4402,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WB-0023",
     "level": "B2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "HARD",
     "type": "CLUE_GUESS",
     "question": "Errate das revolutionäre physikalische Konzept:",
@@ -4375,7 +4424,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Wissenschaft",
       "Geschichte",
       "Wissenschaft & Physik",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 24
   },
@@ -4383,7 +4433,7 @@ export const B2_QUESTIONS: BankQuestion[] = [
     "id": "B2-WB-0024",
     "level": "B2",
     "gameType": "WAS_BIN_ICH",
-    "category": "Reisen & Mobilität",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "CLUE_GUESS",
     "question": "Errate das moderne städtebauliche Leitbild:",
@@ -4405,7 +4455,8 @@ export const B2_QUESTIONS: BankQuestion[] = [
       "Mobilität",
       "Zukunft",
       "Stadtplanung & Ökologie",
-      "Reisen & Mobilität"
+      "Reisen & Mobilität",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 24
   },

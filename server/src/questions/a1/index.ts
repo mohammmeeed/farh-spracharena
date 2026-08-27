@@ -285,7 +285,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SA-0012",
     "level": "A1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Wir ___ heute sehr glücklich.",
@@ -301,7 +301,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "sein",
       "Verben",
       "Verb sein",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -309,7 +310,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SA-0013",
     "level": "A1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "___ wohnst du? — In Frankfurt.",
@@ -324,7 +325,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "tags": [
       "W-Fragen",
       "Fragewörter",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -332,7 +334,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SA-0014",
     "level": "A1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "___ kommst du? — Aus Spanien.",
@@ -347,7 +349,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "tags": [
       "W-Fragen",
       "Herkunft",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -355,7 +358,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SA-0015",
     "level": "A1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Ich habe leider ___ Zeit für das Kino.",
@@ -371,7 +374,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Negation",
       "kein-nicht",
       "Nomen",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -379,7 +383,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SA-0016",
     "level": "A1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Das Buch ist ___ teuer, es kostet nur fünf Euro.",
@@ -394,7 +398,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Negation",
       "Adjektive",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -402,7 +407,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SA-0017",
     "level": "A1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Ist das ___ Tasche, Sarah? — Ja, das ist meine Tasche.",
@@ -417,7 +422,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Possessivartikel",
       "Femininum",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -638,7 +644,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SA-0027",
     "level": "A1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "___ Juli haben viele Schüler in Deutschland Sommerferien.",
@@ -655,7 +661,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Zeit",
       "Präpositionen",
       "Monate & Jahreszeiten",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -663,7 +670,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SA-0028",
     "level": "A1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Kinder, seid leise und ___ eure Hausaufgaben!",
@@ -678,7 +685,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Imperativ",
       "Aufforderung",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -686,7 +694,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SA-0029",
     "level": "A1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Herr Müller, ___ Sie bitte hier Platz!",
@@ -702,7 +710,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Imperativ",
       "Höflichkeit",
       "Imperativ Höflichkeitsform",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -760,7 +769,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SA-0032",
     "level": "A1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Im Klassenzimmer stehen zwanzig Tische und zwanzig ___ .",
@@ -776,7 +785,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Plural",
       "Möbel",
       "Pluralbildung",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -833,7 +843,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SA-0035",
     "level": "A1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Ich wohne ___ Deutschland, aber meine Eltern leben ___ der Schweiz.",
@@ -850,7 +860,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Präpositionen",
       "Dativ",
       "Wohnort & Präpositionen",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -893,7 +904,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0002",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bilde die richtige Frage nach dem Wohnort:",
@@ -923,7 +934,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Fragesatz",
       "W-Frage",
       "W-Fragen",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 20
   },
@@ -931,7 +943,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0003",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde eine korrekte Ja/Nein-Frage:",
@@ -961,7 +973,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Fragesatz",
       "Ja/Nein-Frage",
       "Ja/Nein-Fragen",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 25
   },
@@ -969,7 +982,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0004",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Bringe den Satz mit Modalverb in die richtige Reihenfolge:",
@@ -995,7 +1008,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Modalverben",
       "Satzklammer",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 30
   },
@@ -1003,7 +1017,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0005",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bringe die Satzglieder in die korrekte Reihenfolge (Zeit an Pos. 1):",
@@ -1030,7 +1044,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Inversion",
       "Tagesablauf",
       "Inversion / Zeitangabe",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 25
   },
@@ -1038,7 +1053,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0006",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bilde einen höflichen Wunsch beim Einkaufen:",
@@ -1064,7 +1079,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Einkaufen",
       "Höflichkeit",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 25
   },
@@ -1146,7 +1162,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0009",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde einen verneinten Satz mit \"nicht\":",
@@ -1175,7 +1191,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Negation",
       "Satzbau",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 25
   },
@@ -1183,7 +1200,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0010",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bringe die Wörter für eine persönliche Vorstellung in die Reihe:",
@@ -1210,7 +1227,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Vorstellung",
       "Konnektoren",
       "Familie & Vorstellung",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 25
   },
@@ -1253,7 +1271,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0012",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Ordne die Satzglieder richtig:",
@@ -1281,7 +1299,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Präpositionen",
       "Reisen",
       "Dativ mit Präposition",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 25
   },
@@ -1289,7 +1308,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0013",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bilde eine Bestellung im Restaurant:",
@@ -1315,7 +1334,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Restaurant",
       "Höflichkeit",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 20
   },
@@ -1358,7 +1378,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0015",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde eine Frage zur Uhrzeit:",
@@ -1385,7 +1405,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Fragesatz",
       "Uhrzeit",
       "W-Fragen mit Präposition",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 25
   },
@@ -1419,7 +1440,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0002",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "VOCABULARY_REVERSE",
     "sourceWord": "Apple",
@@ -1437,7 +1458,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Essen",
       "Obst",
       "Obst & Lebensmittel",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -1495,7 +1517,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0005",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Auge",
@@ -1513,7 +1535,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Körper",
       "Plural",
       "Körperteile",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -1546,7 +1569,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0007",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Gabel",
@@ -1564,7 +1587,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Essen",
       "Küche",
       "Küche & Geschirr",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -1572,7 +1596,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0008",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Buch",
@@ -1590,7 +1614,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Schule",
       "Plural",
       "Schule & Büro",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -1598,7 +1623,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0009",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "der Arzt / die Ärztin",
@@ -1615,7 +1640,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Berufe",
       "Gesundheit",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -1623,7 +1649,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0010",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "VOCABULARY_REVERSE",
     "sourceWord": "Water",
@@ -1640,7 +1666,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "tags": [
       "Getränke",
       "Artikel",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 12
   },
@@ -1648,7 +1675,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0011",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "der Zug",
@@ -1666,7 +1693,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Verkehr",
       "Reisen",
       "Verkehrsmittel",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -1674,7 +1702,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0012",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Küche",
@@ -1692,7 +1720,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Wohnen",
       "Räume",
       "Wohnen & Räume",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -1778,7 +1807,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0016",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "der Bahnhof",
@@ -1797,7 +1826,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Orte",
       "Verkehr",
       "Stadt & Orte",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -1805,7 +1835,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0017",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "der Kopf",
@@ -1823,7 +1853,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Körper",
       "Plural",
       "Körper & Gesundheit",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -1882,7 +1913,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0020",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Brötchen",
@@ -1900,7 +1931,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Essen",
       "Frühstück",
       "Essen & Frühstück",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -2388,7 +2420,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-TB-0003",
     "level": "A1",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Was sagt man in Deutschland typischerweise, bevor man schlafen geht?",
@@ -2404,7 +2436,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Begrüßung",
       "Alltag",
       "Begrüßung & Tageszeit",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -2412,7 +2445,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-TB-0004",
     "level": "A1",
     "gameType": "TEAM_BATTLE",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Wie fragt man korrekt nach dem Alter einer Person?",
@@ -2428,7 +2461,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Alter",
       "Fragen",
       "Zahlen & Alter",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -2652,7 +2686,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-TB-0014",
     "level": "A1",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Was ist die offizielle Bundeshauptstadt von Deutschland?",
@@ -2668,7 +2702,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Geografie",
       "Landeskunde",
       "Geografie Deutschland",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -2676,7 +2711,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-TB-0015",
     "level": "A1",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Welche drei Farben hat die deutsche Nationalflagge von oben nach unten?",
@@ -2692,7 +2727,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Landeskunde",
       "Farben",
       "Farben der Flagge",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -2822,7 +2858,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SA-0041",
     "level": "A1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Wortschatz & Synonyme",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Das sind ___ Eltern. Sie leben in Hamburg.",
@@ -2838,7 +2874,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Familie",
       "Possessivartikel",
       "Plural",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Wortschatz & Synonyme"
     ],
     "timeLimit": 15
   },
@@ -3241,7 +3278,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SA-0058",
     "level": "A1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Wie schreibt man die Zahl 43 als Wort?",
@@ -3258,7 +3295,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Aussprache",
       "Grammatik",
       "Zahlen & Mathematik",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -3352,7 +3390,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0017",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bilde einen korrekten Satz zum Thema Kochen:",
@@ -3379,7 +3417,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Satzbau",
       "Essen & Trinken",
       "Hauptsatz",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 25
   },
@@ -3429,7 +3468,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0019",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz über den Wohnort:",
@@ -3456,7 +3495,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Wohnen",
       "Satzbau",
       "Präpositionen",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 25
   },
@@ -3464,7 +3504,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0020",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz mit dem trennbaren Verb \"abfahren\":",
@@ -3491,7 +3531,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Trennbare Verben",
       "Verkehr & Reisen",
       "Satzklammer",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 25
   },
@@ -3577,7 +3618,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0023",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde eine W-Frage zum Fahrkartenkauf:",
@@ -3608,7 +3649,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Verkehr",
       "Modalverben",
       "Verkehr & Orientierung",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 25
   },
@@ -3616,7 +3658,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0024",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz über den Beruf des Vaters:",
@@ -3644,7 +3686,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Arbeit",
       "Satzbau",
       "Arbeit & Beruf",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 25
   },
@@ -3652,7 +3695,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-SR-0025",
     "level": "A1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz (Angabe zum Frühstück zuerst):",
@@ -3679,7 +3722,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Essen & Trinken",
       "Inversion",
       "Alltag",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 25
   },
@@ -3687,7 +3731,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0021",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Milch",
@@ -3705,7 +3749,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Essen & Trinken",
       "Artikel",
       "Wortschatz",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -3713,7 +3758,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0022",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "VOCABULARY_REVERSE",
     "sourceWord": "Train station",
@@ -3731,7 +3776,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Verkehr & Reisen",
       "Orte",
       "Artikel",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -3739,7 +3785,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0023",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Fahrrad",
@@ -3758,7 +3804,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Wortschatz",
       "Transport",
       "Verkehr & Reisen",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -3766,7 +3813,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0024",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Küche",
@@ -3784,7 +3831,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Wohnen",
       "Räume",
       "Wortschatz",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -3818,7 +3866,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0026",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "VOCABULARY_REVERSE",
     "sourceWord": "Doctor",
@@ -3837,7 +3885,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Gesundheit",
       "Wortschatz",
       "Arbeit & Beruf",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -3845,7 +3894,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0027",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Brot",
@@ -3863,7 +3912,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Essen & Trinken",
       "Artikel",
       "Wortschatz",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -3978,7 +4028,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WD-0032",
     "level": "A1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Wasser",
@@ -3996,7 +4046,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Essen & Trinken",
       "Artikel",
       "Wortschatz",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 12
   },
@@ -4143,7 +4194,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WB-0018",
     "level": "A1",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "CLUE_GUESS",
     "question": "Errate das gesuchte Haushaltsgerät:",
@@ -4165,7 +4216,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Haushalt",
       "Geräte",
       "Wohnen & Haushalt",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 24
   },
@@ -4233,7 +4285,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-WB-0021",
     "level": "A1",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "CLUE_GUESS",
     "question": "Errate den gesuchten wetterfesten Gegenstand:",
@@ -4255,7 +4307,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Alltag",
       "Gegenstände",
       "Wetter & Alltag",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 24
   },
@@ -4383,7 +4436,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-TB-0016",
     "level": "A1",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "TEAM-AUFGABE: Wie meldet man sich in Deutschland höflich und formell am Telefon?",
@@ -4400,7 +4453,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Höflichkeit",
       "Alltag",
       "Alltagskommunikation",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 20
   },
@@ -4408,7 +4462,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-TB-0017",
     "level": "A1",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "TEAM-AUFGABE: Du möchtest auf dem Wochenmarkt 500g Erdbeeren kaufen. Was sagst du?",
@@ -4425,7 +4479,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Höflichkeit",
       "Mengen",
       "Einkaufen & Markt",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 20
   },
@@ -4733,7 +4788,7 @@ export const A1_QUESTIONS: BankQuestion[] = [
     "id": "A1-TB-0030",
     "level": "A1",
     "gameType": "TEAM_BATTLE",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "TEAM-AUFGABE: Am ersten Tag im Sprachkurs stellst du dich kurz vor. Welcher Satz ist vollständig und grammatikalisch korrekt?",
@@ -4750,7 +4805,8 @@ export const A1_QUESTIONS: BankQuestion[] = [
       "Begrüßung",
       "Sprachkurs",
       "Begrüßung & Vorstellung",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 20
   }

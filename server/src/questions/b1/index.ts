@@ -214,7 +214,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SA-0009",
     "level": "B1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Dort drüben steht der Lehrer, ___ uns in Farh SprachArena unterrichtet.",
@@ -231,7 +231,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Nominativ",
       "Maskulinum",
       "Relativpronomen Nominativ",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -436,7 +437,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SA-0018",
     "level": "B1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Er trinkt ___ Alkohol ___ zuckerhaltige Softdrinks; er trinkt nur reines Wasser.",
@@ -452,7 +453,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Doppelkonnektoren",
       "Negation",
       "Doppelkonjunktionen weder... noch",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -914,7 +916,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0002",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Bilde das Satzgefüge mit Relativsatz:",
@@ -941,7 +943,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Relativsätze",
       "Präpositionen",
       "Relativsatz mit Präposition",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 25
   },
@@ -1025,7 +1028,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0005",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bringe den Satz mit \"während\" in die richtige Form:",
@@ -1053,7 +1056,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "während",
       "Präteritum",
       "Temporalsatz während",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 25
   },
@@ -1061,7 +1065,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0006",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz mit Vorzeitigkeit:",
@@ -1089,7 +1093,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "nachdem",
       "Vorzeitigkeit",
       "Plusquamperfekt Satzgefüge",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 30
   },
@@ -1097,7 +1102,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0007",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bilde die finale Infinitivkonstruktion:",
@@ -1124,7 +1129,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Finalsätze",
       "Infinitiv mit zu",
       "Finalsatz um... zu",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 25
   },
@@ -1132,7 +1138,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0008",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde das Satzgefüge mit \"obwohl\":",
@@ -1160,7 +1166,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "obwohl",
       "Inversion",
       "Konzessivsatz mit obwohl",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 25
   },
@@ -1168,7 +1175,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0009",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Satz mit Konsekutivadverb:",
@@ -1198,7 +1205,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Konnektoren",
       "Passiv",
       "Konnektor folglich / infolgedessen",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 25
   },
@@ -1280,7 +1288,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0012",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bilde die strukturierte Meinungsäußerung:",
@@ -1307,7 +1315,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Meinung",
       "Diskussion",
       "Meinung einleiten",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 20
   },
@@ -1350,7 +1359,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0014",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Nebensatz mit \"seitdem\":",
@@ -1381,7 +1390,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "seitdem",
       "Perfekt",
       "Temporalsatz seitdem",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 25
   },
@@ -1450,7 +1460,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0002",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Verhandlung",
@@ -1468,7 +1478,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Arbeit",
       "Wirtschaft",
       "Wirtschaft & Finanzen",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -1476,7 +1487,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0003",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "der Datenschutz",
@@ -1494,7 +1505,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Technik",
       "Recht",
       "Technik & Medien",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -1502,7 +1514,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0004",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Überstunden",
@@ -1520,7 +1532,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Arbeit",
       "Recht",
       "Arbeitswelt",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -1606,7 +1619,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0008",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Frist",
@@ -1624,7 +1637,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Recht",
       "Verwaltung",
       "Recht & Vertrag",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -1658,7 +1672,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0010",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Unverträglichkeit",
@@ -1736,7 +1750,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0013",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Stornierung / stornieren",
@@ -1754,7 +1768,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Reisen",
       "Dienstleistung",
       "Reise & Storno",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -1762,7 +1777,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0014",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Tempolimit",
@@ -1780,7 +1795,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Verkehr",
       "Regeln",
       "Verkehr & Mobilität",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -1866,7 +1882,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0018",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Weiterbildung",
@@ -1884,7 +1900,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Arbeit",
       "Bildung",
       "Arbeit & Qualifikation",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -2148,7 +2165,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WB-0008",
     "level": "B1",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "CLUE_GUESS",
     "question": "Errate die gesuchte Form des Zusammenlebens:",
@@ -2169,7 +2186,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Wohnen",
       "Kultur",
       "Wohnen & Genossenschaft",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 24
   },
@@ -2207,7 +2225,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WB-0010",
     "level": "B1",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "CLUE_GUESS",
     "question": "Errate das gesuchte akustische Medienformat:",
@@ -2228,7 +2246,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Medien",
       "Technik",
       "Kultur & Unterhaltung",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 24
   },
@@ -2265,7 +2284,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WB-0012",
     "level": "B1",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "CLUE_GUESS",
     "question": "Errate die gesuchte staatliche Institution:",
@@ -2286,7 +2305,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Verwaltung",
       "Finanzen",
       "Staat & Steuern",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 24
   },
@@ -2477,7 +2497,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-TB-0005",
     "level": "B1",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Aus wie vielen Bundesländern besteht die Bundesrepublik Deutschland?",
@@ -2493,7 +2513,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Landeskunde",
       "Politik",
       "Landeskunde & Bundesländer",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -2575,7 +2596,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-TB-0009",
     "level": "B1",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Was feiern die Menschen in Deutschland am 3. Oktober (Tag der Deutschen Einheit)?",
@@ -2591,7 +2612,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Geschichte",
       "Landeskunde",
       "Kulturelle Feiertage",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -2673,7 +2695,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-TB-0013",
     "level": "B1",
     "gameType": "TEAM_BATTLE",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Was bedeutet das deutsche Einwegpfand-Symbol auf Plastikflaschen und Dosen?",
@@ -2690,7 +2712,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Alltag",
       "Landeskunde",
       "Pfandsystem in Deutschland",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -2698,7 +2721,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-TB-0014",
     "level": "B1",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Welches Verfassungsorgan wählt in Deutschland den Bundeskanzler oder die Bundeskanzlerin?",
@@ -2715,7 +2738,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Demokratie",
       "Landeskunde",
       "Demokratie & Wahlen",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -2797,7 +2821,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SA-0038",
     "level": "B1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "Wir können ___ heute Abend ins Kino gehen ___ gemütlich zu Hause kochen.",
@@ -2814,7 +2838,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Grammatik",
       "Freizeit",
       "Doppelkonnektor entweder... oder",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -2922,7 +2947,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SA-0043",
     "level": "B1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Ich lerne jeden Tag Deutsch, ___ ich in Deutschland studieren kann.",
@@ -2939,7 +2964,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "damit",
       "Bildung",
       "Finalsatz um... zu vs damit",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -3046,7 +3072,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SA-0048",
     "level": "B1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Grammatik & Satzbau",
+    "category": "Alltag & Konversation",
     "difficulty": "HARD",
     "type": "MULTIPLE_CHOICE",
     "question": "Die Energiewende spielt für den Klimaschutz eine entscheidende ___ .",
@@ -3062,7 +3088,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Nomen-Verb-Verbindungen",
       "Umwelt",
       "Bedeutung",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Alltag & Konversation"
     ],
     "timeLimit": 15
   },
@@ -3293,7 +3320,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SA-0058",
     "level": "B1",
     "gameType": "SCHNELLANTWORT",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "question": "Viele Menschen in Deutschland engagieren sich freiwillig in einem ___ .",
@@ -3310,7 +3337,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Ehrenamt",
       "Kultur",
       "Gesellschaft & Engagement",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -3407,7 +3435,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0017",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Bilde das komplexe Satzgefüge mit Relativsatz:",
@@ -3438,7 +3466,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Präpositionen",
       "Arbeitswelt",
       "Relativsatz mit Präposition",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 30
   },
@@ -3482,7 +3511,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0019",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Temporalsatz mit \"während\":",
@@ -3510,7 +3539,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "während",
       "Familie",
       "Temporalsatz während",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 25
   },
@@ -3518,7 +3548,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0020",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den irrealen Konditionalsatz:",
@@ -3549,7 +3579,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Wunsch",
       "Reisen",
       "Konjunktiv II irreale Bedingung",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 30
   },
@@ -3557,7 +3588,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0021",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde die finale Infinitivkonstruktion mit \"um ... zu\":",
@@ -3585,7 +3616,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Finalsatz",
       "Finanzen",
       "Finalsatz um... zu",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 30
   },
@@ -3629,7 +3661,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0023",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Temporalsatz mit \"seitdem\":",
@@ -3657,7 +3689,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "seitdem",
       "Integration",
       "Temporalsatz seitdem",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 25
   },
@@ -3665,7 +3698,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0024",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "SENTENCE_ORDER",
     "question": "Bilde die formelle Meinungsäußerung:",
@@ -3693,7 +3726,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Politik",
       "Verkehr",
       "Meinungsäußerung Struktur",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 25
   },
@@ -3701,7 +3735,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-SR-0025",
     "level": "B1",
     "gameType": "SATZ_RENNEN",
-    "category": "Grammatik & Satzbau",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "SENTENCE_ORDER",
     "question": "Bilde den Nebensatz im Passiv mit Modalverb:",
@@ -3729,7 +3763,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Modalverben",
       "Arbeitswelt",
       "Passiv mit Modalverb Nebensatz",
-      "Grammatik & Satzbau"
+      "Grammatik & Satzbau",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 30
   },
@@ -3764,7 +3799,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0022",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Weiterbildung",
@@ -3783,7 +3818,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Bildung",
       "Karriere",
       "Arbeitswelt & Weiterbildung",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -3791,7 +3827,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0023",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "HARD",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "der Betriebsrat",
@@ -3810,7 +3846,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Recht",
       "Gesellschaft",
       "Gesellschaft & Mitbestimmung",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -3899,7 +3936,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0027",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Barrierefreiheit",
@@ -3918,7 +3955,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Inklusion",
       "Wortschatz",
       "Gesellschaft & Inklusion",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -3926,7 +3964,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0028",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Kündigungsfrist",
@@ -3945,7 +3983,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Vertrag",
       "Recht",
       "Arbeitswelt & Vertrag",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -3980,7 +4019,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0030",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Gesundheit & Ernährung",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Wohlbefinden",
@@ -3999,7 +4038,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Psychologie",
       "Alltag",
       "Psychologie & Gesundheit",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Gesundheit & Ernährung"
     ],
     "timeLimit": 15
   },
@@ -4034,7 +4074,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0032",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "MULTIPLE_CHOICE",
     "sourceWord": "zuverlässig",
@@ -4053,7 +4093,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Adjektive",
       "Arbeit",
       "Charakter & Persönlichkeit",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -4061,7 +4102,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0033",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "das Pfand / das Pfandsystem",
@@ -4080,7 +4121,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Alltag",
       "Kultur",
       "Umwelt & Recycling",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 15
   },
@@ -4088,7 +4130,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WD-0034",
     "level": "B1",
     "gameType": "WORTSCHATZ_DUELL",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "MEDIUM",
     "type": "VOCABULARY_TRANSLATION",
     "sourceWord": "die Gleitzeit",
@@ -4107,7 +4149,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Beruf",
       "Organisation",
       "Arbeitswelt & Struktur",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 15
   },
@@ -4262,7 +4305,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WB-0020",
     "level": "B1",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Arbeit & Beruf",
     "difficulty": "HARD",
     "type": "CLUE_GUESS",
     "question": "Errate das gesuchte gewerbliche Schutzrecht:",
@@ -4284,7 +4327,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Recht",
       "Innovation",
       "Forschung & Erfindung",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Arbeit & Beruf"
     ],
     "timeLimit": 24
   },
@@ -4322,7 +4366,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WB-0022",
     "level": "B1",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "CLUE_GUESS",
     "question": "Errate das globale Umweltphänomen:",
@@ -4344,7 +4388,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Umwelt",
       "Global",
       "Umwelt & Klima",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 24
   },
@@ -4352,7 +4397,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-WB-0023",
     "level": "B1",
     "gameType": "WAS_BIN_ICH",
-    "category": "Wortschatz & Synonyme",
+    "category": "Reisen & Mobilität",
     "difficulty": "MEDIUM",
     "type": "CLUE_GUESS",
     "question": "Errate das demokratische Grundrecht und Verfahren:",
@@ -4374,7 +4419,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Demokratie",
       "Gesellschaft",
       "Politik & Demokratie",
-      "Wortschatz & Synonyme"
+      "Wortschatz & Synonyme",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 24
   },
@@ -4742,7 +4788,7 @@ export const B1_QUESTIONS: BankQuestion[] = [
     "id": "B1-TB-0028",
     "level": "B1",
     "gameType": "TEAM_BATTLE",
-    "category": "Alltag & Konversation",
+    "category": "Reisen & Mobilität",
     "difficulty": "EASY",
     "type": "MULTIPLE_CHOICE",
     "question": "TEAM-AUFGABE: Welcher Feiertag wird in ganz Deutschland am 3. Oktober als Nationalfeiertag begangen?",
@@ -4759,7 +4805,8 @@ export const B1_QUESTIONS: BankQuestion[] = [
       "Feiertage",
       "Kultur",
       "Kultur & Bräuche",
-      "Alltag & Konversation"
+      "Alltag & Konversation",
+      "Reisen & Mobilität"
     ],
     "timeLimit": 20
   },
